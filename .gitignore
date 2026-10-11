@@ -1,0 +1,40 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# next.js
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+
+# testing and screenshots
+/coverage
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/screenshots/
+
+# env files (commit only the example)
+.env*
+!.env.example
+
+# vercel
+.vercel
+
+# misc
+.DS_Store
+*.pem
+npm-debug.log*
+.pnpm-debug.log*
+
+# Original photos and logo files from the founder. They stay local and out of
+# the repo: they are large and may carry location metadata. Optimised,
+# metadata-free copies go in public/ when a page uses them.
+/Photos/
+/LOGO*.png
+/*.JPG
+/*.jpg
+/*.jpeg
