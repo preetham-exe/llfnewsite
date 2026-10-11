@@ -72,7 +72,7 @@ Do not install Framer Motion, three.js or any other animation library. GSAP owns
 - Each phase is built on its own branch (phase-1, phase-2...) and reviewed on its Vercel preview before it is merged.
 - At the end of each phase:
   1. `pnpm check` (lint, types, copy rules, formatting) and `pnpm build`, and fix everything.
-  2. `pnpm test:e2e`, which builds, runs the acceptance tests in Chromium and WebKit at 1440 x 900 and 390 x 844, and saves screenshots to screenshots/<phase>/ (set PHASE=phase-n). Look at the screenshots critically.
+  2. `pnpm test:e2e`, which builds, runs the acceptance tests in Chromium and WebKit at 1440 x 900 and 390 x 844, and saves screenshots to screenshots/<phase>/ (set PHASE=phase-n). Look at the screenshots critically. Playwright's WebKit cannot render CSS 3D (it flattens even a plain cube), so anything 3D is checked in Chromium here and in real Safari (Mac, iPhone or the iOS simulator) by hand. /dev/book is the test bench for that.
   3. Test keyboard navigation and reduced motion for anything built in the phase.
   4. Report: what was built, the screenshots, what does not feel right yet, decisions to know about, and what is needed from the founder.
   5. Add a short entry to the log below.
@@ -84,3 +84,4 @@ Do not install Framer Motion, three.js or any other animation library. GSAP owns
 ## Log
 
 - 2026-10-11, Phase 0. Next.js 16.4 foundation: tokens, self-hosted Literata and Source Sans 3 (subset with ₹ and small caps), motion tokens, GSAP registration, Lenis on the GSAP ticker, empty transition overlay, persistent nav with Donate on every page, all routes with placeholder content and metadata, sitemap, robots, default share image, NGO JSON-LD, Playwright acceptance tests (216 passing). Open: GitHub push needs the founder's credentials; Vercel import pending; logo needs vector files; the in-app browser could not open the dev server, so the visual check used Playwright screenshots.
+- 2026-10-11, Phase 1. Static shelf: seven cloth-bound spines on a wall shelf with a bronze bookend and a date-due card stamped with real opening months; on phones a pile with Donate on top (separate markup, so reading order matches). Series covers and the CSS 3D book on the /dev/book bench. Generated 1 KB cloth and wood textures. Teal cloth deepened to #2F5B5A for contrast under the spine highlight. Shelf tests for real links, title fit and AA contrast (232 passing). Open: 3D not yet seen in real Safari; monogram is typographic until the vector logo arrives.
