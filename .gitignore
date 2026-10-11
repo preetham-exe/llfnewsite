@@ -24,6 +24,9 @@ next-env.d.ts
 # vercel
 .vercel
 
+# local preview configuration for the Claude desktop app
+/.claude/launch.json
+
 # misc
 .DS_Store
 *.pem

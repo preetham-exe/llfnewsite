@@ -1,0 +1,175 @@
+@import "tailwindcss";
+@import "lenis/dist/lenis.css";
+
+/*
+ * Design tokens. Everything visual comes from here. Tailwind turns each token
+ * into utilities (bg-paper, text-ink, font-serif...) and exposes it as a CSS
+ * variable (var(--color-paper)).
+ */
+@theme {
+  /* Only our palette. No default Tailwind colours, no pure white or black. */
+  --color-*: initial;
+
+  --color-ink: #1f1a15;
+  --color-ink-soft: #4a4239;
+  --color-paper: #f6f1e7;
+  --color-paper-shade: #ece4d3;
+  --color-paper-edge: #ddd2bb;
+  --color-wall: #e9e1d2;
+  --color-wood: #8a5a3b;
+  --color-wood-dark: #5e3b26;
+  --color-pencil: #5f5b57;
+  --color-stamp: #a33b30;
+
+  /* Brand. Gold is 2.8:1 on navy and 4.2:1 on paper, so it is never used for
+     small text. Foil is the lighter gold for text on dark cloth (5.8:1 on navy). */
+  --color-navy: #23314b;
+  --color-gold: #8b6f47;
+  --color-foil: #c9a96e;
+  --color-cream: #efe6d2;
+
+  /* Spine cloths. Donate is the only navy book. */
+  --color-cloth-navy: #23314b;
+  --color-cloth-oxblood: #5e2129;
+  --color-cloth-forest: #2f4a3a;
+  --color-cloth-slate: #4a5560;
+  --color-cloth-ochre: #b8893a;
+  --color-cloth-linen: #d9cdb4;
+  --color-cloth-teal: #3e6b6a;
+
+  /* Type scale. Fluid between 390 px and 1440 px wide. */
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.45;
+  --text-ui: 0.9375rem;
+  --text-ui--line-height: 1.4;
+  --text-body: clamp(1.0625rem, 0.99rem + 0.3vw, 1.1875rem);
+  --text-body--line-height: 1.6;
+  --text-lede: clamp(1.25rem, 1.12rem + 0.55vw, 1.5rem);
+  --text-lede--line-height: 1.45;
+  --text-h3: clamp(1.375rem, 1.25rem + 0.5vw, 1.625rem);
+  --text-h3--line-height: 1.25;
+  --text-h2: clamp(1.75rem, 1.5rem + 1vw, 2.375rem);
+  --text-h2--line-height: 1.15;
+  --text-h1: clamp(2.25rem, 1.8rem + 2vw, 3.75rem);
+  --text-h1--line-height: 1.05;
+  --text-display: clamp(2.75rem, 2rem + 3.2vw, 5rem);
+  --text-display--line-height: 1;
+
+  /* A comfortable reading measure, 60 to 72 characters. */
+  --container-measure: 66ch;
+  --container-page: 72rem;
+
+  --tracking-smallcaps: 0.06em;
+}
+
+@theme inline {
+  --font-serif:
+    var(--font-literata), "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --font-serif-italic:
+    var(--font-literata-italic), "Iowan Old Style", "Palatino Linotype",
+    Georgia, serif;
+  --font-sans:
+    var(--font-source-sans), "Segoe UI", system-ui, -apple-system, Roboto,
+    sans-serif;
+}
+
+@layer base {
+  :root {
+    color-scheme: only light;
+    --z-overlay: 30;
+    --z-nav: 40;
+    --z-skip: 50;
+    --nav-height: 3.5rem;
+  }
+
+  html {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-serif);
+    font-optical-sizing: auto;
+    font-kerning: normal;
+    /* Real italics and small caps only. Never fake them. */
+    font-synthesis-style: none;
+    font-synthesis-small-caps: none;
+    hanging-punctuation: first last;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* Keep the layout still when the scrollbar comes and goes. */
+    scrollbar-gutter: stable;
+    scroll-padding-top: calc(var(--nav-height) + 1rem);
+  }
+
+  body {
+    min-height: 100dvh;
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    /* Old-style figures in running text. Stats switch to lining figures. */
+    font-variant-numeric: oldstyle-nums proportional-nums;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 400;
+    text-wrap: balance;
+  }
+
+  p,
+  li,
+  blockquote {
+    text-wrap: pretty;
+  }
+
+  /* Literata's italic is a separate file (loaded only when used), so serif
+     italics switch family. Sans text keeps its own family. */
+  :where(em, i, cite) {
+    font-family: var(--font-serif-italic);
+    font-style: italic;
+  }
+
+  :where(.font-sans) :where(em, i, cite) {
+    font-family: inherit;
+  }
+
+  /* Links are underlined unless a component says otherwise (nav lists, the
+     shelf), so links in text never rely on colour alone. */
+  a {
+    color: inherit;
+    text-decoration-line: underline;
+    text-decoration-thickness: 0.06em;
+    text-underline-offset: 0.18em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-navy);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-foil) 45%, transparent);
+  }
+
+  /* Lenis stops scrolling with overflow: clip, which ignores scrollbar-gutter
+     and shifts the page on Windows. Hidden keeps the gutter. */
+  html.lenis.lenis-stopped {
+    overflow: hidden;
+  }
+}
+
+@utility font-serif-italic {
+  font-family: var(--font-serif-italic);
+  font-style: italic;
+}
+
+/* Running headers and labels: real small caps from the font. */
+@utility smallcaps {
+  font-variant-caps: all-small-caps;
+  letter-spacing: var(--tracking-smallcaps);
+}
+
+/* Figures for statistics and tables. */
+@utility figures-lining {
+  font-variant-numeric: lining-nums tabular-nums;
+}
