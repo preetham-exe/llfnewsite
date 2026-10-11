@@ -27,13 +27,15 @@ export default function HomePage() {
     <div className="pt-(--nav-height)">
       <JsonLd data={organizationJsonLd()} />
 
-      <section className="mx-auto max-w-page px-4 pt-12 sm:px-6 sm:pt-20">
-        <h1 className="max-w-[18ch] text-display">{home.headline}</h1>
-        <p className="mt-4 font-serif-italic text-lede text-ink-soft">
-          {site.tagline}
-        </p>
-        <div className="mt-10 sm:mt-14">
-          <Shelf />
+      <section className="wall">
+        <div className="mx-auto max-w-page px-4 pt-10 pb-16 sm:px-6 sm:pt-16 sm:pb-24">
+          <h1 className="max-w-[18ch] text-display">{home.headline}</h1>
+          <p className="mt-4 font-serif-italic text-lede text-ink-soft">
+            {site.tagline}
+          </p>
+          <div className="mt-10 sm:mt-14">
+            <Shelf />
+          </div>
         </div>
       </section>
 

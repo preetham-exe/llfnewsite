@@ -29,7 +29,7 @@ const spines = [
   { color: "#b8893a", height: 142 },
   { color: "#4a5560", height: 160 },
   { color: "#d9cdb4", height: 146 },
-  { color: "#3e6b6a", height: 164 },
+  { color: "#2f5b5a", height: 164 },
   { color: "#23314b", height: 172 },
 ];
 
