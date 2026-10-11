@@ -46,10 +46,10 @@ Why this set: the old "Who we are" and "Our mission" are merged into Our Story b
 ### Visual
 
 - A real-feeling wooden shelf, warm, softly lit from above, with a subtle shadow under each book. Background is a quiet wall, not a full room scene.
-- Books vary in height (within about 15 percent), thickness and cloth colour. Cloth palette: navy #23314B, deep oxblood, muted forest green, slate, warm ochre, one undyed linen. Donate is navy with gold foil so it is the most "special" book without being loud.
+- Books vary in height (within about 15 percent), thickness and cloth colour. Cloth palette: navy #23314B, deep oxblood, muted forest green, slate, warm ochre, faded teal, one undyed linen. Donate is the only navy book, with gold foil, so it is the most "special" book without being loud. Spine lettering on dark cloth is cream or a light foil tint (#C9A96E), because the brand gold #8B6F47 is too dark to read on navy.
 - Spine titles in the editorial serif, gold foil or cream, set vertically or horizontally depending on thickness. Small LLF monogram at the base of each spine.
 - Optional small objects on the shelf: one bookend, a small plant, a folded library card. Two or three objects, not more.
-- Above the shelf: the wordmark and tagline "Turning pages, changing lives." set small and confident. A one-line instruction is not needed if the books are clearly labelled.
+- Above the shelf: a plain one-line headline that says what LLF does ("We build libraries for children in Hyderabad."), with the tagline "Turning pages, changing lives." beneath it, set small and confident. The Donate button also sits in the top bar on the homepage. A one-line instruction is not needed if the books are clearly labelled.
 
 ### Shelf interactions
 
@@ -120,7 +120,7 @@ On mobile, marginalia reduce to one or two objects per section placed between co
 The donate page centres on a library checkout card, the kind tucked into a pocket inside a library book's cover.
 
 - The card has ruled lines with columns like "Date due", "Borrower's name". The rows are donation options instead, for example: "One book", "A shelf of books", "A whole library for 50 children" with their amounts. Real amounts come from CONTENT. One known anchor: a library for about 50 to 60 children costs roughly ₹20,000 to ₹40,000.
-- Selecting a row highlights it in pencil. Pressing "Check out" brings a rubber stamp down onto the card (GSAP: stamp lifts, drops with a quick ease, slight squash, ink impression appears with today's date and "THANK YOU"). Then the visitor is taken to the Milaap campaign in a new tab, with a clear note that payment happens on Milaap.
+- Selecting a row highlights it in pencil. Pressing "Check out" brings a rubber stamp down onto the card (GSAP: stamp lifts, drops with a quick ease, slight squash, ink impression appears with today's date and "THANK YOU"). Then the visitor is taken to the Milaap campaign in the same tab (new tabs are unreliable in the Instagram and WhatsApp in-app browsers most donors arrive from), with a clear note that payment happens on Milaap. "Check out" is a real link, so it works without JavaScript.
 - The stamp animation is short (under 0.8 s) and never blocks the redirect.
 - Below the card: where the money goes (simple breakdown), the 80G tax benefit for Indian donors, registration details (Trust registration, 12A/80G, DARPAN, PAN), and a contact for larger or corporate gifts.
 - The Donate button in the persistent nav goes straight to this page.
@@ -139,8 +139,8 @@ Design mobile as its own composition, not a shrunk desktop.
 ## 7. Typography and colour tokens
 
 Fonts (self-hosted, subset):
-- Headlines and spines: an editorial serif with optical sizes and real italics, for example Newsreader or Source Serif 4. Avoid overused display serifs.
-- UI, captions and small text: a humanist sans, for example Instrument Sans or Source Sans 3.
+- Headlines, spines and body: Literata, an editorial serif designed for reading books on screens, with optical sizes from 7 to 72, real italics, true small caps, old-style and lining figures, and a ₹ sign. (Newsreader was considered but has no small caps or figure styles.)
+- UI, captions and small text: Source Sans 3, a humanist sans with a ₹ sign. (Instrument Sans has no ₹.)
 - Handwriting: real scanned SVG. Fallback font only if needed.
 
 Colour tokens:
@@ -168,7 +168,7 @@ Colour tokens:
 Before Phase 8, all copy and image references live in src/content/ as typed data shaped like the future Sanity schemas. From Phase 8, Libraries, Stories and Partners are edited in Sanity Studio. Real photographs will be provided by the founder. Until then, use neutral placeholder blocks with the correct aspect ratio and a label, never stock photos.
 
 Known facts to use:
-- Founded in 2024/2025 in Hyderabad. Library #1 opened January 2025. Registered as a Trust in March 2025.
+- Founded in 2024 in Hyderabad, by a student. Library #1 opened January 2025. Registered as a Trust in March 2025. Registered under 12A and 80G, and on NGO DARPAN.
 - 300+ children, 1,500+ books, three libraries so far.
 - Library #3: QCity Community Library with Robinhood Army, April 2026.
 - Partners include Robinhood Army, MANA Foundation, Chavadi Child Welfare Society, AARA Initiative, Macmillan Education.
@@ -176,6 +176,9 @@ Known facts to use:
 - Library sizing: Small 150 to 200 books on 1 to 2 shelves, Medium 300 to 400 books on 3 to 4 shelves, Large 600+ books on 5+ shelves.
 - Books are mostly fiction and storybooks, in English and the local language (Telugu, Kannada).
 - LLF sources and pays for the shelving. Every library opens with a launch day read-aloud led by an LLF volunteer.
+- A library for about 50 to 60 children costs roughly ₹20,000 to ₹40,000, including shelving.
+- Screening: there must be a local volunteer or mentor on the ground. Any child-serving institution qualifies. The process is a conversation, then a site visit and written agreement, then the build.
+- Donations are processed on Milaap. Contact: founder@literatelives.org.
 - Tagline: "Turning pages, changing lives."
 
 Anything not listed here is a placeholder marked TODO in the content files. Never invent statistics, quotes, names or testimonials.
@@ -185,7 +188,7 @@ Anything not listed here is a placeholder marked TODO in the content files. Neve
 Each phase ends with a check in the browser at 1440 px and 390 px and a stop for review.
 
 **Phase 0: Foundation**
-Next.js App Router project, strict TypeScript, Tailwind, folder structure, next/font, colour and motion tokens, GSAP plugin registration, Lenis plus ScrollTrigger wiring in the root layout, the transition overlay layer (empty for now), all routes from the site map with placeholder content and per-page metadata, Vercel project connected to the repo with preview deployments.
+Next.js App Router project, strict TypeScript, Tailwind, folder structure, next/font, colour and motion tokens, GSAP plugin registration, Lenis plus ScrollTrigger wiring in the root layout, the transition overlay layer (empty for now), all routes from the site map with placeholder content and per-page metadata (library and story pages generated from local data), basic sitemap, robots and default share image, Vercel project connected to the repo with preview deployments.
 Done when: every route loads directly and via client navigation, view-source shows real HTML for each page, Lenis scrolls smoothly, a Vercel preview deploy works.
 
 **Phase 1: The shelf, static**
@@ -205,7 +208,7 @@ Spread frame, running header, persistent nav, SplitText reveals, marginalia syst
 Done when: Our Story reads beautifully and the decoration never competes with the text.
 
 **Phase 5: Remaining pages**
-The Libraries, How We Build, Partners, Stories, Get Involved, each with its own marginalia set. Wire the transition to all books.
+The Libraries, How We Build, Partners, Stories, Get Involved, each with its own marginalia set. Wire the transition to all books. Get Involved has a real form (volunteer, start a chapter, request a library) that emails the founder; this needs an email-sending service.
 
 **Phase 6: Donate**
 Checkout card, stamp animation, Milaap redirect, transparency section.
@@ -214,7 +217,7 @@ Checkout card, stamp animation, Milaap redirect, transparency section.
 Stacked-pile shelf, mobile transition, mobile page layout, touch targets.
 
 **Phase 8: CMS**
-Sanity project and embedded Studio at /studio (protected), schemas for Library, Story and Partner matching the local content types, migrate local content, on-demand revalidation via a Sanity webhook so publishing updates the live site in seconds. Add generateStaticParams for /libraries/[slug] and /stories/[slug].
+Sanity project and embedded Studio at /studio (protected), schemas for Library, Story and Partner matching the local content types, migrate local content, on-demand revalidation via a Sanity webhook so publishing updates the live site in seconds. Switch generateStaticParams for /libraries/[slug] and /stories/[slug] to Sanity.
 Done when: the founder can add a new library with photos in Studio and see its page live without a redeploy.
 
 **Phase 9: Polish and launch**
