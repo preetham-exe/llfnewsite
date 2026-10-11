@@ -1,0 +1,11 @@
+.next
+node_modules
+pnpm-lock.yaml
+playwright-report
+test-results
+screenshots
+src/assets
+public
+AGENTS.md
+BRIEF.md
+CLAUDE.md
