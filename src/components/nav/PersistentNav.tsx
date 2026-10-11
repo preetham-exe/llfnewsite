@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 
+import { Monogram } from "@/components/brand/Monogram";
 import { TransitionLink } from "@/components/transition/TransitionLink";
 import { books } from "@/content/books";
 import { site } from "@/content/site";
@@ -34,8 +35,9 @@ export function PersistentNav() {
         {onShelf ? (
           <TransitionLink
             href="/"
-            className="font-serif text-[1.0625rem] smallcaps no-underline"
+            className="inline-flex items-center gap-2.5 font-serif text-[1.0625rem] smallcaps text-navy no-underline"
           >
+            <Monogram className="h-6 shrink-0" />
             {site.name}
           </TransitionLink>
         ) : (

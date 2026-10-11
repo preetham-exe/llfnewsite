@@ -3,6 +3,7 @@ import { join } from "node:path";
 
 import { ImageResponse } from "next/og";
 
+import { WORDMARK } from "@/components/brand/paths";
 import { home } from "@/content/pages";
 import { site } from "@/content/site";
 
@@ -16,10 +17,9 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 const fontDir = join(process.cwd(), "src/assets/og");
-const [literata, literataItalic, sourceSans] = await Promise.all([
+const [literata, literataItalic] = await Promise.all([
   readFile(join(fontDir, "literata-display-regular.ttf")),
   readFile(join(fontDir, "literata-display-italic.ttf")),
-  readFile(join(fontDir, "source-sans-3-semibold.ttf")),
 ]);
 
 /* Cloth colours and heights for the row of spines, in shelf order. */
@@ -48,23 +48,15 @@ export default function OpengraphImage() {
       }}
     >
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <div
-          style={{
-            fontFamily: "Source Sans",
-            fontSize: 24,
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            color: "#4a4239",
-          }}
-        >
-          {site.name}
-        </div>
+        <svg width="236" height="116" viewBox={WORDMARK.viewBox}>
+          <path fill="#23314b" fillRule="evenodd" d={WORDMARK.d} />
+        </svg>
         <div
           style={{
             fontFamily: "Literata",
             fontSize: 68,
             lineHeight: 1.08,
-            marginTop: 28,
+            marginTop: 22,
             maxWidth: 900,
           }}
         >
@@ -109,7 +101,6 @@ export default function OpengraphImage() {
           style: "italic",
           weight: 400,
         },
-        { name: "Source Sans", data: sourceSans, style: "normal", weight: 600 },
       ],
     },
   );

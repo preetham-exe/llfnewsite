@@ -1,3 +1,4 @@
+import { Monogram } from "@/components/brand/Monogram";
 import type { Book } from "@/content/types";
 
 type SpineFaceProps = {
@@ -8,8 +9,8 @@ type SpineFaceProps = {
 
 /**
  * What is printed on a spine: head and tail bands, the title (live text, so it
- * is the link's accessible name) and a small LLF monogram at the base. The
- * spine's size, cloth and shading come from the element that wraps it.
+ * is the link's accessible name) and the LLF monogram at the base. The spine's
+ * size, cloth and shading come from the element that wraps it.
  */
 export function SpineFace({ book, title }: SpineFaceProps) {
   return (
@@ -28,17 +29,5 @@ export function SpineFace({ book, title }: SpineFaceProps) {
       <Monogram className="spine__monogram" />
       <span aria-hidden="true" className="spine__band spine__band--tail" />
     </>
-  );
-}
-
-/**
- * The LLF device used on spines and covers. A typographic stand-in until the
- * vector version of the foundation's monogram arrives.
- */
-export function Monogram({ className = "" }: { className?: string }) {
-  return (
-    <span aria-hidden="true" className={`monogram ${className}`}>
-      LLF
-    </span>
   );
 }

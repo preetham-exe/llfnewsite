@@ -129,22 +129,11 @@
     writing-mode: horizontal-tb;
   }
 
-  .monogram {
-    display: inline-grid;
-    place-items: center;
-    border: 1px solid currentColor;
-    border-radius: 50%;
-    font-variant-caps: all-small-caps;
-    letter-spacing: 0.04em;
-    line-height: 1;
-  }
   .spine__monogram {
     position: absolute;
-    bottom: 10%;
-    width: 1.6rem;
-    height: 1.6rem;
-    font-size: 0.625rem;
-    opacity: 0.85;
+    bottom: 9.5%;
+    width: min(2.4rem, 62%);
+    opacity: 0.9;
   }
 
   /* ---------- The shelf: tablet and desktop ---------- */
@@ -336,8 +325,9 @@
   }
   .spine--lying .spine__monogram {
     position: static;
+    width: 2.6rem;
     margin-left: auto;
-    margin-right: 0.55rem;
+    margin-right: 0.6rem;
   }
 
   .desk {
@@ -405,11 +395,18 @@
     line-height: 1.05;
     text-wrap: balance;
   }
-  .cover__monogram {
-    width: 17cqi;
-    height: 17cqi;
+  .cover__roundel {
+    display: grid;
+    place-items: center;
+    width: 24cqi;
+    height: 24cqi;
     margin-top: auto;
-    font-size: 5.2cqi;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+  }
+  .cover__monogram {
+    width: 64%;
+    margin-left: 6%;
   }
   .cover__imprint {
     margin-top: 7cqi;

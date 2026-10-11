@@ -10,7 +10,7 @@ export function organizationJsonLd() {
     name: site.name,
     alternateName: site.shortName,
     url: SITE_URL,
-    logo: absoluteUrl("/apple-icon.png"),
+    logo: absoluteUrl("/apple-icon"),
     email: site.email,
     slogan: site.tagline,
     description: site.description,
