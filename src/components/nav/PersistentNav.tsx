@@ -1,0 +1,100 @@
+"use client";
+
+import { usePathname } from "next/navigation";
+import { useEffect, useRef } from "react";
+
+import { TransitionLink } from "@/components/transition/TransitionLink";
+import { books } from "@/content/books";
+import { site } from "@/content/site";
+
+import { DonateButton } from "./DonateButton";
+
+/**
+ * The persistent top bar. It lives in the root layout and never unmounts.
+ * On the shelf it shows the name and Donate; on every other page it shows
+ * Back to the shelf, the sections, and Donate. The mobile menu is a <details>
+ * element, so it opens without JavaScript.
+ */
+export function PersistentNav() {
+  const pathname = usePathname();
+  const menuRef = useRef<HTMLDetailsElement>(null);
+  const onShelf = pathname === "/";
+  const sections = books.filter((book) => book.id !== "donate");
+
+  const isCurrent = (href: string) =>
+    pathname === href || pathname.startsWith(`${href}/`);
+
+  useEffect(() => {
+    if (menuRef.current) menuRef.current.open = false;
+  }, [pathname]);
+
+  return (
+    <header className="fixed inset-x-0 top-0 z-(--z-nav) h-(--nav-height) border-b border-paper-edge bg-paper font-sans text-ui">
+      <div className="mx-auto flex h-full max-w-page items-center justify-between gap-4 px-4 sm:px-6">
+        {onShelf ? (
+          <TransitionLink
+            href="/"
+            className="font-serif text-[1.0625rem] smallcaps no-underline"
+          >
+            {site.name}
+          </TransitionLink>
+        ) : (
+          <TransitionLink
+            href="/"
+            className="inline-flex min-h-10 items-center gap-2 no-underline hover:underline"
+          >
+            <span aria-hidden="true">←</span>
+            Back to the shelf
+          </TransitionLink>
+        )}
+
+        {!onShelf && (
+          <nav aria-label="Sections" className="hidden lg:block">
+            <ul className="flex items-center gap-5">
+              {sections.map((book) => (
+                <li key={book.id}>
+                  <TransitionLink
+                    href={book.href}
+                    aria-current={isCurrent(book.href) ? "page" : undefined}
+                    className="no-underline hover:underline aria-[current=page]:underline"
+                  >
+                    {book.spineTitle}
+                  </TransitionLink>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
+
+        <div className="flex items-center gap-2">
+          {!onShelf && (
+            <details ref={menuRef} className="relative lg:hidden">
+              <summary className="flex min-h-10 cursor-pointer list-none items-center px-3 [&::-webkit-details-marker]:hidden">
+                Menu
+              </summary>
+              <nav
+                aria-label="Sections"
+                className="absolute top-full right-0 mt-2 w-60 border border-paper-edge bg-paper py-2 shadow-[0_8px_24px_rgb(31_26_21/0.12)]"
+              >
+                <ul>
+                  {books.map((book) => (
+                    <li key={book.id}>
+                      <TransitionLink
+                        href={book.href}
+                        aria-current={isCurrent(book.href) ? "page" : undefined}
+                        className="block px-4 py-2.5 no-underline hover:bg-paper-shade aria-[current=page]:underline"
+                      >
+                        {book.spineTitle}
+                      </TransitionLink>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </details>
+          )}
+          <DonateButton current={isCurrent("/donate")} />
+        </div>
+      </div>
+    </header>
+  );
+}
