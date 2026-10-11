@@ -60,7 +60,14 @@ def wood(width: int = 512, height: int = 64, seed: int = 11) -> Image.Image:
 
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
-    for name, image in (("cloth", cloth()), ("wood", wood())):
+    grain = wood()
+    textures = (
+        ("cloth", cloth()),
+        ("wood", grain),
+        # Upright grain for the bookcase sides and back panel.
+        ("wood-v", grain.transpose(Image.Transpose.ROTATE_90)),
+    )
+    for name, image in textures:
         path = OUT / f"{name}.webp"
         image.save(path, "WEBP", quality=82, method=6)
         print(f"{path.relative_to(ROOT)}  {path.stat().st_size // 1024 + 1} KB")
