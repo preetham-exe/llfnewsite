@@ -32,11 +32,24 @@ export const ease = {
 
 /** Shelf hover and focus: the pulled-out state. */
 export const shelf = {
+  /** How far the book comes toward the reader (px along z). */
   pullOut: 14,
+  /** Forward tilt of the pulled book, hinged at its foot (deg). */
   tilt: 4,
+  /** Perspective for the pull, so 14 px of z reads as coming closer. */
+  perspective: 700,
   neighbourShift: 2,
+  /** The label card rises this far as it appears (px). */
+  labelRise: 8,
+  /** First visit: books start this far above their place (px) and settle. */
+  settleDrop: 20,
   /** First-visit settle. The whole stagger finishes in under 0.8 s. */
   settleTotal: 0.8,
+} as const;
+
+/** Story blocks below the shelf fade up this far as they enter view (px). */
+export const reveal = {
+  distance: 16,
 } as const;
 
 export const parallax = {

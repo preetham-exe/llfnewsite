@@ -1,5 +1,5 @@
 import { todo } from "./helpers";
-import type { Picture, Todo } from "./types";
+import type { Photo, Todo } from "./types";
 
 /*
  * Copy for the fixed pages. Libraries, stories and partners have their own
@@ -32,11 +32,12 @@ export const home = {
     "Every library comes with shelves we pay for, storybooks in English and Telugu, and a read-aloud led by one of our volunteers on the day it opens.",
   next: "Bangalore is next, with a local chapter lead.",
   photo: {
-    _type: "photoPlaceholder",
-    aspectRatio: 2,
-    label: "Photo: children reading in one of our libraries",
-    alt: todo("Describe the full-width photo on the homepage"),
-  } satisfies Picture,
+    _type: "photo",
+    src: "/photos/children-at-new-shelves.jpg",
+    width: 2400,
+    height: 1800,
+    alt: "Children crowd around new bookshelves to choose books, while a girl beside them smiles.",
+  } satisfies Photo,
   donateLine:
     "A library for 50 to 60 children costs about ₹20,000 to ₹40,000, shelves included.",
   donateCta: "Help build the next one",

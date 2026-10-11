@@ -303,6 +303,68 @@
     display: none;
   }
 
+  /* ---------- Pulled out: hover and keyboard focus ---------- */
+
+  /* The deeper shadow of a pulled book. GSAP fades it in; it stays still while
+     the book moves, so it reads as the gap opening behind the book. */
+  .bookcase__lift {
+    position: absolute;
+    inset: 3% 2% 0;
+    border-radius: 3px;
+    box-shadow:
+      0 1.4rem 1.8rem -0.6rem rgb(0 0 0 / 0.65),
+      0 0 1.2rem rgb(0 0 0 / 0.35);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* The label card: the section in one line, on paper, on the lower spine. */
+  .spine__label {
+    position: absolute;
+    inset-inline: 10%;
+    top: 50cqh;
+    padding: 0.55em 0.65em 0.6em;
+    border-radius: 2px;
+    background-color: #f4ecda;
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: clamp(0.75rem, 6cqi, 0.9375rem);
+    line-height: 1.35;
+    text-align: center;
+    text-wrap: balance;
+    box-shadow:
+      inset 0 0 0 1px rgb(0 0 0 / 0.08),
+      0 2px 6px rgb(0 0 0 / 0.3);
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+  }
+
+  /* Without JavaScript the label still appears on hover and focus. */
+  html:not(.js) .spine:is(:hover, :focus-visible) .spine__label {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* A focused or pulled book sits above its neighbours. */
+  .bookcase__book:focus-within {
+    z-index: 2;
+  }
+
+  /* The bookcase is dark, so the focus ring is cream. */
+  .spine:focus-visible {
+    outline: 2px solid var(--color-cream);
+    outline-offset: 3px;
+  }
+
+  /* First visit of a session: books start a little above their places and
+     settle (ShelfMotion). The inline script in the root layout sets the
+     attribute and the distance, and removes it if JavaScript stalls. */
+  html[data-shelf-settle] .bookcase__book,
+  html[data-shelf-settle] .pile__book {
+    transform: translateY(calc(var(--shelf-settle, 20px) * -1));
+  }
+
   /* ---------- Phones: books lying stacked in the bookcase ---------- */
 
   .pile {
