@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { TransitionLink } from "@/components/transition/TransitionLink";
 import { Txt } from "@/components/ui/Txt";
 import { books } from "@/content/books";
@@ -8,7 +10,17 @@ export function Footer() {
     <footer className="border-t border-paper-edge bg-paper-shade font-sans text-ui text-ink-soft">
       <div className="mx-auto grid max-w-page gap-10 px-4 py-14 sm:px-6 md:grid-cols-3">
         <div>
-          <p className="font-serif-italic text-lede text-ink">{site.tagline}</p>
+          <Image
+            src="/brand/wordmark.svg"
+            alt="Literate Lives"
+            width={296}
+            height={146}
+            unoptimized
+            className="h-auto w-40"
+          />
+          <p className="mt-5 font-serif-italic text-lede text-ink">
+            {site.tagline}
+          </p>
           <p className="mt-3">
             {site.name}, {site.city}
           </p>

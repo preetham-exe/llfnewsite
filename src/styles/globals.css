@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "lenis/dist/lenis.css";
+@import "./shelf.css";
 
 /*
  * Design tokens. Everything visual comes from here. Tailwind turns each token
@@ -35,7 +36,7 @@
   --color-cloth-slate: #4a5560;
   --color-cloth-ochre: #b8893a;
   --color-cloth-linen: #d9cdb4;
-  --color-cloth-teal: #3e6b6a;
+  --color-cloth-teal: #2f5b5a;
 
   /* Type scale. Fluid between 390 px and 1440 px wide. */
   --text-caption: 0.8125rem;

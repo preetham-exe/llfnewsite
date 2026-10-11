@@ -45,10 +45,10 @@ Why this set: the old "Who we are" and "Our mission" are merged into Our Story b
 
 ### Visual
 
-- A real-feeling wooden shelf, warm, softly lit from above, with a subtle shadow under each book. Background is a quiet wall, not a full room scene.
-- Books vary in height (within about 15 percent), thickness and cloth colour. Cloth palette: navy #23314B, deep oxblood, muted forest green, slate, warm ochre, faded teal, one undyed linen. Donate is the only navy book, with gold foil, so it is the most "special" book without being loud. Spine lettering on dark cloth is cream or a light foil tint (#C9A96E), because the brand gold #8B6F47 is too dark to read on navy.
-- Spine titles in the editorial serif, gold foil or cream, set vertically or horizontally depending on thickness. Small LLF monogram at the base of each spine.
-- Optional small objects on the shelf: one bookend, a small plant, a folded library card. Two or three objects, not more.
+- A real-feeling wooden bookcase, warm and softly lit from above, spanning the full width of the screen with its frame visible: top rail, side panels and shelf base. Below the headline it fills the rest of the first screen. Background is a quiet wall, not a full room scene.
+- The seven books stand upright and fill the row, sharing its width in proportion to their thickness. Books vary in height (within about 15 percent), thickness and cloth colour. Cloth palette: navy #23314B, deep oxblood, muted forest green, slate, warm ochre, faded teal, one undyed linen. Donate is the only navy book, with gold foil, so it is the most "special" book without being loud. Spine lettering on dark cloth is cream or a light foil tint (#C9A96E), because the brand gold #8B6F47 is too dark to read on navy.
+- Spine titles in the editorial serif, gold foil, cream or ink, set across the spine as on real thick books. Small LLF monogram at the base of each spine. Donate's title sits in a foil-ruled label.
+- No objects on the shelf: the books fill it. The date-due card moves to the margins of The Libraries.
 - Above the shelf: a plain one-line headline that says what LLF does ("We build libraries for children in Hyderabad."), with the tagline "Turning pages, changing lives." beneath it, set small and confident. The Donate button also sits in the top bar on the homepage. A one-line instruction is not needed if the books are clearly labelled.
 
 ### Shelf interactions
@@ -131,7 +131,7 @@ Do not build any payment form on the site. Payments happen on Milaap.
 
 Design mobile as its own composition, not a shrunk desktop.
 
-- The shelf becomes a vertical stack of books lying flat, spines facing the viewer, like a pile on a desk. Each spine is a full-width tap target at least 56 px tall. Donate sits on top.
+- The same bookcase frame holds the books stacked flat, spines facing the viewer, so titles read normally. Each spine is a full-width tap target at least 56 px tall. Donate sits on top.
 - Tap: the book lifts, rotates to face the viewer and opens. Same choreography, simplified, 1.1 s or less.
 - Pages are a single column of paper. No spread gutter.
 - Persistent compact header with Back, a menu, and Donate.

@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 
 import type { Metadata, Viewport } from "next";
 
+import { MonogramSymbol } from "@/components/brand/MonogramSymbol";
 import { PersistentNav } from "@/components/nav/PersistentNav";
 import { Providers } from "@/components/providers/Providers";
 import { Footer } from "@/components/site/Footer";
@@ -59,6 +60,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: markJs }} />
       </head>
       <body>
+        <MonogramSymbol />
         <SkipLink />
         <Providers>
           <PersistentNav />

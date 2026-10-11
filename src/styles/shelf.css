@@ -1,0 +1,555 @@
+/*
+ * The bookcase (books standing on tablets and desktops, stacked flat on
+ * phones), cover faces and the 3D book. Imported by globals.css.
+ *
+ * Light comes from above. Cloth is a flat colour with a fine weave laid over
+ * it (overlay blend) and a gradient for the curve of the spine.
+ */
+
+@layer components {
+  /* Cloth and lettering colours, shared by every face of a book. */
+  .cloth-navy {
+    --cloth: var(--color-cloth-navy);
+  }
+  .cloth-oxblood {
+    --cloth: var(--color-cloth-oxblood);
+  }
+  .cloth-forest {
+    --cloth: var(--color-cloth-forest);
+  }
+  .cloth-slate {
+    --cloth: var(--color-cloth-slate);
+  }
+  .cloth-ochre {
+    --cloth: var(--color-cloth-ochre);
+  }
+  .cloth-linen {
+    --cloth: var(--color-cloth-linen);
+  }
+  .cloth-teal {
+    --cloth: var(--color-cloth-teal);
+  }
+  .lettering-foil {
+    --lettering: var(--color-foil);
+  }
+  .lettering-cream {
+    --lettering: var(--color-cream);
+  }
+  .lettering-ink {
+    --lettering: var(--color-ink);
+  }
+
+  .cloth {
+    background-color: var(--cloth);
+    background-image: url("/textures/cloth.webp"), var(--shade, none);
+    background-size:
+      64px 64px,
+      100% 100%;
+    background-blend-mode: overlay, normal;
+    color: var(--lettering);
+  }
+
+  /* ---------- The wall behind the bookcase ---------- */
+
+  .wall {
+    background:
+      radial-gradient(
+        ellipse 70% 55% at 50% 0%,
+        rgb(255 252 245 / 0.75),
+        rgb(255 252 245 / 0) 70%
+      ),
+      linear-gradient(180deg, var(--color-paper) 0%, var(--color-wall) 100%);
+  }
+
+  /* ---------- A spine, as printed ---------- */
+
+  /* The centre highlight (5% white) sits under the title. The contrast test in
+     e2e/shelf.spec.ts checks lettering against it. */
+  .spine {
+    --shade: linear-gradient(
+      90deg,
+      rgb(0 0 0 / 0.34),
+      rgb(0 0 0 / 0.08) 20%,
+      rgb(255 255 255 / 0.05) 46%,
+      rgb(0 0 0 / 0.04) 72%,
+      rgb(0 0 0 / 0.36)
+    );
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 3px 3px 2px 2px;
+    text-decoration: none;
+    box-shadow:
+      inset 0 0 0 1px rgb(0 0 0 / 0.18),
+      5px 0 9px -6px rgb(20 12 4 / 0.45);
+  }
+
+  /* Light from above catches the head of the spine. */
+  .spine::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 14%;
+    border-radius: inherit;
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.09), transparent);
+    pointer-events: none;
+  }
+
+  .spine__band {
+    position: absolute;
+    inset-inline: 14%;
+    height: 5px;
+    border-block: 1px solid currentColor;
+    opacity: 0.6;
+  }
+  .spine__band--head {
+    top: 6%;
+  }
+  .spine__band--tail {
+    bottom: 4.5%;
+  }
+
+  .spine__title {
+    /* Percent margins resolve against width, so measure along the length. */
+    margin-top: calc(var(--spine-length, 20rem) * 0.13);
+    font-size: var(--spine-title, 1.25rem);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    writing-mode: vertical-rl;
+  }
+  .spine__title--across {
+    margin-top: calc(var(--spine-length, 20rem) * 0.15);
+    writing-mode: horizontal-tb;
+  }
+
+  .spine__monogram {
+    position: absolute;
+    bottom: 9.5%;
+    width: min(2.4rem, 62%);
+    opacity: 0.9;
+  }
+
+  /* ---------- The bookcase ---------- */
+
+  .shelf {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bookcase {
+    --frame: clamp(0.75rem, 1.5vw, 1.5rem);
+    --rail: clamp(0.9rem, 1.7vw, 1.75rem);
+    --base: clamp(1.4rem, 2.6vw, 2.6rem);
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    width: 100%;
+    max-width: 110rem;
+    margin-inline: auto;
+    padding: var(--rail) var(--frame) var(--base);
+    background-color: var(--color-wood);
+    background-image:
+      url("/textures/wood.webp"),
+      linear-gradient(180deg, rgb(255 236 210 / 0.16), rgb(0 0 0 / 0.14));
+    background-size:
+      512px 64px,
+      100% 100%;
+    background-blend-mode: overlay, normal;
+    box-shadow: 0 1.6rem 2rem -1.4rem rgb(40 26 14 / 0.5);
+  }
+
+  /* Side panels with upright grain, running the full height. */
+  .bookcase::before,
+  .bookcase::after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    inset-block: 0;
+    width: var(--frame);
+    background-color: var(--color-wood);
+    background-image:
+      url("/textures/wood-v.webp"),
+      linear-gradient(90deg, rgb(255 236 210 / 0.22), rgb(0 0 0 / 0.16));
+    background-size:
+      64px 512px,
+      100% 100%;
+    background-blend-mode: overlay, normal;
+  }
+  .bookcase::before {
+    left: 0;
+  }
+  .bookcase::after {
+    right: 0;
+    transform: scaleX(-1);
+  }
+
+  /* The dark back panel, shaded under the top rail and beside the sides. The
+     thin lit line below it is the front edge of the shelf board. */
+  .bookcase__inside {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 0;
+    background-color: #3a281c;
+    background-image:
+      url("/textures/wood-v.webp"),
+      linear-gradient(180deg, rgb(0 0 0 / 0.38), rgb(0 0 0 / 0) 35%);
+    background-size:
+      64px 512px,
+      100% 100%;
+    background-blend-mode: overlay, normal;
+    box-shadow:
+      inset 0 1.3rem 1.4rem -0.9rem rgb(0 0 0 / 0.6),
+      inset 1.1rem 0 1.2rem -1rem rgb(0 0 0 / 0.5),
+      inset -1.1rem 0 1.2rem -1rem rgb(0 0 0 / 0.5),
+      0 2px 0 rgb(255 236 210 / 0.24);
+  }
+
+  /* ---------- Tablet and desktop: books standing in a row ---------- */
+
+  .bookcase__row {
+    display: none;
+    height: 100%;
+    align-items: flex-end;
+    padding-inline: 1px;
+  }
+
+  /* The seven books share the row in proportion to their thickness. */
+  .bookcase__book {
+    position: relative;
+    flex: var(--t) 1 0;
+    min-width: 0;
+    height: calc(100% * var(--h));
+  }
+
+  /* Contact shadow where each book meets the shelf board. */
+  .bookcase__book::after {
+    content: "";
+    position: absolute;
+    inset: auto 2% -3px;
+    z-index: 1;
+    height: 6px;
+    background: radial-gradient(
+      closest-side,
+      rgb(0 0 0 / 0.55),
+      rgb(0 0 0 / 0)
+    );
+    pointer-events: none;
+  }
+
+  /* Thick spines: the title runs across, as on real thick books. The shading
+     stays within 5% of the cloth across the middle, where the title sits. */
+  .spine--upright {
+    --shade: linear-gradient(
+      90deg,
+      rgb(0 0 0 / 0.36),
+      rgb(0 0 0 / 0.05) 9%,
+      rgb(255 255 255 / 0.05) 50%,
+      rgb(0 0 0 / 0.05) 91%,
+      rgb(0 0 0 / 0.38)
+    );
+    container-type: size;
+    width: 100%;
+    height: 100%;
+    border-radius: 3px 3px 1px 1px;
+  }
+  .spine--upright .spine__band {
+    inset-inline: 9%;
+    height: max(5px, 1.4cqh);
+  }
+  .spine--upright .spine__band--head {
+    top: 4.5cqh;
+  }
+  .spine--upright .spine__band--tail {
+    bottom: 3.5cqh;
+  }
+  .spine--upright .spine__title {
+    max-width: 78%;
+    margin-top: 15cqh;
+    font-size: clamp(0.95rem, 14cqi, 2.5rem);
+    line-height: 1.08;
+    text-align: center;
+    text-wrap: balance;
+    white-space: normal;
+  }
+  /* A short rule under the title, as stamped on cloth. */
+  .spine--upright .spine__title::after {
+    content: "";
+    display: block;
+    width: 32%;
+    margin: 0.55em auto 0;
+    border-top: 1px solid currentColor;
+    opacity: 0.55;
+  }
+  .spine--upright .spine__monogram {
+    bottom: 9cqh;
+    width: min(4.75rem, 40cqi);
+  }
+
+  /* Donate: a foil-ruled label around the title. */
+  .spine--special .spine__title {
+    padding: 0.5em 0.55em 0.45em;
+    border: 1px solid currentColor;
+    box-shadow:
+      inset 0 0 0 3px var(--cloth),
+      inset 0 0 0 4px currentColor;
+  }
+  .spine--special .spine__title::after {
+    display: none;
+  }
+
+  /* ---------- Phones: books lying stacked in the bookcase ---------- */
+
+  .pile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.75rem 0.35rem 0;
+  }
+
+  .pile__book {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .spine--lying {
+    --shade: linear-gradient(
+      180deg,
+      rgb(0 0 0 / 0.3),
+      rgb(0 0 0 / 0.06) 22%,
+      rgb(255 255 255 / 0.05) 48%,
+      rgb(0 0 0 / 0.05) 72%,
+      rgb(0 0 0 / 0.34)
+    );
+    flex-direction: row;
+    width: calc(100% * var(--w));
+    height: calc(3.5rem * var(--t));
+    min-height: 3.5rem;
+    padding: 0 0.8rem 0 1.5rem;
+    border-radius: 2px 3px 3px 2px;
+    transform: translateX(var(--x)) rotate(var(--r));
+    box-shadow:
+      inset 0 0 0 1px rgb(0 0 0 / 0.18),
+      0 2px 2px rgb(0 0 0 / 0.35),
+      0 7px 10px -7px rgb(0 0 0 / 0.5);
+  }
+  .spine--lying::before {
+    inset: 0 auto 0 0;
+    width: 10%;
+    height: auto;
+    background: linear-gradient(90deg, rgb(255 255 255 / 0.08), transparent);
+  }
+  .spine--lying .spine__band {
+    inset-block: 16%;
+    inset-inline: auto;
+    width: 5px;
+    height: auto;
+    border-block: 0;
+    border-inline: 1px solid currentColor;
+  }
+  .spine--lying .spine__band--head {
+    left: 0.6rem;
+  }
+  .spine--lying .spine__band--tail {
+    right: 0.45rem;
+    bottom: auto;
+  }
+  .spine--lying .spine__title,
+  .spine--lying .spine__title--across {
+    margin: 0;
+    font-size: 1.25rem;
+    writing-mode: horizontal-tb;
+  }
+  .spine--lying .spine__monogram {
+    position: static;
+    width: 2.6rem;
+    margin-left: auto;
+    margin-right: 0.6rem;
+  }
+
+  @media (min-width: 48rem) {
+    .shelf {
+      height: 100%;
+    }
+    .bookcase__row {
+      display: flex;
+    }
+    .pile {
+      display: none;
+    }
+  }
+
+  /* ---------- The date-due card (margins, from Phase 5) ---------- */
+
+  .library-card {
+    filter: drop-shadow(2px 3px 3px rgb(30 18 8 / 0.28));
+  }
+  .library-card__paper {
+    fill: #f3ead6;
+    stroke: var(--color-paper-edge);
+  }
+  .library-card__heading {
+    font-family: var(--font-sans);
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    fill: var(--color-ink-soft);
+  }
+  .library-card__rule {
+    stroke: #d6c9ae;
+    stroke-width: 0.6;
+  }
+  .library-card__stamp {
+    font-family: var(--font-sans);
+    font-size: 8.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    fill: var(--color-stamp);
+    opacity: 0.85;
+  }
+
+  /* ---------- Front cover ---------- */
+
+  .cover {
+    --shade: linear-gradient(
+      90deg,
+      rgb(0 0 0 / 0.26),
+      rgb(0 0 0 / 0.04) 6%,
+      rgb(255 255 255 / 0.05) 52%,
+      rgb(0 0 0 / 0.1)
+    );
+    container-type: inline-size;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    /* Percent padding resolves against the cover's width. (Container units
+       would resolve against the viewport here, on the container itself.) */
+    padding: 18% 10% 11%;
+    border-radius: 2px 4px 4px 2px;
+    text-align: center;
+    box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.22);
+  }
+  .cover__frame {
+    position: absolute;
+    inset: 5.5cqi;
+    border: 1px solid currentColor;
+    opacity: 0.5;
+  }
+  .cover__frame::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border: 1px solid currentColor;
+  }
+  .cover__title {
+    font-size: 11cqi;
+    line-height: 1.05;
+    text-wrap: balance;
+  }
+  .cover__roundel {
+    display: grid;
+    place-items: center;
+    width: 24cqi;
+    height: 24cqi;
+    margin-top: auto;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+  }
+  .cover__monogram {
+    width: 64%;
+    margin-left: 6%;
+  }
+  .cover__imprint {
+    margin-top: 7cqi;
+    font-size: 4.4cqi;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.12em;
+  }
+
+  /* ---------- The book in 3D ---------- */
+
+  .book3d {
+    --w: 15rem;
+    --h: calc(var(--w) * 1.42);
+    --d: calc(var(--w) * 0.19 * var(--thickness, 1));
+    width: var(--w);
+    height: var(--h);
+    perspective: 1800px;
+  }
+  .book3d__body {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transform: rotateX(var(--tilt, 0deg)) rotateY(var(--turn, 0deg));
+  }
+  .book3d__face {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+  .book3d__front,
+  .book3d__back {
+    width: var(--w);
+    height: var(--h);
+    margin: calc(var(--h) / -2) 0 0 calc(var(--w) / -2);
+  }
+  .book3d__front {
+    transform: translateZ(calc(var(--d) / 2));
+  }
+  .book3d__back {
+    transform: rotateY(180deg) translateZ(calc(var(--d) / 2));
+  }
+  .book3d__spine {
+    --spine-title: calc(var(--d) * 0.3);
+    --spine-length: var(--h);
+    width: var(--d);
+    height: var(--h);
+    margin: calc(var(--h) / -2) 0 0 calc(var(--d) / -2);
+    /* Half a pixel of overlap so no seam shows where spine meets cover. */
+    transform: rotateY(-90deg) translateZ(calc(var(--w) / 2 - 0.5px));
+  }
+  .book3d__spine .spine__title--across {
+    font-size: calc(var(--d) * 0.22);
+  }
+  .book3d__fore-edge {
+    width: calc(var(--d) - 6px);
+    height: calc(var(--h) - 8px);
+    margin: calc((var(--h) - 8px) / -2) 0 0 calc((var(--d) - 6px) / -2);
+    transform: rotateY(90deg) translateZ(calc(var(--w) / 2 - 4px));
+    background: repeating-linear-gradient(
+      90deg,
+      #f1e9d8 0 1px,
+      #e2d7c1 1px 2px
+    );
+  }
+  .book3d__head,
+  .book3d__tail {
+    width: calc(var(--w) - 6px);
+    height: calc(var(--d) - 6px);
+    margin: calc((var(--d) - 6px) / -2) 0 0 calc((var(--w) - 6px) / -2);
+    background: repeating-linear-gradient(
+      180deg,
+      #f1e9d8 0 1px,
+      #e2d7c1 1px 2px
+    );
+  }
+  .book3d__head {
+    transform: rotateX(90deg) translateZ(calc(var(--h) / 2 - 4px));
+  }
+  .book3d__tail {
+    transform: rotateX(-90deg) translateZ(calc(var(--h) / 2 - 4px));
+  }
+}

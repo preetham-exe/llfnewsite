@@ -1,48 +1,83 @@
-import { TransitionLink } from "@/components/transition/TransitionLink";
-import { books } from "@/content/books";
-import { home } from "@/content/pages";
-import type { Cloth } from "@/content/types";
+import type { CSSProperties } from "react";
 
-/* Static class names so Tailwind can see them. */
-const clothSwatch: Record<Cloth, string> = {
-  navy: "bg-cloth-navy",
-  oxblood: "bg-cloth-oxblood",
-  forest: "bg-cloth-forest",
-  slate: "bg-cloth-slate",
-  ochre: "bg-cloth-ochre",
-  linen: "bg-cloth-linen",
-  teal: "bg-cloth-teal",
-};
+import { TransitionLink } from "@/components/transition/TransitionLink";
+import { books, getBook } from "@/content/books";
+import { home } from "@/content/pages";
+
+import { pile, standing } from "./proportions";
+import { SpineFace } from "./Spine";
 
 /**
- * The shelf: a nav landmark holding a list of real links with real text.
- * Phase 0 placeholder. Phase 1 turns it into the bookshelf.
+ * The shelf: one nav landmark holding the seven books as real links with real
+ * text, inside a wooden bookcase. Tablets and desktops see the books standing
+ * side by side across the full width; phones see them stacked flat with
+ * Donate on top. The two are separate lists (only one is ever displayed) so
+ * each reads and tabs in its own visual order.
  */
 export function Shelf() {
   return (
-    <nav aria-label={home.shelfLabel}>
-      <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {books.map((book) => (
-          <li key={book.id}>
-            <TransitionLink
-              href={book.href}
-              data-flip-id={book.id}
-              className="flex h-full items-start gap-4 border border-paper-edge p-4 no-underline hover:bg-paper-shade"
-            >
-              <span
-                aria-hidden="true"
-                className={`mt-1 h-12 w-3 shrink-0 ${clothSwatch[book.cloth]}`}
-              />
-              <span>
-                <span className="block text-h3">{book.spineTitle}</span>
-                <span className="mt-1 block font-sans text-caption text-ink-soft">
-                  {book.label}
-                </span>
-              </span>
-            </TransitionLink>
-          </li>
-        ))}
-      </ol>
+    <nav aria-label={home.shelfLabel} className="shelf">
+      <div className="bookcase">
+        <div className="bookcase__inside">
+          <ol className="bookcase__row">
+            {books.map((book) => {
+              const fit = standing[book.id];
+              const style = {
+                "--h": fit.height,
+                "--t": fit.thickness,
+              } as CSSProperties;
+              const classes = [
+                "spine spine--upright cloth",
+                `cloth-${book.cloth}`,
+                `lettering-${book.lettering}`,
+                book.id === "donate" && "spine--special",
+              ]
+                .filter(Boolean)
+                .join(" ");
+              return (
+                <li key={book.id} className="bookcase__book" style={style}>
+                  <TransitionLink
+                    href={book.href}
+                    data-flip-id={book.id}
+                    className={classes}
+                  >
+                    <SpineFace book={book} title="horizontal" />
+                  </TransitionLink>
+                </li>
+              );
+            })}
+          </ol>
+
+          <ol className="pile">
+            {pile.map((item, index) => {
+              const book = getBook(item.id);
+              const style = {
+                "--w": item.width,
+                "--t": item.thickness,
+                "--x": `${item.shift}px`,
+                "--r": `${item.tilt}deg`,
+              } as CSSProperties;
+              return (
+                // Higher books sit above lower ones, so their shadows fall on them.
+                <li
+                  key={book.id}
+                  className="pile__book"
+                  style={{ zIndex: pile.length - index }}
+                >
+                  <TransitionLink
+                    href={book.href}
+                    data-flip-id={book.id}
+                    className={`spine spine--lying cloth cloth-${book.cloth} lettering-${book.lettering}`}
+                    style={style}
+                  >
+                    <SpineFace book={book} title="horizontal" />
+                  </TransitionLink>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+      </div>
     </nav>
   );
 }

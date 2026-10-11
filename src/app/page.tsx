@@ -27,12 +27,16 @@ export default function HomePage() {
     <div className="pt-(--nav-height)">
       <JsonLd data={organizationJsonLd()} />
 
-      <section className="mx-auto max-w-page px-4 pt-12 sm:px-6 sm:pt-20">
-        <h1 className="max-w-[18ch] text-display">{home.headline}</h1>
-        <p className="mt-4 font-serif-italic text-lede text-ink-soft">
-          {site.tagline}
-        </p>
-        <div className="mt-10 sm:mt-14">
+      {/* The first screen: what LLF does, then the bookcase filling the rest
+          of the screen (between 26rem and 46rem tall on larger screens). */}
+      <section className="wall grid min-h-[calc(100svh-var(--nav-height))] md:grid-rows-[auto_1fr]">
+        <div className="mx-auto w-full max-w-page px-4 pt-10 pb-8 sm:px-6 sm:pt-14 md:pb-10">
+          <h1 className="max-w-[22ch] text-display">{home.headline}</h1>
+          <p className="mt-4 font-serif-italic text-lede text-ink-soft">
+            {site.tagline}
+          </p>
+        </div>
+        <div className="md:max-h-[46rem] md:min-h-[26rem]">
           <Shelf />
         </div>
       </section>
