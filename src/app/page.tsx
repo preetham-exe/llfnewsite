@@ -1,8 +1,11 @@
 import { PageReady } from "@/components/book/PageReady";
+import { CountUp } from "@/components/motion/CountUp";
+import { Reveal } from "@/components/motion/Reveal";
 import { DonateButton } from "@/components/nav/DonateButton";
 import { Shelf } from "@/components/shelf/Shelf";
+import { ShelfMotion } from "@/components/shelf/ShelfMotion";
 import { JsonLd } from "@/components/ui/JsonLd";
-import { PictureFrame } from "@/components/ui/PictureFrame";
+import { FullBleedPhoto } from "@/components/ui/FullBleedPhoto";
 import { libraries } from "@/content/libraries";
 import { home } from "@/content/pages";
 import { site, stats } from "@/content/site";
@@ -37,7 +40,9 @@ export default function HomePage() {
           </p>
         </div>
         <div className="md:max-h-[46rem] md:min-h-[26rem]">
-          <Shelf />
+          <ShelfMotion>
+            <Shelf />
+          </ShelfMotion>
         </div>
       </section>
 
@@ -45,24 +50,34 @@ export default function HomePage() {
         aria-label="About Literate Lives Foundation"
         className="mx-auto max-w-measure px-4 pt-24 pb-16 sm:px-0"
       >
-        <p className="text-lede">{home.mission}</p>
-        <p className="mt-4 text-ink-soft">{home.next}</p>
+        <Reveal>
+          <p className="text-lede">{home.mission}</p>
+          <p className="mt-4 text-ink-soft">{home.next}</p>
+        </Reveal>
 
-        <dl className="mt-16 grid gap-10 figures-lining sm:grid-cols-3">
-          {impact.map((item) => (
-            <div key={item.label} className="flex flex-col-reverse gap-1">
-              <dt className="font-sans text-ui text-ink-soft">{item.label}</dt>
-              <dd className="text-h1">{item.value}</dd>
-            </div>
-          ))}
-        </dl>
+        <Reveal>
+          <dl className="mt-16 grid gap-6 figures-lining sm:grid-cols-3 sm:gap-10">
+            {impact.map((item) => (
+              <div key={item.label} className="flex flex-col-reverse gap-1">
+                <dt className="font-sans text-ui text-ink-soft">
+                  {item.label}
+                </dt>
+                <dd className="text-h1">
+                  <CountUp value={item.value} />
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </Reveal>
       </section>
 
-      <PictureFrame picture={home.photo} sizes="100vw" className="w-full" />
+      <FullBleedPhoto photo={home.photo} focus="50% 42%" />
 
       <section className="mx-auto max-w-measure px-4 py-24 text-center">
-        <p className="text-lede">{home.donateLine}</p>
-        <DonateButton className="mt-8">{home.donateCta}</DonateButton>
+        <Reveal>
+          <p className="text-lede">{home.donateLine}</p>
+          <DonateButton className="mt-8">{home.donateCta}</DonateButton>
+        </Reveal>
       </section>
 
       <PageReady />

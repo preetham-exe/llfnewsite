@@ -36,12 +36,18 @@ export function Shelf() {
                 .join(" ");
               return (
                 <li key={book.id} className="bookcase__book" style={style}>
+                  <span aria-hidden="true" className="bookcase__lift" />
                   <TransitionLink
                     href={book.href}
                     data-flip-id={book.id}
+                    aria-describedby={`shelf-label-${book.id}`}
                     className={classes}
                   >
-                    <SpineFace book={book} title="horizontal" />
+                    <SpineFace
+                      book={book}
+                      title="horizontal"
+                      labelId={`shelf-label-${book.id}`}
+                    />
                   </TransitionLink>
                 </li>
               );
@@ -67,11 +73,21 @@ export function Shelf() {
                   <TransitionLink
                     href={book.href}
                     data-flip-id={book.id}
+                    aria-describedby={`pile-label-${book.id}`}
                     className={`spine spine--lying cloth cloth-${book.cloth} lettering-${book.lettering}`}
                     style={style}
                   >
                     <SpineFace book={book} title="horizontal" />
                   </TransitionLink>
+                  {/* No room for a label card on a lying spine, so the
+                      description is for assistive technology only. */}
+                  <span
+                    id={`pile-label-${book.id}`}
+                    aria-hidden="true"
+                    className="sr-only"
+                  >
+                    {book.label}
+                  </span>
                 </li>
               );
             })}

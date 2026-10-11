@@ -159,6 +159,14 @@
   }
 }
 
+/* A printed page shows everything, whatever has scrolled into view. */
+@media print {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 @utility font-serif-italic {
   font-family: var(--font-serif-italic);
   font-style: italic;

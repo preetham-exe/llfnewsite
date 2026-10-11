@@ -11,6 +11,8 @@ import { TransitionOverlay } from "@/components/transition/TransitionOverlay";
 import { site } from "@/content/site";
 import { fontVariables } from "@/lib/fonts";
 import { SITE_INDEXABLE, SITE_URL } from "@/lib/site-url";
+import { SETTLED_KEY } from "@/lib/storage-keys";
+import { shelf } from "@/motion/tokens";
 
 /** Every page on the site is fully static. The build fails otherwise. */
 export const ensureStatic = "navigation";
@@ -47,17 +49,33 @@ export const viewport: Viewport = {
 };
 
 /*
- * Marks that JavaScript is running, before first paint, so starting states for
- * animations apply only when the animation can actually run. Without
- * JavaScript every page renders complete.
+ * Runs before first paint. Marks that JavaScript is running, so starting
+ * states for animations apply only when the animation can actually run
+ * (without JavaScript every page renders complete). On a session's first visit
+ * to the shelf it also lifts the books a little so ShelfMotion can settle
+ * them, and drops them into place anyway if that has not started in 3 s.
  */
-const markJs = "document.documentElement.classList.add('js')";
+const boot = `(function () {
+  var d = document.documentElement;
+  d.classList.add("js");
+  try {
+    if (
+      location.pathname === "/" &&
+      !sessionStorage.getItem("${SETTLED_KEY}") &&
+      !matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      d.style.setProperty("--shelf-settle", "${shelf.settleDrop}px");
+      d.setAttribute("data-shelf-settle", "");
+      setTimeout(function () { d.removeAttribute("data-shelf-settle"); }, 3000);
+    }
+  } catch (e) {}
+})();`;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en-IN" className={fontVariables} suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: markJs }} />
+        <script dangerouslySetInnerHTML={{ __html: boot }} />
       </head>
       <body>
         <MonogramSymbol />
