@@ -11,6 +11,13 @@ import { getStory, stories } from "@/content/stories";
 import { formatDate } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
 
+/*
+ * Each story page reads its slug from the URL, so it cannot be part of the
+ * shared App Shell. It is allowed to wait for the server, and every link to
+ * it uses prefetch={true}, which loads the whole page ahead of time.
+ */
+export const instant = false;
+
 export function generateStaticParams() {
   return stories.map((story) => ({ slug: story.slug }));
 }
@@ -48,7 +55,10 @@ export default async function StoryPage({
         {story.library && (
           <>
             {" · "}
-            <TransitionLink href={`/libraries/${story.library.slug}` as Route}>
+            <TransitionLink
+              href={`/libraries/${story.library.slug}` as Route}
+              prefetch
+            >
               {story.library.name}
             </TransitionLink>
           </>

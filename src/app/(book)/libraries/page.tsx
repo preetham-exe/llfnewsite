@@ -31,6 +31,7 @@ export default function LibrariesPage() {
             <h2 className="mt-2 text-h2">
               <TransitionLink
                 href={`/libraries/${library.slug}` as Route}
+                prefetch
                 className="no-underline hover:underline"
               >
                 <Txt>{library.name}</Txt>

@@ -12,6 +12,13 @@ import type { Library } from "@/content/types";
 import { formatCount, formatDate } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
 
+/*
+ * Each library page reads its slug from the URL, so it cannot be part of the
+ * shared App Shell. It is allowed to wait for the server, and every link to
+ * it uses prefetch={true}, which loads the whole page ahead of time.
+ */
+export const instant = false;
+
 export function generateStaticParams() {
   return libraries.map((library) => ({ slug: library.slug }));
 }

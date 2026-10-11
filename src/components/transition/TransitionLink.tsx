@@ -10,6 +10,11 @@ type TransitionLinkProps = Omit<
 > & {
   href: Route;
   children: ReactNode;
+  /**
+   * `true` prefetches the whole page, URL data included. Use it for links to
+   * library and story pages, so those navigations are instant.
+   */
+  prefetch?: boolean | "auto" | null;
 };
 
 /**

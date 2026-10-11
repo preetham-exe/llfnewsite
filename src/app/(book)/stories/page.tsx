@@ -27,6 +27,7 @@ export default function StoriesPage() {
             <h2 className="text-h2">
               <TransitionLink
                 href={`/stories/${story.slug}` as Route}
+                prefetch
                 className="no-underline hover:underline"
               >
                 <Txt>{story.title}</Txt>

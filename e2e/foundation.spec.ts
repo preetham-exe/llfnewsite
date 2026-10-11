@@ -43,13 +43,19 @@ test.describe("direct loads", () => {
     });
   }
 
-  test("unknown pages are the misplaced book, with a 404", async ({ page }) => {
-    const response = await page.goto("/no-such-page");
-    expect(response?.status()).toBe(404);
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-      "This book has been misplaced.",
-    );
-  });
+  for (const path of [
+    "/no-such-page",
+    "/libraries/no-such-library",
+    "/stories/no-such-story",
+  ]) {
+    test(`${path} is the misplaced book, with a 404`, async ({ page }) => {
+      const response = await page.goto(path);
+      expect(response?.status()).toBe(404);
+      await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+        "This book has been misplaced.",
+      );
+    });
+  }
 
   test("only the headline font is preloaded", async ({ request }) => {
     const response = await request.get("/");

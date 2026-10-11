@@ -37,6 +37,7 @@ export default function PartnersPage() {
                   <li key={library.slug}>
                     <TransitionLink
                       href={`/libraries/${library.slug}` as Route}
+                      prefetch
                     >
                       {library.name}
                     </TransitionLink>
