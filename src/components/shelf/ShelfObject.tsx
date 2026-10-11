@@ -2,13 +2,9 @@ import { libraries } from "@/content/libraries";
 import { isTodo } from "@/content/helpers";
 
 /*
- * The two objects on the shelf. Decorative: hidden from assistive technology.
+ * Objects that sit on shelves and in margins. Decorative: hidden from
+ * assistive technology.
  */
-
-/** A plain wooden block holding the books upright. */
-export function Bookend() {
-  return <span aria-hidden="true" className="bookend" />;
-}
 
 const stampFormat = new Intl.DateTimeFormat("en-IN", {
   month: "short",
@@ -17,8 +13,9 @@ const stampFormat = new Intl.DateTimeFormat("en-IN", {
 });
 
 /**
- * A library date-due card leaning against the bookend. Its stamps are the
- * opening months of LLF's libraries (only the ones confirmed so far).
+ * A library date-due card. Its stamps are the opening months of LLF's
+ * libraries (only the ones confirmed so far). Used in the margins of The
+ * Libraries from Phase 5.
  */
 export function LibraryCard() {
   const stamps = libraries

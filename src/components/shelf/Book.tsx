@@ -46,7 +46,7 @@ export function Book({ book, turn = 0, tilt = 0, className = "" }: BookProps) {
         <div
           className={`book3d__face book3d__spine spine cloth cloth-${book.cloth} lettering-${book.lettering}`}
         >
-          <SpineFace book={book} title={standing[book.id].title} />
+          <SpineFace book={book} title="vertical" />
         </div>
         <div className="book3d__face book3d__fore-edge" />
         <div className="book3d__face book3d__head" />

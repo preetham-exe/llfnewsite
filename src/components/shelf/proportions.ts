@@ -1,32 +1,30 @@
 import type { BookId } from "@/content/types";
 
 /*
- * How each book sits on the shelf. Presentation only, so it lives with the
+ * How each book sits in the bookcase. Presentation only, so it lives with the
  * shelf rather than in the content files.
  */
 
 export type StandingBook = {
-  /** Height relative to the tallest book (books vary within about 15%). */
+  /** Height as a share of the bookcase's inside height (books vary ~15%). */
   height: number;
-  /** Thickness relative to a standard spine. */
+  /** Relative thickness. The seven books share the row in these proportions. */
   thickness: number;
-  /** Thick spines can carry their title across rather than down. */
-  title: "vertical" | "horizontal";
 };
 
 export const standing: Record<BookId, StandingBook> = {
-  "our-story": { height: 0.94, thickness: 1.0, title: "vertical" },
-  libraries: { height: 1.0, thickness: 1.22, title: "vertical" },
-  "how-we-build": { height: 0.88, thickness: 0.92, title: "vertical" },
-  partners: { height: 0.92, thickness: 1.02, title: "vertical" },
-  stories: { height: 0.86, thickness: 0.86, title: "vertical" },
-  "get-involved": { height: 0.96, thickness: 1.0, title: "vertical" },
-  donate: { height: 0.91, thickness: 1.36, title: "horizontal" },
+  "our-story": { height: 0.9, thickness: 1.0 },
+  libraries: { height: 0.97, thickness: 1.18 },
+  "how-we-build": { height: 0.86, thickness: 0.94 },
+  partners: { height: 0.92, thickness: 1.04 },
+  stories: { height: 0.84, thickness: 0.88 },
+  "get-involved": { height: 0.94, thickness: 1.0 },
+  donate: { height: 0.89, thickness: 1.2 },
 };
 
 export type LyingBook = {
   id: BookId;
-  /** Length relative to the width of the pile. */
+  /** Length relative to the inside width of the bookcase. */
   width: number;
   /** Thickness relative to the 56 px minimum tap target. */
   thickness: number;

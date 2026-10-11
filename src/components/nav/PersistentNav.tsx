@@ -35,10 +35,15 @@ export function PersistentNav() {
         {onShelf ? (
           <TransitionLink
             href="/"
-            className="inline-flex items-center gap-2.5 font-serif text-[1.0625rem] smallcaps text-navy no-underline"
+            aria-label={site.name}
+            className="inline-flex items-center gap-2.5 font-serif text-[1.0625rem] smallcaps whitespace-nowrap text-navy no-underline"
           >
             <Monogram className="h-6 shrink-0" />
-            {site.name}
+            {/* "Foundation" waits for room beside Donate. */}
+            <span>
+              Literate Lives
+              <span className="hidden sm:inline"> Foundation</span>
+            </span>
           </TransitionLink>
         ) : (
           <TransitionLink

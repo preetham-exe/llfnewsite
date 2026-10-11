@@ -27,9 +27,14 @@ function contrast(a: RGB, b: RGB): number {
   return (light + 0.05) / (dark + 0.05);
 }
 
-/** The spine's centre highlight is 5% white (src/styles/shelf.css). */
+/** Across the title, spine shading stays within 5% white or 5% black of the
+    cloth (src/styles/shelf.css). */
 function withHighlight([r, g, b]: RGB): RGB {
   return [r, g, b].map((channel) => channel * 0.95 + 255 * 0.05) as RGB;
+}
+
+function withShade([r, g, b]: RGB): RGB {
+  return [r, g, b].map((channel) => channel * 0.95) as RGB;
 }
 
 const shelfName = "Sections of the site";
@@ -103,10 +108,11 @@ test("spine lettering passes WCAG AA contrast", async ({ page }) => {
     });
     const text = parseColor(sample.color);
     const cloth = parseColor(sample.cloth);
-    // Check both the bare cloth and the highlight running under the title.
+    // Check the bare cloth and the lightest and darkest shading under the title.
     const ratio = Math.min(
       contrast(text, cloth),
       contrast(text, withHighlight(cloth)),
+      contrast(text, withShade(cloth)),
     );
     const required = sample.size >= 24 ? 3 : 4.5;
     expect(
