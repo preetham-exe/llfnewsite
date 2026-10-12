@@ -1,10 +1,11 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type KeyboardEvent } from "react";
 
 import { Monogram } from "@/components/brand/Monogram";
 import { TransitionLink } from "@/components/transition/TransitionLink";
+import { useTransition } from "@/components/transition/TransitionProvider";
 import { books } from "@/content/books";
 import { site } from "@/content/site";
 
@@ -13,21 +14,33 @@ import { DonateButton } from "./DonateButton";
 /**
  * The persistent top bar. It lives in the root layout and never unmounts.
  * On the shelf it shows the name and Donate; on every other page it shows
- * Back to the shelf, the sections, and Donate. The mobile menu is a <details>
- * element, so it opens without JavaScript.
+ * Back to the shelf, the sections, and Donate. It follows the page on
+ * screen, so during a transition it changes when the new page shows. The
+ * mobile menu is a <details> element, so it opens without JavaScript;
+ * Escape closes it.
  */
 export function PersistentNav() {
   const pathname = usePathname();
+  const { visiblePath } = useTransition();
   const menuRef = useRef<HTMLDetailsElement>(null);
-  const onShelf = pathname === "/";
+  const onShelf = visiblePath === "/";
   const sections = books.filter((book) => book.id !== "donate");
 
   const isCurrent = (href: string) =>
-    pathname === href || pathname.startsWith(`${href}/`);
+    visiblePath === href || visiblePath.startsWith(`${href}/`);
 
   useEffect(() => {
     if (menuRef.current) menuRef.current.open = false;
   }, [pathname]);
+
+  const closeMenu = (event: KeyboardEvent<HTMLDetailsElement>) => {
+    const menu = menuRef.current;
+    if (event.key !== "Escape" || !menu?.open) return;
+    // Handled here, so Escape does not also close the book.
+    event.preventDefault();
+    menu.open = false;
+    menu.querySelector("summary")?.focus();
+  };
 
   return (
     <header className="fixed inset-x-0 top-0 z-(--z-nav) h-(--nav-height) border-b border-paper-edge bg-paper font-sans text-ui">
@@ -75,7 +88,11 @@ export function PersistentNav() {
 
         <div className="flex items-center gap-2">
           {!onShelf && (
-            <details ref={menuRef} className="relative lg:hidden">
+            <details
+              ref={menuRef}
+              onKeyDown={closeMenu}
+              className="relative lg:hidden"
+            >
               <summary className="flex min-h-10 cursor-pointer list-none items-center px-3 [&::-webkit-details-marker]:hidden">
                 Menu
               </summary>
@@ -102,6 +119,12 @@ export function PersistentNav() {
           <DonateButton current={isCurrent("/donate")} />
         </div>
       </div>
+      {/* Dims the bar with the rest of the screen while a book is out. */}
+      <span
+        aria-hidden="true"
+        data-nav-veil=""
+        className="pointer-events-none absolute inset-x-0 top-0 -bottom-px bg-ink opacity-0"
+      />
     </header>
   );
 }

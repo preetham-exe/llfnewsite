@@ -4,6 +4,7 @@ import { TransitionLink } from "@/components/transition/TransitionLink";
 import { books, getBook } from "@/content/books";
 import { home } from "@/content/pages";
 
+import { CoverFace } from "./Cover";
 import { pile, standing } from "./proportions";
 import { SpineFace } from "./Spine";
 
@@ -12,7 +13,8 @@ import { SpineFace } from "./Spine";
  * text, inside a wooden bookcase. Tablets and desktops see the books standing
  * side by side across the full width; phones see them stacked flat with
  * Donate on top. The two are separate lists (only one is ever displayed) so
- * each reads and tabs in its own visual order.
+ * each reads and tabs in its own visual order. Each spine carries data-book,
+ * and the covers wait, hidden, for the opening transition to copy.
  */
 export function Shelf() {
   return (
@@ -39,7 +41,7 @@ export function Shelf() {
                   <span aria-hidden="true" className="bookcase__lift" />
                   <TransitionLink
                     href={book.href}
-                    data-flip-id={book.id}
+                    data-book={book.id}
                     aria-describedby={`shelf-label-${book.id}`}
                     className={classes}
                   >
@@ -72,7 +74,7 @@ export function Shelf() {
                 >
                   <TransitionLink
                     href={book.href}
-                    data-flip-id={book.id}
+                    data-book={book.id}
                     aria-describedby={`pile-label-${book.id}`}
                     className={`spine spine--lying cloth cloth-${book.cloth} lettering-${book.lettering}`}
                     style={style}
@@ -93,6 +95,14 @@ export function Shelf() {
             })}
           </ol>
         </div>
+      </div>
+
+      <div hidden>
+        {books.map((book) => (
+          <div key={book.id} data-cover-for={book.id}>
+            <CoverFace book={book} />
+          </div>
+        ))}
       </div>
     </nav>
   );
