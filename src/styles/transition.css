@@ -1,0 +1,170 @@
+/*
+ * The book transition's overlay: a copy of the page as it was, the room
+ * dimming behind the book, and the 3D book itself. Built and animated by
+ * src/components/transition. Imported by globals.css.
+ *
+ * Sizes come from custom properties set on .tb-book: --W and --H (cover),
+ * --D (thickness), --pw and --ph (pages). Faces are centred on the book and
+ * placed with transforms; GSAP animates only the elements' transforms and
+ * the opacity of faces, shades and gutters.
+ */
+
+@layer components {
+  /* A book away from its place on the shelf while the transition carries it. */
+  [data-book-out] {
+    visibility: hidden;
+  }
+
+  .tb-stage {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .tb-paper {
+    position: absolute;
+    inset: 0;
+    background-color: var(--color-paper);
+  }
+
+  /* The copy of the page keeps its own stacking (the shelf's books carry
+     z-indexes), so the veil and the book always sit above all of it. */
+  .tb-stage > [data-snapshot] {
+    isolation: isolate;
+  }
+
+  /* Ink, faded up to book.dim in the motion tokens. */
+  .tb-veil {
+    position: absolute;
+    inset: 0;
+    background-color: var(--color-ink);
+    opacity: 0;
+  }
+
+  /* ---------- The book ---------- */
+
+  .tb-book {
+    position: absolute;
+    perspective: 1200px;
+  }
+  .tb-book__tilt,
+  .tb-book__turn {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+  }
+  /* A pulled-out spine tilts at its foot, as on the shelf. */
+  .tb-book__tilt {
+    transform-origin: 50% 100%;
+  }
+
+  .tb-face,
+  .tb-hinge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+  }
+  .tb-face {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+  /* The cover and each leaf turn on their left edge, at the spine. */
+  .tb-hinge {
+    transform-origin: 0 50%;
+    transform-style: preserve-3d;
+  }
+  .tb-hinge > .tb-face {
+    inset: 0;
+  }
+
+  .tb-spine {
+    width: var(--D);
+    height: var(--H);
+    margin: calc(var(--H) / -2) 0 0 calc(var(--D) / -2);
+    /* Half a pixel inside the cover's edge, so no seam shows at the corner. */
+    transform: rotateY(-90deg) translateZ(calc(var(--W) / 2 - 0.5px));
+  }
+  /* A spine from the phone pile reads across; turned back to read so. */
+  .tb-spine__across {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--H);
+    height: var(--D);
+    margin: calc(var(--D) / -2) 0 0 calc(var(--H) / -2);
+    transform: rotate(90deg);
+  }
+
+  .tb-cover {
+    width: var(--W);
+    height: var(--H);
+    margin: calc(var(--H) / -2) 0 0 calc(var(--W) / -2);
+  }
+  .tb-cover__inside {
+    border-radius: 4px 2px 2px 4px;
+    transform: rotateY(180deg);
+  }
+  /* The endpaper, pasted inside the board with the same cloth margins as
+     the pages. Its gutter edge is on the right: the face is turned over. */
+  .tb-endpaper {
+    --square-y: calc((var(--H) - var(--ph)) / 2);
+    position: absolute;
+    inset: var(--square-y) 0 var(--square-y) calc(var(--W) - var(--pw));
+    background-color: var(--color-paper-shade);
+  }
+
+  /* The pages are bound a pixel inside the spine, so their edges never show
+     past it while the book turns. */
+  .tb-leaf,
+  .tb-page {
+    width: var(--pw);
+    height: var(--ph);
+    margin: calc(var(--ph) / -2) 0 0 calc(var(--W) / -2 + 1px);
+  }
+  .tb-leaf__sheet,
+  .tb-page {
+    background-color: var(--color-paper);
+  }
+  /* Both sides of a leaf are paper. Each sits a pixel under the one before,
+     so once turned they stack in order without flickering. */
+  .tb-leaf__sheet {
+    -webkit-backface-visibility: visible;
+    backface-visibility: visible;
+    transform: translateZ(calc(var(--depth) * -1));
+  }
+  .tb-page {
+    transform: translateZ(calc(var(--D) / 2 - 4px));
+  }
+  /* The back board, just behind the right-hand page, shows as a cloth edge
+     round it once the book is open. */
+  .tb-board {
+    width: calc(var(--W) - 1px);
+    height: var(--H);
+    margin: calc(var(--H) / -2) 0 0 calc(var(--W) / -2 + 1px);
+    border-radius: 2px 4px 4px 2px;
+    transform: translateZ(calc(var(--D) / 2 - 5px));
+  }
+
+  /* Darkens a face as it turns away from the light. */
+  .tb-shade {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-color: var(--color-ink);
+    opacity: 0;
+  }
+  /* The soft shadow where a page curves into the spine. */
+  .tb-gutter {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      rgb(74 52 30 / 0.22),
+      rgb(74 52 30 / 0.07) 5%,
+      rgb(74 52 30 / 0) 14%
+    );
+  }
+  .tb-gutter--inside {
+    transform: scaleX(-1);
+  }
+}

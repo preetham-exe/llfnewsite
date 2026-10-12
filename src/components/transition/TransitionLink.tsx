@@ -2,7 +2,9 @@
 
 import type { Route } from "next";
 import Link from "next/link";
-import type { AnchorHTMLAttributes, ReactNode } from "react";
+import { useRef, type AnchorHTMLAttributes, type ReactNode } from "react";
+
+import { useTransition } from "./TransitionProvider";
 
 type TransitionLinkProps = Omit<
   AnchorHTMLAttributes<HTMLAnchorElement>,
@@ -18,18 +20,28 @@ type TransitionLinkProps = Omit<
 };
 
 /**
- * Every internal link goes through this, so the transition system controls
- * scrolling (Next's own scroll is off). It renders a plain <a>, so it works
- * without JavaScript. Phase 3 adds the book and crossfade transitions here,
- * using Link's onNavigate, which only fires for same-tab client navigations.
+ * Every internal link goes through this. It renders a plain <a>, so it works
+ * without JavaScript and opens in a new tab as usual. For a same-tab client
+ * navigation (Link's onNavigate) it lets the transition engine copy the
+ * screen first, then Link navigates as normal. Scrolling is the
+ * transition's job, so Next's own scroll is off.
  */
 export function TransitionLink({
   href,
   children,
   ...rest
 }: TransitionLinkProps) {
+  const { navigate } = useTransition();
+  const ref = useRef<HTMLAnchorElement>(null);
+
   return (
-    <Link href={href} scroll={false} {...rest}>
+    <Link
+      href={href}
+      ref={ref}
+      scroll={false}
+      onNavigate={() => navigate(href, ref.current)}
+      {...rest}
+    >
       {children}
     </Link>
   );
