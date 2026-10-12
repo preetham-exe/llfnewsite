@@ -75,36 +75,36 @@ export const stagger = {
 export const transition = {
   /**
    * Shelf to page: the book comes off the shelf, turns, opens and fills.
-   * The limit is 1.4 s; the choreography ends a little before it, leaving a
-   * frame or two for the click and for the new page to hand over.
+   * The brief asked for 1.4 s at most; the founder found that a little fast
+   * and asked for it slower (2026-10-12), so it now takes 1.7 s.
    */
   open: {
-    total: 1.36,
-    pull: [0, 0.18],
-    travel: [0.12, 0.64],
-    hinge: [0.6, 0.97],
-    expand: [0.95, 1.13],
+    total: 1.7,
+    pull: [0, 0.22],
+    travel: [0.15, 0.8],
+    hinge: [0.75, 1.21],
+    expand: [1.19, 1.41],
     /** The page content fades and rises in once the paper fills the screen. */
-    rise: [1.13, 1.36],
+    rise: [1.41, 1.7],
     /** Delay between the cover and each following page leaf. */
-    leafLag: 0.04,
+    leafLag: 0.05,
     /** The book starts to turn just after it starts to travel. */
-    turnLag: 0.04,
+    turnLag: 0.05,
     /** The room is fully dim this far into the travel. */
     dimBy: 0.7,
   },
-  /** Phones play the same choreography faster: the limit there is 1.1 s. */
+  /** Phones play the same choreography a little faster. */
   openMobile: {
-    total: 1.06,
+    total: 1.33,
   },
   /** Page to shelf: the text fades, the book closes and goes back. */
   close: {
-    total: 0.9,
-    fade: [0, 0.16],
+    total: 1.12,
+    fade: [0, 0.2],
     /** The rest is measured from the end of the fade. */
-    shrink: [0, 0.22],
-    hinge: [0.16, 0.44],
-    travel: [0.4, 0.74],
+    shrink: [0, 0.27],
+    hinge: [0.2, 0.55],
+    travel: [0.5, 0.92],
     /** Carried forward for this share of the travel, then pushed home. */
     carry: 0.6,
     /** The room brightens over the last part of the travel. */

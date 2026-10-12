@@ -70,13 +70,13 @@ Scrolling down from the shelf reveals a short, quiet homepage story for people w
 
 This is the signature moment. It must feel physical and be fast.
 
-Choreography (desktop, total 1.4 s or less):
+Choreography (desktop). The brief first set 1.4 s or less; after trying it, the founder asked for it a little slower, so it takes 1.7 s, with each step below about a quarter longer than written:
 1. 0.00 to 0.20 s: the clicked book pulls fully out of the shelf.
 2. 0.20 to 0.75 s: using GSAP Flip, a clone of the book moves from its shelf position to the centre of the viewport, rotating from spine-facing to cover-facing (rotateY), scaling up. The shelf behind dims and blurs slightly.
 3. 0.75 to 1.15 s: the front cover swings open on its left hinge (rotateY 0 to about -170 degrees, CSS 3D with perspective). A thin fan of 2 or 3 pages follows with a slight delay to suggest paper.
 4. 1.15 to 1.40 s: the open spread expands to fill the page frame and the real page content fades and rises in. The clone is removed. Scroll position is at the top of the new page.
 
-Closing (back to shelf, via the persistent nav, browser back, or Escape): reverse in about 0.9 s. The page content fades, the spread closes, the book returns to its slot.
+Closing (back to shelf, via the persistent nav, browser back, or Escape): reverse in about 1.1 s (0.9 s before the founder slowed it). The page content fades, the spread closes, the book returns to its slot.
 
 Rules:
 - Built with CSS 3D transforms driven by GSAP. No WebGL.
@@ -132,7 +132,7 @@ Do not build any payment form on the site. Payments happen on Milaap.
 Design mobile as its own composition, not a shrunk desktop.
 
 - The same bookcase frame holds the books stacked flat, spines facing the viewer, so titles read normally. Each spine is a full-width tap target at least 56 px tall. Donate sits on top.
-- Tap: the book lifts, rotates to face the viewer and opens. Same choreography, simplified, 1.1 s or less.
+- Tap: the book lifts, rotates to face the viewer and opens. Same choreography, simplified, about 1.33 s (1.1 s before the founder slowed it).
 - Pages are a single column of paper. No spread gutter.
 - Persistent compact header with Back, a menu, and Donate.
 
@@ -201,7 +201,7 @@ Done when: it feels physical and calm, and keyboard-only use works.
 
 **Phase 3: The transition, one book only**
 Full open and close choreography for Our Story only. Skip-on-click, reduced motion, direct load, browser back.
-Done when: it runs at 60 fps on a mid-range laptop, completes in 1.4 s or less, and has no flash between shelf and page. Do not proceed until this feels excellent.
+Done when: it runs at 60 fps on a mid-range laptop, completes in 1.4 s or less (now 1.7 s, at the founder's request), and has no flash between shelf and page. Do not proceed until this feels excellent.
 
 **Phase 4: Page template and Our Story**
 Spread frame, running header, persistent nav, SplitText reveals, marginalia system with parallax and DrawSVG pencil marks. Build Our Story fully.

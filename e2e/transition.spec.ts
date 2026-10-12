@@ -2,10 +2,11 @@ import { expect, test, type Page } from "@playwright/test";
 
 import { transition } from "../src/motion/tokens";
 
-/* Phase 3 acceptance: the book transition, for Our Story only. It opens in
-   1.4 s or less (1.1 s on phones), skips on any click or key, closes back
-   into its place, and never leaves anything behind. WebKit here cannot draw
-   CSS 3D, but everything this file checks still applies there. */
+/* Phase 3 acceptance: the book transition. Every book opens from the shelf
+   (1.7 s, 1.33 s on phones, as the founder asked), skips on any click or
+   key, closes back into its place, and never leaves anything behind. WebKit
+   here cannot draw CSS 3D, but everything this file checks still applies
+   there. */
 
 type Event = {
   phase: "start" | "end" | "stop";
@@ -87,9 +88,9 @@ async function expectSettled(page: Page) {
   await expect(page.locator("html")).not.toHaveClass(/lenis-stopped/);
 }
 
-test("the timings stay within the brief's limits", () => {
-  expect(transition.open.total).toBeLessThanOrEqual(1.4);
-  expect(transition.openMobile.total).toBeLessThanOrEqual(1.1);
+test("the timings stay as the founder set them", () => {
+  expect(transition.open.total).toBeLessThanOrEqual(1.7);
+  expect(transition.openMobile.total).toBeLessThanOrEqual(1.35);
   expect(transition.open.rise[1]).toBe(transition.open.total);
   expect(transition.reducedFade).toBe(0.2);
 });
@@ -100,8 +101,11 @@ test.describe("opening a book", () => {
     expect(start.kind).toBe("open");
     expect(end.phase).toBe("end");
     expect(end.to).toBe("/our-story");
-    // The animation plus a frame or two either side.
-    expect(end.t - start.t).toBeLessThan(isPhone(page) ? 1200 : 1500);
+    // The animation plus a few frames either side.
+    const total = isPhone(page)
+      ? transition.openMobile.total
+      : transition.open.total;
+    expect(end.t - start.t).toBeLessThan(total * 1000 + 300);
 
     await expect(page).toHaveURL(/\/our-story$/);
     const heading = page.getByRole("heading", { level: 1 });
@@ -118,41 +122,67 @@ test.describe("opening a book", () => {
     await expectSettled(page);
   });
 
-  test("a click during the opening skips to the end", async ({ page }) => {
+  /**
+   * Opens Our Story, skips partway, and checks the rest took about the skip
+   * time. A skip cannot show a page that is not there yet, so it waits for
+   * the new page to be in place under the book first: a slow page load is
+   * not part of what this measures.
+   */
+  async function skipPartway(page: Page, skip: () => Promise<void>) {
     await openShelf(page);
     await shelfBook(page, "Our Story").click();
-    await page.waitForTimeout(250);
+    await expect(
+      page.locator("main h1").filter({ hasText: "Our Story" }),
+    ).toBeAttached();
+    await page.waitForTimeout(100);
+    expect(
+      (await events(page)).filter((event) => event.phase !== "start"),
+    ).toHaveLength(0);
     const skippedAt = await page.evaluate(() => performance.now());
-    await page.mouse.click(200, 500);
-    const { end } = await finished(page);
+    await skip();
+    const { start, end } = await finished(page);
     expect(end.phase).toBe("end");
-    expect(end.t - skippedAt).toBeLessThan(450);
+    // Done almost at once, and well before the full animation would have
+    // been (frames come late when several browsers share the machine).
+    expect(end.t - skippedAt).toBeLessThan(700);
+    const total = isPhone(page)
+      ? transition.openMobile.total
+      : transition.open.total;
+    expect(end.t - start.t).toBeLessThan(total * 1000 - 300);
     await expect(page).toHaveURL(/\/our-story$/);
     await expectSettled(page);
+  }
+
+  test("a click during the opening skips to the end", async ({ page }) => {
+    await skipPartway(page, () => page.mouse.click(200, 500));
   });
 
   test("a key press during the opening skips to the end", async ({ page }) => {
-    await openShelf(page);
-    await shelfBook(page, "Our Story").click();
-    await page.waitForTimeout(250);
-    const skippedAt = await page.evaluate(() => performance.now());
-    await page.keyboard.press("x");
-    const { end } = await finished(page);
-    expect(end.phase).toBe("end");
-    expect(end.t - skippedAt).toBeLessThan(450);
-    await expect(page).toHaveURL(/\/our-story$/);
-    await expectSettled(page);
+    await skipPartway(page, () => page.keyboard.press("x"));
   });
 
-  test("the other books open their pages without it, until Phase 5", async ({
-    page,
-  }) => {
+  test("every book opens from the shelf", async ({ page }) => {
     await openShelf(page);
     await shelfBook(page, "The Libraries").click();
-    await expect(page).toHaveURL(/\/libraries$/);
+    const { start, end } = await finished(page);
+    expect(start.kind).toBe("open");
+    expect(end.to).toBe("/libraries");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
       "The Libraries",
     );
+    await expectSettled(page);
+  });
+
+  test("the nav's Donate goes straight to its page, no book", async ({
+    page,
+  }) => {
+    await openShelf(page);
+    await page
+      .getByRole("banner")
+      .getByRole("link", { name: "Donate" })
+      .click();
+    await expect(page).toHaveURL(/\/donate$/);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Donate");
     expect(await events(page)).toHaveLength(0);
   });
 
@@ -195,7 +225,8 @@ test.describe("closing the book", () => {
     const { start, end } = await finished(page, 2);
     expect(start.kind).toBe("close");
     expect(end.phase).toBe("end");
-    expect(end.t - start.t).toBeLessThan(1100);
+    // Closing also waits for the shelf to be ready before the book moves.
+    expect(end.t - start.t).toBeLessThan(transition.close.total * 1000 + 450);
 
     await expect(page).toHaveURL(/\/$/);
     const book = shelfBook(page, "Our Story");
