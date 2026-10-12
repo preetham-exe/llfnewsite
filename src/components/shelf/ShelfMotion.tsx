@@ -11,7 +11,8 @@ import { dur, ease, shelf, stagger } from "@/motion/tokens";
  * adds, from the motion tokens:
  * - hover or keyboard focus pulls a book toward the reader, tilted forward,
  *   with its shadow deepening, its neighbours easing aside and its label card
- *   rising into view (focus gives exactly the hover state)
+ *   rising into view (focus gives exactly the hover state; focus that follows
+ *   a click or a tap does not, so a book never stays pulled out by itself)
  * - on the first visit of a session the books settle into place
  * - arrow keys, Home and End move between books
  * Under prefers-reduced-motion: no pull, tilt, shift or settle; the label card
@@ -111,6 +112,7 @@ export function ShelfMotion({ children }: { children: ReactNode }) {
           render();
         });
         listen(spine, "focus", () => {
+          if (!spine.matches(":focus-visible")) return;
           focused = index;
           render();
         });
