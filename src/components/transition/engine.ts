@@ -27,15 +27,12 @@ import { isDisplayed, normalizePath, whenPageReady } from "./page-ready";
  * choreography then plays over the copy and hands over to the real page.
  */
 
-/** Books whose pages open from the shelf. Phase 5 adds the other six. */
-const OPENING_BOOKS: ReadonlySet<BookId> = new Set(["our-story"]);
-
-/** The book a page belongs to, if that page opens from the shelf. */
+/** The book a page belongs to: every section page opens from the shelf. */
 export function openingBook(path: string): BookId | null {
   const book = books.find(
     ({ href }) => path === href || path.startsWith(`${href}/`),
   );
-  return book && OPENING_BOOKS.has(book.id) ? book.id : null;
+  return book?.id ?? null;
 }
 
 type ChoreographyModule = typeof Choreographies;
@@ -129,7 +126,9 @@ export class TransitionEngine {
     const opening = from === "/" ? openingBook(to) : null;
     const closing = to === "/" ? openingBook(from) : null;
     if (opening) {
-      const spine = link?.dataset.book === opening ? link : findSpine(opening);
+      // Only the book itself opens: other links to its page (the nav's
+      // Donate, the footer) go straight there.
+      const spine = link?.dataset.book === opening ? link : null;
       if (spine && isOnScreen(spine)) {
         this.begin({ kind: "open", to, book: opening, spine });
       }
