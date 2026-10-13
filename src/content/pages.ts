@@ -215,7 +215,7 @@ export const getInvolved: PageCopy = {
     {
       heading: "Volunteer",
       paragraphs: [
-        "Our volunteers lead the read-aloud on every launch day.",
+        "Our volunteers lead [[the read-aloud]] on every launch day.",
         todo("Other volunteer roles, and how often volunteers are needed"),
       ],
     },
@@ -233,6 +233,65 @@ export const getInvolved: PageCopy = {
     },
   ],
 };
+
+/** Get Involved's margins: a sign-up sheet waiting for names. */
+export const getInvolvedMargins = {
+  sheet: {
+    heading: "Read-aloud volunteers",
+    columns: ["Name", "Launch day"],
+  },
+} as const;
+
+/**
+ * The contact form on Get Involved. Messages are emailed to the founder
+ * (see src/lib/contact.ts); without the email service it says so and
+ * offers the address instead.
+ */
+export const contactForm = {
+  heading: "Write to us",
+  intro:
+    "Tell us how you would like to help. Your message goes straight to our founder.",
+  orEmail: "You can also email us at",
+  topic: {
+    legend: "What is this about?",
+    options: [
+      { value: "volunteer", label: "Volunteering" },
+      { value: "chapter", label: "Starting a chapter in my city" },
+      { value: "library", label: "Asking for a library" },
+      { value: "other", label: "Something else" },
+    ],
+  },
+  fields: {
+    name: "Your name",
+    email: "Email",
+    phone: "Phone",
+    city: "City",
+    message: "Message",
+  },
+  optional: "optional",
+  messageHint:
+    "Asking for a library? Tell us about the children, the space, and who would look after it.",
+  send: "Send message",
+  sending: "Sending",
+  errors: {
+    topic: "Choose what your message is about.",
+    name: "Tell us your name.",
+    email: "Enter an email address we can reply to, such as name@example.com.",
+    message: "Write a message.",
+    tooLong: "This is longer than the form can take. Please shorten it.",
+  },
+  sent: {
+    title: "Thank you",
+    body: "Thank you for writing. Your message is on its way to our founder.",
+    back: "Back to Get Involved",
+  },
+  unsent: {
+    title: "Not sent",
+    body: "Your message could not be sent just now. Please email it to us instead:",
+    kept: "What you wrote is still in the form, so you can copy it.",
+    back: "Back to the form",
+  },
+} as const;
 
 export const donate: PageCopy = {
   description:

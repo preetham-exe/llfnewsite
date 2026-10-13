@@ -655,6 +655,124 @@
     transform: rotate(-2deg);
   }
 
+  /* ---------- The contact form (Get Involved) ---------- */
+
+  .contact-form {
+    display: grid;
+    gap: 1.6rem;
+    margin-top: 2rem;
+    font-family: var(--font-sans);
+    font-size: var(--text-ui);
+    line-height: var(--text-ui--line-height);
+  }
+  .contact-form fieldset {
+    min-width: 0;
+  }
+  .contact-form__label {
+    display: block;
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+  .contact-form__field > .contact-form__label {
+    margin-bottom: 0.45rem;
+  }
+  .contact-form__optional {
+    color: var(--color-ink-soft);
+    font-weight: 400;
+  }
+  .contact-form__options {
+    display: grid;
+    gap: 0.15rem;
+    margin-top: 0.45rem;
+  }
+  .contact-form__option {
+    display: flex;
+    gap: 0.7rem;
+    align-items: center;
+    min-height: 2.5rem;
+    cursor: pointer;
+  }
+  .contact-form__option input {
+    flex: none;
+    width: 1.15rem;
+    height: 1.15rem;
+    accent-color: var(--color-navy);
+  }
+  .contact-form__row {
+    display: grid;
+    gap: 1.6rem;
+  }
+  @media (min-width: 40rem) {
+    .contact-form__row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .contact-form
+    :is(input[type="text"], input[type="email"], input[type="tel"], textarea) {
+    display: block;
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid #85786a;
+    border-radius: 2px;
+    background-color: #fbf8f1;
+    color: var(--color-ink);
+  }
+  .contact-form textarea {
+    min-height: 9rem;
+    resize: vertical;
+  }
+  .contact-form [aria-invalid="true"] {
+    border-color: var(--color-stamp);
+  }
+  .contact-form__hint {
+    margin-bottom: 0.5rem;
+    color: var(--color-ink-soft);
+    font-size: var(--text-caption);
+  }
+  .contact-form__error {
+    margin-top: 0.4rem;
+    color: var(--color-stamp);
+    font-size: var(--text-caption);
+  }
+  /* Out of sight and out of reach: only bots fill it in. */
+  .contact-form__trap {
+    position: absolute;
+    left: -100vw;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .contact-form__problem,
+  .contact-form__sent {
+    padding: 0.85rem 1rem;
+    border-left: 3px solid var(--color-stamp);
+    background-color: var(--color-paper-shade);
+  }
+  .contact-form__sent {
+    margin-top: 2rem;
+    border-left-color: var(--color-navy);
+    font-family: var(--font-sans);
+    font-size: var(--text-ui);
+  }
+  .contact-form__send {
+    justify-self: start;
+    min-height: 2.75rem;
+    padding: 0 1.4rem;
+    border-radius: 3px;
+    background-color: var(--color-navy);
+    color: var(--color-cream);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .contact-form__send:hover {
+    background-color: var(--color-ink);
+  }
+  .contact-form__send:disabled {
+    opacity: 0.75;
+    cursor: progress;
+  }
+
   /* ---------- Pencil marks in the text ---------- */
 
   .pencil-mark {
