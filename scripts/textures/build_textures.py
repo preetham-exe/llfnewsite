@@ -1,11 +1,13 @@
 """Generate the small tileable textures in public/textures.
 
-Both are neutral grey (128 means "no change") and are laid over a colour with
-background-blend-mode: overlay, so one texture works for every cloth and wood.
+Cloth and wood are neutral grey (128 means "no change") and are laid over a
+colour with background-blend-mode: overlay, so one texture works for every
+cloth and wood. Paper is a faint brown grain with transparency, laid over the
+paper colour, so text keeps its contrast.
 
-Usage (one-off, from the repo root, with Pillow installed):
+Usage (one-off, from the repo root, with Pillow and NumPy installed):
 
-    pip install pillow
+    pip install pillow numpy
     python scripts/textures/build_textures.py
 """
 
@@ -13,7 +15,8 @@ import math
 import random
 from pathlib import Path
 
-from PIL import Image, ImageFilter
+import numpy as np
+from PIL import Image, ImageDraw, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "public" / "textures"
@@ -58,6 +61,53 @@ def wood(width: int = 512, height: int = 64, seed: int = 11) -> Image.Image:
     return image.filter(ImageFilter.GaussianBlur(0.6))
 
 
+def _periodic_blur(field: np.ndarray, sigma: float) -> np.ndarray:
+    """Gaussian blur that wraps around the edges, so the result tiles."""
+    size = field.shape[0]
+    freq = np.fft.fftfreq(size)
+    fx, fy = np.meshgrid(freq, freq)
+    kernel = np.exp(-2 * (math.pi * sigma) ** 2 * (fx**2 + fy**2))
+    return np.real(np.fft.ifft2(np.fft.fft2(field) * kernel))
+
+
+def _normalise(field: np.ndarray) -> np.ndarray:
+    return (field - field.mean()) / (field.std() + 1e-9)
+
+
+def paper(size: int = 256, seed: int = 5) -> Image.Image:
+    """Book paper: a soft mottle and a scatter of short fibres, as a warm
+    brown at a few percent opacity. Both wrap, so it tiles. (Fine grain was
+    tried too: invisible at this strength, and it tripled the file size.)"""
+    rng = np.random.default_rng(seed)
+    mottle = _normalise(_periodic_blur(rng.standard_normal((size, size)), 18))
+
+    fibres = Image.new("L", (size, size), 0)
+    draw = ImageDraw.Draw(fibres)
+    pick = random.Random(seed)
+    for _ in range(70):
+        x, y = pick.uniform(0, size), pick.uniform(0, size)
+        angle = pick.uniform(0, math.tau)
+        length = pick.uniform(4, 14)
+        dx, dy = math.cos(angle) * length, math.sin(angle) * length
+        shade = pick.randint(40, 110)
+        # Draw each fibre in the nine tile positions so it wraps cleanly.
+        for ox in (-size, 0, size):
+            for oy in (-size, 0, size):
+                draw.line(
+                    (x + ox, y + oy, x + dx + ox, y + dy + oy),
+                    fill=shade,
+                    width=1,
+                )
+    fibre = np.asarray(fibres.filter(ImageFilter.GaussianBlur(0.5)), float) / 255
+
+    # Opacity out of 255: about 1% on average, never more than about 5%.
+    alpha = 3 + mottle * 0.7 + fibre * 8
+    alpha = np.clip(alpha, 0, 18).round().astype(np.uint8)
+    colour = np.zeros((size, size, 3), np.uint8)
+    colour[...] = (112, 88, 62)
+    return Image.fromarray(np.dstack([colour, alpha]), "RGBA")
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     grain = wood()
@@ -66,6 +116,7 @@ def main() -> None:
         ("wood", grain),
         # Upright grain for the bookcase sides and back panel.
         ("wood-v", grain.transpose(Image.Transpose.ROTATE_90)),
+        ("paper", paper()),
     )
     for name, image in textures:
         path = OUT / f"{name}.webp"

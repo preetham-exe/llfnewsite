@@ -9,7 +9,9 @@ import {
   createStage,
   findSpine,
   isOnScreen,
+  measureFrame,
   type BookSource,
+  type FrameGeometry,
   type Stage,
 } from "./capture";
 import type * as Choreographies from "./choreography";
@@ -232,6 +234,8 @@ export class TransitionEngine {
       request.kind === "open" && !reduce && request.spine
         ? captureBook(request.spine)
         : null;
+    // Closing starts from the page's frame, so measure it while it is here.
+    const frame = request.kind === "close" ? measureFrame() : null;
     const stage = createStage(overlay);
     if (!stage) {
       request.push?.();
@@ -291,7 +295,14 @@ export class TransitionEngine {
 
     const play = (module: ChoreographyModule) => {
       if (this.run !== run) return;
-      run.choreography = this.choreograph(module, run, stage, source, ready);
+      run.choreography = this.choreograph(
+        module,
+        run,
+        stage,
+        source,
+        frame,
+        ready,
+      );
       if (run.skipped) run.choreography.skip();
     };
     if (choreographies) play(choreographies);
@@ -303,6 +314,7 @@ export class TransitionEngine {
     run: Run,
     stage: Stage,
     source: BookSource | null,
+    frame: FrameGeometry | null,
     ready: Promise<void>,
   ): Choreographies.Choreography {
     const common = {
@@ -317,6 +329,7 @@ export class TransitionEngine {
       return module.playOpen({
         ...common,
         source,
+        frame: measureFrame,
         content: pageContent,
         onReveal: reveal,
       });
@@ -324,6 +337,7 @@ export class TransitionEngine {
     if (run.kind === "close") {
       return module.playClose({
         ...common,
+        frame,
         destination: () => this.landOn(run),
         onShelf: () => this.host?.hold(null),
       });

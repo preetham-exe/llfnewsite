@@ -1,7 +1,12 @@
 import { gsap } from "@/lib/gsap";
 import { book, ease, reveal, transition } from "@/motion/tokens";
 
-import { snapshotPage, type BookSource, type Stage } from "./capture";
+import {
+  snapshotPage,
+  type BookSource,
+  type FrameGeometry,
+  type Stage,
+} from "./capture";
 
 /*
  * The book transition: a CSS 3D book driven by GSAP, and the timelines that
@@ -37,6 +42,8 @@ type Common = {
 
 export type OpenRequest = Common & {
   source: BookSource;
+  /** Where the new page's frame is, once the page is ready. */
+  frame(): FrameGeometry | null;
   /** The new page's content, which rises in at the end. */
   content(): HTMLElement[];
   /** The paper fills the screen: from here on the new page is what shows. */
@@ -44,6 +51,8 @@ export type OpenRequest = Common & {
 };
 
 export type CloseRequest = Common & {
+  /** Where the page's frame was when closing began. */
+  frame: FrameGeometry | null;
   /** The book's place on the shelf, once the shelf is ready. */
   destination(): BookSource | null;
   /** The shelf starts to show around the book. */
@@ -116,8 +125,10 @@ type Geometry = {
   roll: number;
   /** Where the closed book waits at the centre of the screen. */
   centre: Pose;
-  /** Where the paper fills the whole screen. */
+  /** Where the right-hand page covers the whole screen. */
   filled: Pose;
+  /** The centre of the spine on the shelf, which every pose is measured from. */
+  from: { x: number; y: number };
   /** Sideways shift that centres the open spread on the gutter. */
   spreadShift: number;
 };
@@ -178,7 +189,36 @@ function measure(source: BookSource): Geometry {
       scale: fill,
     },
     spreadShift: spread ? W / 2 : 0,
+    from: { x: fromX, y: fromY },
   };
+}
+
+/**
+ * The pose that lays the open book's right-hand page exactly on a page's
+ * frame: the same fold (left edge), top and width. On a page scrolled down,
+ * the part on screen starts at the top of the screen. Phones' full-bleed
+ * page takes the cover-the-screen pose.
+ */
+function landing(g: Geometry, frame: FrameGeometry | null): Pose {
+  if (!frame || frame.bleed) return g.filled;
+  const scale = frame.width / g.pw;
+  // The page's top left corner from the book's centre: bound a pixel inside
+  // the spine (transition.css), and moved with the spread.
+  const left = -g.W / 2 + 1 + g.spreadShift;
+  const top = -g.ph / 2;
+  return {
+    x: frame.left - g.from.x - scale * left,
+    y: Math.max(frame.top, 0) - g.from.y - scale * top,
+    scale,
+  };
+}
+
+/** How strongly the fold shows on the page frame, at rest. */
+function gutterRest(): number {
+  const value = getComputedStyle(document.documentElement).getPropertyValue(
+    "--gutter-rest",
+  );
+  return Number.parseFloat(value) || 0;
 }
 
 /* ---------- The book ---------- */
@@ -195,6 +235,13 @@ type Parts = {
    * can let its edges show through the spine as the book turns.
    */
   inside: HTMLElement[];
+  /**
+   * The cloth round the pages (the back board and the inside of the cover),
+   * and the leaves that make the left-hand page. As the book lands, a page's
+   * frame already shows its own cloth and pages there.
+   */
+  boards: HTMLElement[];
+  sheets: HTMLElement[];
   spineShade: HTMLElement;
   coverShade: HTMLElement;
   insideShade: HTMLElement;
@@ -238,10 +285,12 @@ function buildBook(source: BookSource, g: Geometry): Parts {
   const gutters = [div("tb-gutter", page)];
 
   const leaves: HTMLElement[] = [];
+  const sheets: HTMLElement[] = [];
   const leafShades: HTMLElement[] = [];
   book.leavesOpen.forEach((_, index) => {
     const leaf = div("tb-hinge tb-leaf", turn);
     const sheet = div("tb-face tb-leaf__sheet", leaf);
+    sheets.push(sheet);
     sheet.style.setProperty("--depth", `${index + 1}px`);
     gutters.push(div("tb-gutter", sheet));
     leafShades.push(div("tb-shade", sheet));
@@ -277,6 +326,8 @@ function buildBook(source: BookSource, g: Geometry): Parts {
     cover,
     leaves,
     inside: [board, page, ...leaves],
+    boards: [board, inside],
+    sheets,
     spineShade,
     coverShade,
     insideShade,
@@ -351,9 +402,9 @@ function onShelf(parts: Parts, g: Geometry, source: BookSource) {
   gsap.set(parts.coverShade, { opacity: book.shade.coverAside });
 }
 
-function filled(parts: Parts, g: Geometry) {
+function openFlat(parts: Parts, g: Geometry, pose: Pose) {
   gsap.set(parts.root, {
-    ...g.filled,
+    ...pose,
     perspective: `${g.P}px`,
     perspectiveOrigin: "50% 50%",
   });
@@ -366,7 +417,8 @@ function filled(parts: Parts, g: Geometry) {
   });
   gsap.set([parts.cover, ...parts.leaves], { z: g.D / 2, rotationY: -180 });
   gsap.set(parts.inside, { visibility: "visible" });
-  gsap.set([...parts.gutters, ...parts.leafShades], { opacity: 0 });
+  gsap.set(parts.gutters, { opacity: gutterRest() });
+  gsap.set(parts.leafShades, { opacity: 0 });
   gsap.set(parts.insideShade, { opacity: book.shade.insideOpen });
   gsap.set(parts.spineShade, { opacity: book.shade.spine });
   gsap.set(parts.coverShade, { opacity: 0 });
@@ -557,58 +609,96 @@ export function playOpen(request: OpenRequest): Choreography {
     );
   }
 
-  // The new page has to be ready before the paper fills the screen. If it
-  // is not yet, the open book waits here.
+  // 4. The book lands on the new page. That page has to be ready first: if
+  // it is not yet, the open book waits here, and the rest is built once it is.
   tl.addPause(expand.at, () => {
     void request.ready.then(() => {
       if (run.dead) return;
       content = request.content();
       gsap.set(content, { opacity: 0, y: reveal.distance });
+
+      // The page as it will look the moment the book lands (its frame, the
+      // words not in yet) fades in round the book as it flies to its place
+      // on it, so the room becomes the page. Once the book is at rest on its
+      // own image, it dissolves into it.
+      const land = span(O.land);
+      const destination = snapshotPage();
+      if (destination) {
+        destination.style.opacity = "0";
+        stage.root.insertBefore(destination, parts.root);
+        tl.to(
+          destination,
+          { opacity: 1, duration: land.duration, ease: ease.softInOut },
+          land.at,
+        );
+      }
+      const handover = Math.min(O.handover, expand.duration);
+      const frame = request.frame();
       tl.to(
-        content,
+        parts.root,
         {
-          opacity: 1,
-          y: 0,
-          duration: rise.duration,
-          ease: ease.out,
-          clearProps: "opacity,transform",
+          ...landing(g, frame),
+          duration: land.duration,
+          ease: ease.inOut,
         },
-        rise.at,
-      );
+        land.at,
+      )
+        .to(
+          parts.root,
+          { opacity: 0, duration: handover, ease: "none" },
+          expand.at + expand.duration - handover,
+        )
+        .to(
+          [parts.cover, ...parts.leaves],
+          { rotationY: -180, duration: land.duration, ease: ease.softInOut },
+          land.at,
+        )
+        .to(
+          frame?.spread
+            ? parts.boards
+            : [...parts.boards, ...parts.sheets, ...parts.gutters],
+          { opacity: 0, duration: land.duration, ease: ease.softIn },
+          land.at,
+        )
+        .to(parts.leafShades, { opacity: 0, duration: land.duration }, land.at)
+        .to(
+          navVeil,
+          { opacity: 0, duration: land.duration, ease: ease.softIn },
+          land.at,
+        )
+        .to(
+          content,
+          {
+            opacity: 1,
+            y: 0,
+            duration: rise.duration,
+            ease: ease.out,
+            clearProps: "opacity,transform",
+          },
+          rise.at,
+        );
+      // When both pages show, the fold keeps its resting shade.
+      if (frame?.spread) {
+        tl.to(
+          parts.gutters,
+          { opacity: gutterRest(), duration: land.duration },
+          land.at,
+        );
+      }
       tl.play();
     });
   });
 
-  // 4. The spread flattens and fills the screen; the page takes over.
-  tl.to(
-    parts.root,
-    { ...g.filled, duration: expand.duration, ease: ease.in },
-    expand.at,
+  // The page takes over once the book has landed on it.
+  tl.call(
+    () => {
+      stage.root.remove();
+      request.onReveal();
+    },
+    [],
+    expand.at + expand.duration,
   )
-    .to(
-      [parts.cover, ...parts.leaves],
-      { rotationY: -180, duration: expand.duration, ease: ease.softInOut },
-      expand.at,
-    )
-    .to(
-      [...parts.gutters, ...parts.leafShades],
-      { opacity: 0, duration: expand.duration },
-      expand.at,
-    )
-    .to(
-      navVeil,
-      { opacity: 0, duration: expand.duration, ease: ease.softIn },
-      expand.at,
-    )
-    .call(
-      () => {
-        stage.root.remove();
-        request.onReveal();
-      },
-      [],
-      expand.at + expand.duration,
-    )
-    // Fixes the timeline's length before the rise is added at the gate.
+    // Fixes the timeline's length before the landing is added at the gate.
     .set({}, {}, rise.at + rise.duration);
 
   if (g.lying) tl.timeScale(O.total / transition.openMobile.total);
@@ -632,17 +722,16 @@ export function playClose(request: CloseRequest): Choreography {
   const C = transition.close;
   const navVeil = navDimmer(request.navVeil);
 
-  // 1. The words fade from the page, leaving paper.
+  // 1. The words fade from the page, leaving its paper.
   const fade = span(C.fade);
-  const words = run.add(
-    gsap.to(stage.page, {
-      opacity: 0,
-      duration: fade.duration,
-      ease: ease.soft,
-    }),
+  const words =
+    stage.page.querySelector<HTMLElement>("[data-snapshot-content]") ??
+    stage.page;
+  const fading = run.add(
+    gsap.to(words, { opacity: 0, duration: fade.duration, ease: ease.soft }),
   );
 
-  void Promise.all([words.then(), request.ready]).then(() => {
+  void Promise.all([fading.then(), request.ready]).then(() => {
     if (run.dead) return;
     const source = request.destination();
     if (!source) {
@@ -658,34 +747,66 @@ export function playClose(request: CloseRequest): Choreography {
       return;
     }
 
-    // The book, open and filling the screen exactly as the paper does, over
-    // the shelf (real underneath, and a soft copy of it fading out).
+    // The book, open and lying exactly on the page's frame. Above the copy
+    // of the page, the room (the shelf, real underneath and a soft copy of
+    // it here) comes back as the book draws away.
     const g = measure(source);
     const parts = buildBook(source, g);
     const shelf = snapshotPage();
     const soft = shelf ? softCopy(shelf) : div("tb-veil");
     const dim = veil();
-    stage.root.insertBefore(soft, stage.page);
-    stage.root.insertBefore(dim, stage.page);
-    stage.root.insertBefore(parts.root, stage.page);
-    filled(parts, g);
-    gsap.set(soft, { opacity: 1 });
-    gsap.set(dim, { opacity: book.dim });
-    stage.paper.remove();
-    stage.page.remove();
+    stage.root.append(soft, dim, parts.root);
+    openFlat(parts, g, landing(g, request.frame));
+    gsap.set([parts.root, soft, dim], { opacity: 0 });
+    // It appears as just the pages the frame shows; its cloth (and, on a
+    // one-page frame, its left-hand page) comes back as it draws away.
+    const hidden = request.frame?.spread
+      ? parts.boards
+      : [...parts.boards, ...parts.sheets];
+    gsap.set(hidden, { opacity: 0 });
+    if (!request.frame?.spread) gsap.set(parts.gutters, { opacity: 0 });
     request.onShelf();
 
+    // Everything after the book appears is offset by the hand-over.
+    const handover = C.handover;
     const shrink = span(C.shrink);
     const hinge = span(C.hinge);
     const travel = span(C.travel);
     const tl = run.add(gsap.timeline({ onComplete: () => request.onDone() }));
+    tl.to(parts.root, { opacity: 1, duration: handover, ease: "none" }, 0);
+    shrink.at += handover;
+    hinge.at += handover;
+    travel.at += handover;
 
-    // 2. The paper draws back into an open book at the centre.
+    // 2. The page draws back into an open book at the centre.
     tl.to(
-      parts.root,
-      { ...g.centre, duration: shrink.duration, ease: ease.settle },
+      hidden,
+      { opacity: 1, duration: shrink.duration, ease: ease.soft },
       shrink.at,
     )
+      .to(
+        soft,
+        { opacity: 1, duration: shrink.duration, ease: ease.soft },
+        shrink.at,
+      )
+      .to(
+        dim,
+        { opacity: book.dim, duration: shrink.duration, ease: ease.soft },
+        shrink.at,
+      )
+      .call(
+        () => {
+          stage.paper.remove();
+          stage.page.remove();
+        },
+        [],
+        shrink.at + shrink.duration,
+      )
+      .to(
+        parts.root,
+        { ...g.centre, duration: shrink.duration, ease: ease.settle },
+        shrink.at,
+      )
       .to(
         parts.cover,
         {

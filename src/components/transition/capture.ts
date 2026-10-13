@@ -128,9 +128,11 @@ export function snapshotPage(): HTMLElement | null {
     node.dataset.snapshotBook = node.dataset.book;
     delete node.dataset.book;
   });
-  copy
-    .querySelectorAll("[data-transition-content]")
-    .forEach((node) => node.removeAttribute("data-transition-content"));
+  // The page's words stay findable in the copy (closing fades just them).
+  copy.querySelectorAll("[data-transition-content]").forEach((node) => {
+    node.removeAttribute("data-transition-content");
+    node.setAttribute("data-snapshot-content", "");
+  });
   copy.removeAttribute("data-page-root");
   copy.dataset.snapshot = "";
 
@@ -141,6 +143,40 @@ export function snapshotPage(): HTMLElement | null {
     width: `${root.offsetWidth}px`,
   });
   return copy;
+}
+
+/**
+ * Where a section page's open-book frame is on screen: its right-hand page
+ * (or its only page), which the transition's book lands on and starts from.
+ */
+export type FrameGeometry = {
+  /** The page's left edge (the fold, when both pages show), top and width. */
+  left: number;
+  top: number;
+  width: number;
+  /** Both pages show, the left one to the left of `left`. */
+  spread: boolean;
+  /** Paper to the edges of the screen (phones): no cloth, no surround. */
+  bleed: boolean;
+};
+
+export function measureFrame(): FrameGeometry | null {
+  const pages = [
+    ...document.querySelectorAll<HTMLElement>("[data-spread-pages]"),
+  ].find(isDisplayed);
+  const book = pages?.parentElement;
+  if (!pages || !book) return null;
+  const rect = pages.getBoundingClientRect();
+  // The fold is drawn only when both pages show.
+  const spread = getComputedStyle(pages, "::before").content !== "none";
+  const bleed = parseFloat(getComputedStyle(book).paddingLeft) === 0;
+  return {
+    left: spread ? rect.left + rect.width / 2 : rect.left,
+    top: rect.top,
+    width: spread ? rect.width / 2 : rect.width,
+    spread,
+    bleed,
+  };
 }
 
 /** The overlay's contents for one transition. */

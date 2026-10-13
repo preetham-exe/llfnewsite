@@ -47,7 +47,7 @@ export const ourStory: PageCopy = {
   description:
     "Literate Lives Foundation was started in Hyderabad in 2024 by a student. The first library opened in January 2025.",
   title: "Our Story",
-  lede: "Literate Lives Foundation was started in Hyderabad in 2024 by a student. Our first library opened in January 2025.",
+  lede: "Literate Lives Foundation was started in Hyderabad in 2024 by [[a student]]. Our first library opened in January 2025.",
   sections: [
     {
       heading: "What we do",
@@ -58,7 +58,7 @@ export const ourStory: PageCopy = {
     {
       heading: "Where we are",
       paragraphs: [
-        "We registered as a trust in March 2025 and have built three libraries so far. We are now starting a chapter in Bangalore, with a local chapter lead.",
+        "We registered as a trust in March 2025 and have built [[three libraries]] so far. We are now starting a chapter in Bangalore, with a local chapter lead.",
       ],
     },
     {
@@ -71,6 +71,24 @@ export const ourStory: PageCopy = {
     },
   ],
 };
+
+/**
+ * Our Story's margins. The photo is a real library's shelves (from the
+ * founder's photos, May 2025); which library it is still has to be confirmed.
+ */
+export const ourStoryMargins = {
+  photo: {
+    _type: "photo",
+    src: "/photos/shelves-of-storybooks.jpg",
+    width: 2400,
+    height: 2400,
+    alt: "Three wooden bookshelves, full of children's books.",
+  } satisfies Photo,
+  caption: todo("Caption for this photo: which library it is, and when"),
+  note: todo(
+    "A short handwritten note from the team, in English or Telugu. A photo of it is enough.",
+  ),
+} as const;
 
 export const librariesIndex: PageCopy = {
   description:

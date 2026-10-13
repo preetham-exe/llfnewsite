@@ -56,11 +56,31 @@ export const shelf = {
 /** Story blocks below the shelf fade up this far as they enter view (px). */
 export const reveal = {
   distance: 16,
+  /** Chapter headings rise line by line from behind a mask. */
+  lines: { duration: 0.7, stagger: 0.08 },
 } as const;
 
+/** Objects in the margins drift a little against the scroll (px). */
 export const parallax = {
   min: 10,
   max: 40,
+} as const;
+
+/**
+ * How far each kind of margin object drifts over a screen of scrolling (px,
+ * within parallax.min and parallax.max). Lighter, nearer things move more.
+ */
+export const marginalia = {
+  polaroid: 18,
+  note: 26,
+  pencil: 34,
+} as const;
+
+/** Pencil marks under a phrase: drawn once, as if by hand. */
+export const pencil = {
+  duration: 0.8,
+  /** After the page shows, before a mark on the first screen is drawn. */
+  delay: 0.5,
 } as const;
 
 export const stagger = {
@@ -84,6 +104,8 @@ export const transition = {
     travel: [0.15, 0.8],
     hinge: [0.75, 1.21],
     expand: [1.19, 1.41],
+    /** Within the expand: flying to the page and coming to rest on it. */
+    land: [1.19, 1.35],
     /** The page content fades and rises in once the paper fills the screen. */
     rise: [1.41, 1.7],
     /** Delay between the cover and each following page leaf. */
@@ -92,6 +114,11 @@ export const transition = {
     turnLag: 0.05,
     /** The room is fully dim this far into the travel. */
     dimBy: 0.7,
+    /**
+     * The book dissolves into the page it has landed on over the last part
+     * of the expand, hiding any difference between the two.
+     */
+    handover: 0.08,
   },
   /** Phones play the same choreography a little faster. */
   openMobile: {
@@ -100,7 +127,9 @@ export const transition = {
   /** Page to shelf: the text fades, the book closes and goes back. */
   close: {
     total: 1.12,
-    fade: [0, 0.2],
+    fade: [0, 0.16],
+    /** The book appears over the page it is about to close. */
+    handover: 0.06,
     /** The rest is measured from the end of the fade. */
     shrink: [0, 0.27],
     hinge: [0.2, 0.55],
@@ -127,7 +156,7 @@ export const book = {
   /** Every book shares one trim size: cover height over cover width. */
   aspect: 1.42,
   /** Pages sit inside the boards by this much of the cover's size. */
-  squares: { width: 0.03, height: 0.04 },
+  squares: { width: 0.02, height: 0.026 },
   /** Perspective, as a multiple of the cover's width. */
   perspective: 4.5,
   /** Coming off the shelf: toward the reader (px) and up (share of height). */

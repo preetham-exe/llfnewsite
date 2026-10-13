@@ -1,0 +1,307 @@
+/*
+ * A section page, framed as the book it came from: the open book lying on a
+ * warm surface, its cloth showing round the pages, stacked page edges at the
+ * sides, a faint fold down the middle, and paper with a light grain.
+ *
+ * On wide screens (xl) the chapter opening and the objects in the margins sit
+ * on the left page and the text on the right: they are floats pulled into the
+ * left page, like printed sidenotes, so each sits beside the text it belongs
+ * to without moving it. Below that the book shows one page, with the objects
+ * between blocks of text; on phones the page fills the screen.
+ *
+ * The opening transition lands on this frame. The cloth margins (--rim-*)
+ * are set by BookPage from the book's proportions in the motion tokens, the
+ * same numbers the 3D book is built from. Imported by globals.css.
+ */
+
+@layer components {
+  .spread {
+    --po: 1rem;
+    --pi: 1rem;
+    --surround: 0px;
+    container: spread / inline-size;
+    padding-top: var(--nav-height);
+    background-color: var(--color-paper);
+  }
+
+  /* The open book: its cloth cover, showing as a margin round the pages. */
+  .spread__book {
+    position: relative;
+    display: block;
+    margin-inline: auto;
+  }
+
+  /* The pages: paper, with a light grain. */
+  .spread__pages {
+    container: pages / inline-size;
+    position: relative;
+    background:
+      url("/textures/paper.webp") 0 0 / 256px 256px,
+      var(--color-paper);
+  }
+
+  /* The soft shadow where the pages meet the spine (wide screens only). */
+  .spread__pages::before {
+    content: none;
+    position: absolute;
+    inset-block: 0;
+    left: calc(50% - 7cqi);
+    width: 14cqi;
+    background: var(--gutter-shade);
+    opacity: var(--gutter-rest);
+    pointer-events: none;
+  }
+
+  /* The edges of the stacked pages, at the outer sides. */
+  .spread__pages::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+          90deg,
+          rgb(186 166 132 / 0.45) 0 1px,
+          rgb(186 166 132 / 0) 1px 2.5px
+        )
+        left / var(--edge) 100% no-repeat,
+      repeating-linear-gradient(
+          270deg,
+          rgb(186 166 132 / 0.45) 0 1px,
+          rgb(186 166 132 / 0) 1px 2.5px
+        )
+        right / var(--edge) 100% no-repeat;
+    pointer-events: none;
+    --edge: 0px;
+  }
+
+  /* Above the paper's decoration. */
+  .spread__content {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Running header, in small caps, as in a printed book. */
+  .spread__heads {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.4rem var(--po) 0;
+    color: var(--color-ink-soft);
+    font-size: var(--text-caption);
+    font-variant-caps: all-small-caps;
+    letter-spacing: var(--tracking-smallcaps);
+  }
+
+  /* The text: one column, which on wide screens is the right-hand page. */
+  .spread__text {
+    display: flow-root;
+    padding: 0 var(--po) 0 var(--pi);
+  }
+
+  .spread__opening {
+    padding-top: 2.75rem;
+  }
+  .spread__numeral {
+    color: var(--color-ink-soft);
+    font-size: var(--text-caption);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.18em;
+  }
+  .spread__lede {
+    margin-top: 1.5rem;
+    max-width: 30rem;
+    color: var(--color-ink-soft);
+    font-family: var(--font-serif-italic);
+    font-style: italic;
+    font-size: var(--text-lede);
+    line-height: var(--text-lede--line-height);
+  }
+
+  /* An object in the margin. Between blocks of text until the left page
+     exists (xl). */
+  .spread__margin {
+    margin-block: 3rem;
+  }
+
+  /* Page numbers, at the foot of each page: one page, one number, until
+     the book shows both pages (xl). */
+  .spread__folios {
+    display: flex;
+    justify-content: space-between;
+    padding: 3rem var(--po) 1.75rem;
+    color: var(--color-ink-soft);
+    font-size: var(--text-caption);
+    font-variant-numeric: oldstyle-nums;
+  }
+  .spread__folios > :first-child {
+    visibility: hidden;
+  }
+
+  /* ---------- Tablets and small laptops: one page of the book ---------- */
+
+  @media (min-width: 48rem) {
+    .spread {
+      --surround: 1.25rem;
+      --po: 3rem;
+      --pi: 3rem;
+      padding: calc(var(--nav-height) + 1.75rem) var(--surround) 4.5rem;
+      background-color: var(--color-wall);
+      background-image: radial-gradient(
+        ellipse 80% 40rem at 50% 0%,
+        rgb(255 252 245 / 0.7),
+        rgb(255 252 245 / 0) 70%
+      );
+    }
+    .spread__book {
+      --book-w: min(100cqi, 46rem);
+      width: var(--book-w);
+      padding: calc(var(--book-w) * var(--rim-top-1))
+        calc(var(--book-w) * var(--rim-side-1));
+      border-radius: 3px 4px 4px 3px;
+      box-shadow:
+        0 1px 2px rgb(40 26 14 / 0.25),
+        0 1.2rem 2.4rem -1rem rgb(40 26 14 / 0.45);
+    }
+    .spread__pages::after {
+      --edge: 0.9cqi;
+    }
+  }
+
+  /* ---------- Wide screens: the open spread ---------- */
+
+  @media (min-width: 80rem) {
+    .spread {
+      --po: 2.75rem;
+      --pi: 3.5rem;
+    }
+    .spread__book {
+      --book-w: min(100cqi, 110rem);
+      padding: calc(var(--book-w) * var(--rim-top-2))
+        calc(var(--book-w) * var(--rim-side-2));
+    }
+    .spread__pages::before {
+      content: "";
+    }
+    .spread__pages::after {
+      --edge: 0.45cqi;
+    }
+    .spread__folios > :first-child {
+      visibility: visible;
+    }
+
+    /* The text takes the right-hand page: 60 to 72 characters a line, the
+       type easing from 18 px to 19 px as the page widens. Wider pages leave
+       the extra as margin. */
+    .spread__text {
+      max-width: calc(40rem + var(--pi) + var(--po));
+      margin-left: 50cqi;
+      font-size: clamp(1.125rem, 0.9rem + 0.3cqi, 1.1875rem);
+    }
+
+    /* The opening and the objects in the margins go to the left page. */
+    .spread__left {
+      float: left;
+      clear: left;
+      width: calc(50cqi - var(--po) - var(--pi));
+      margin-left: calc(-50cqi - var(--pi) + var(--po));
+    }
+    .spread__margin {
+      margin-block: 2.5rem 0;
+    }
+    .spread__margin--narrow {
+      width: calc((50cqi - var(--po) - var(--pi)) * 0.62);
+    }
+    .spread__margin--inset {
+      margin-left: calc(-50cqi - var(--pi) + var(--po) + 3rem);
+    }
+  }
+
+  /* ---------- Objects in the margins ---------- */
+
+  /* A polaroid, taped in. */
+  .polaroid {
+    position: relative;
+    width: min(100%, 17rem);
+    padding: 0.7rem 0.7rem 0;
+    background-color: #fbf8f1;
+    box-shadow:
+      0 1px 1px rgb(40 26 14 / 0.18),
+      0 0.6rem 1.2rem -0.5rem rgb(40 26 14 / 0.35);
+    transform: rotate(var(--tilt, -2.5deg));
+  }
+  .polaroid__caption {
+    min-height: 3.6rem;
+    padding: 0.55rem 0.2rem 0.7rem;
+    color: var(--color-ink-soft);
+    font-family: var(--font-sans);
+    font-size: var(--text-caption);
+    line-height: 1.35;
+  }
+  .polaroid__tape {
+    position: absolute;
+    top: -0.65rem;
+    left: 50%;
+    width: 5.5rem;
+    height: 1.4rem;
+    margin-left: -2.75rem;
+    background-color: rgb(236 226 200 / 0.72);
+    box-shadow: 0 1px 1px rgb(40 26 14 / 0.08);
+    transform: rotate(3deg);
+  }
+
+  /* An index card, for a note. */
+  .note-card {
+    width: min(100%, 15rem);
+    padding: 0.9rem 1rem 1.1rem;
+    background-color: #fbf8f1;
+    background-image: repeating-linear-gradient(
+      180deg,
+      rgb(0 0 0 / 0) 0 1.45rem,
+      rgb(106 150 190 / 0.35) 1.45rem calc(1.45rem + 1px)
+    );
+    background-position: 0 1.6rem;
+    box-shadow:
+      0 1px 1px rgb(40 26 14 / 0.16),
+      0 0.5rem 1rem -0.5rem rgb(40 26 14 / 0.3);
+    transform: rotate(var(--tilt, 2deg));
+    font-family: var(--font-sans);
+    font-size: var(--text-caption);
+    line-height: 1.45rem;
+  }
+
+  /* A pencil, lying in the margin. */
+  .pencil-object {
+    display: block;
+    width: min(100%, 15rem);
+    height: auto;
+    transform: rotate(var(--tilt, -14deg));
+    filter: drop-shadow(1px 3px 2px rgb(40 26 14 / 0.25));
+  }
+
+  /* ---------- Pencil marks in the text ---------- */
+
+  .pencil-mark {
+    position: relative;
+    white-space: nowrap;
+  }
+  .pencil-mark__line {
+    position: absolute;
+    left: -0.15em;
+    bottom: -0.32em;
+    width: calc(100% + 0.3em);
+    height: 0.55em;
+    overflow: visible;
+    pointer-events: none;
+  }
+  /* Drawn in by SpreadMotion; only hidden when JavaScript is there to. */
+  html.js .pencil-mark__line {
+    visibility: hidden;
+  }
+  .pencil-mark__line path {
+    fill: none;
+    stroke: var(--color-pencil);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+}
