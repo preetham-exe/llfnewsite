@@ -162,8 +162,14 @@ export const transition = {
   fade: 0.3,
   /** Every transition with prefers-reduced-motion. */
   reducedFade: 0.2,
-  /** /libraries to /libraries/[slug] and back. */
-  pageTurn: 0.5,
+  /**
+   * A page turn inside the open book, between two pages of the same book
+   * (/libraries and /libraries/[slug]). The leaf turns over in `total`; with
+   * one page showing, only its first half is seen, in `onePage`. The leaf
+   * darkens by up to `shade` as it stands on edge, and casts a shadow of up
+   * to `shadow` on the page beneath.
+   */
+  turn: { total: 0.5, onePage: 0.32, shade: 0.3, shadow: 0.22 },
   /** How long to finish after a skip, so the end is never a hard cut. */
   skipFinish: 0.15,
   /** After this long without the next page, fall back to a normal load. */
