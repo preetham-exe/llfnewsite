@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { routes } from "./routes";
+import { routes, unlistedRoutes } from "./routes";
 
 /*
  * No errors in the console on any page: hydration mismatches, failed requests
@@ -9,7 +9,7 @@ import { routes } from "./routes";
  * warnings.
  */
 
-for (const route of routes) {
+for (const route of [...routes, ...unlistedRoutes]) {
   test(`${route.path} logs no errors`, async ({ page }) => {
     const problems: string[] = [];
     page.on("console", (message) => {

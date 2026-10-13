@@ -1,10 +1,12 @@
 import { BookPage } from "@/components/book/BookPage";
+import { Margin } from "@/components/book/Margin";
+import { SignUpSheet, StickyNotes } from "@/components/book/Marginalia";
 import { Sections } from "@/components/book/Sections";
-import { Txt } from "@/components/ui/Txt";
-import { todo } from "@/content/helpers";
-import { getInvolved } from "@/content/pages";
+import { ContactForm } from "@/components/forms/ContactForm";
+import { contactForm, getInvolved, getInvolvedMargins } from "@/content/pages";
 import { site } from "@/content/site";
 import { pageMetadata } from "@/lib/seo";
+import { marginalia } from "@/motion/tokens";
 
 export const metadata = pageMetadata({
   title: getInvolved.title,
@@ -19,20 +21,28 @@ export default function GetInvolvedPage() {
       title={getInvolved.title}
       lede={getInvolved.lede}
     >
-      <Sections sections={getInvolved.sections} />
+      <Sections
+        sections={getInvolved.sections}
+        besides={[
+          // A sticky note for each way to help.
+          <Margin key="notes" drift={marginalia.sticky}>
+            <StickyNotes
+              notes={getInvolved.sections.map(({ heading }) => heading)}
+            />
+          </Margin>,
+        ]}
+      />
 
       <section className="mt-14">
-        <h2 className="text-h2">Write to us</h2>
+        <Margin drift={marginalia.clipboard} variant="inset">
+          <SignUpSheet {...getInvolvedMargins.sheet} />
+        </Margin>
+        <h2 className="text-h2">{contactForm.heading}</h2>
         <p className="mt-5">
-          Email <a href={`mailto:${site.email}`}>{site.email}</a>.
+          {contactForm.intro} {contactForm.orEmail}{" "}
+          <a href={`mailto:${site.email}`}>{site.email}</a>.
         </p>
-        <p className="mt-5">
-          <Txt>
-            {todo(
-              "Contact form for volunteers, chapters and library requests (Phase 5)",
-            )}
-          </Txt>
-        </p>
+        <ContactForm copy={contactForm} email={site.email} />
       </section>
     </BookPage>
   );

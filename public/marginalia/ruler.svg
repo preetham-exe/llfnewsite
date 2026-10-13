@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 34" width="300" height="34">
+  <defs>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e3c48c"/>
+      <stop offset="1" stop-color="#cfa96a"/>
+    </linearGradient>
+  </defs>
+  <!-- A wooden ruler, in centimetres. -->
+  <rect x="0.5" y="0.5" width="299" height="33" rx="2" fill="url(#wood)" stroke="#a9874f"/>
+  <path d="M1 30.5 H299" stroke="#b8945a" stroke-width="1"/>
+  <g stroke="#4f3d24" stroke-width="0.8"><path d="M10 2 V13"/><path d="M20 2 V8"/><path d="M30 2 V13"/><path d="M40 2 V8"/><path d="M50 2 V13"/><path d="M60 2 V8"/><path d="M70 2 V13"/><path d="M80 2 V8"/><path d="M90 2 V13"/><path d="M100 2 V8"/><path d="M110 2 V13"/><path d="M120 2 V8"/><path d="M130 2 V13"/><path d="M140 2 V8"/><path d="M150 2 V13"/><path d="M160 2 V8"/><path d="M170 2 V13"/><path d="M180 2 V8"/><path d="M190 2 V13"/><path d="M200 2 V8"/><path d="M210 2 V13"/><path d="M220 2 V8"/><path d="M230 2 V13"/><path d="M240 2 V8"/><path d="M250 2 V13"/><path d="M260 2 V8"/><path d="M270 2 V13"/><path d="M280 2 V8"/><path d="M290 2 V13"/></g>
+  <g fill="#4f3d24" font-family="Arial, Helvetica, sans-serif" font-size="7"><text x="10" y="22" text-anchor="middle">0</text><text x="30" y="22" text-anchor="middle">1</text><text x="50" y="22" text-anchor="middle">2</text><text x="70" y="22" text-anchor="middle">3</text><text x="90" y="22" text-anchor="middle">4</text><text x="110" y="22" text-anchor="middle">5</text><text x="130" y="22" text-anchor="middle">6</text><text x="150" y="22" text-anchor="middle">7</text><text x="170" y="22" text-anchor="middle">8</text><text x="190" y="22" text-anchor="middle">9</text><text x="210" y="22" text-anchor="middle">10</text><text x="230" y="22" text-anchor="middle">11</text><text x="250" y="22" text-anchor="middle">12</text><text x="270" y="22" text-anchor="middle">13</text><text x="290" y="22" text-anchor="middle">14</text></g>
+</svg>

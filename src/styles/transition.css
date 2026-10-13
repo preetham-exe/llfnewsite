@@ -33,6 +33,33 @@
     isolation: isolate;
   }
 
+  /* A page turn: windows onto copies of the old and new pages, each with a
+     shade that darkens as the leaf stands on edge, and the leaf's shadow. */
+  .tb-pane {
+    position: absolute;
+    overflow: hidden;
+  }
+  .tb-pane > [data-snapshot] {
+    isolation: isolate;
+  }
+  .tb-pane__shade {
+    position: absolute;
+    inset: 0;
+    background-color: rgb(40 26 14);
+    opacity: 0;
+  }
+  .tb-turn-shadow {
+    position: absolute;
+    left: 0;
+    background: linear-gradient(
+      90deg,
+      rgb(40 26 14 / 0.9),
+      rgb(40 26 14 / 0.35) 35%,
+      rgb(40 26 14 / 0)
+    );
+    opacity: 0;
+  }
+
   /* Ink, faded up to book.dim in the motion tokens. */
   .tb-veil {
     position: absolute;

@@ -78,10 +78,15 @@ export const libraries: Library[] = [
     ),
     photos: [
       {
-        _type: "photoPlaceholder",
-        aspectRatio: 4 / 3,
-        label: "Photo: QCity Community Library",
-        alt: todo("Describe the photo of QCity Community Library"),
+        // From the founder's photos, taken on 12 April 2026.
+        _type: "photo",
+        src: "/photos/boy-reading-by-new-shelf.jpg",
+        width: 1800,
+        height: 2400,
+        alt: "A boy smiles as he reads a book beside a white bookshelf decorated with green balloons.",
+        caption: todo(
+          "Confirm this photo is from QCity Community Library (taken 12 April 2026), and add a caption",
+        ),
       },
     ],
   },

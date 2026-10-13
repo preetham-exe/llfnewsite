@@ -1,6 +1,6 @@
 import { test } from "@playwright/test";
 
-import { routes } from "./routes";
+import { routes, unlistedRoutes } from "./routes";
 
 /*
  * Full-page screenshots of every route at every project size, for review at
@@ -13,7 +13,7 @@ const phase = process.env.PHASE ?? "phase-0";
 /** Pages that are not in the site map but are checked visually. */
 const benches = [{ path: "/dev/book", name: "dev-book" }];
 
-for (const route of [...routes, ...benches]) {
+for (const route of [...routes, ...unlistedRoutes, ...benches]) {
   test(`screenshot ${route.path}`, async ({ page }, testInfo) => {
     await page.goto(route.path);
     await page.evaluate(() => document.fonts.ready);

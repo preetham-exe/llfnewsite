@@ -448,35 +448,6 @@
     }
   }
 
-  /* ---------- The date-due card (margins, from Phase 5) ---------- */
-
-  .library-card {
-    filter: drop-shadow(2px 3px 3px rgb(30 18 8 / 0.28));
-  }
-  .library-card__paper {
-    fill: #f3ead6;
-    stroke: var(--color-paper-edge);
-  }
-  .library-card__heading {
-    font-family: var(--font-sans);
-    font-size: 8px;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    fill: var(--color-ink-soft);
-  }
-  .library-card__rule {
-    stroke: #d6c9ae;
-    stroke-width: 0.6;
-  }
-  .library-card__stamp {
-    font-family: var(--font-sans);
-    font-size: 8.5px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    fill: var(--color-stamp);
-    opacity: 0.85;
-  }
-
   /* ---------- Front cover ---------- */
 
   .cover {

@@ -4,6 +4,7 @@ import { book, ease, reveal, transition } from "@/motion/tokens";
 import {
   snapshotPage,
   type BookSource,
+  type Box,
   type FrameGeometry,
   type Stage,
 } from "./capture";
@@ -59,7 +60,19 @@ export type CloseRequest = Common & {
   onShelf(): void;
 };
 
+export type TurnRequest = Common & {
+  /** The page's frame as the turn began. */
+  from: FrameGeometry;
+  /** The new page's frame, once it is ready. */
+  to(): FrameGeometry | null;
+  /** Back to an earlier page: the left-hand page turns back over. */
+  back: boolean;
+  onReveal(): void;
+};
+
 export type FadeRequest = Common & {
+  /** Seconds: the quiet crossfade, or the shorter one for reduced motion. */
+  duration: number;
   onReveal(): void;
 };
 
@@ -740,7 +753,7 @@ export function playClose(request: CloseRequest): Choreography {
       run.add(
         gsap.to(stage.root, {
           opacity: 0,
-          duration: transition.reducedFade,
+          duration: transition.fade,
           onComplete: () => request.onDone(),
         }),
       );
@@ -956,6 +969,225 @@ export function playClose(request: CloseRequest): Choreography {
 
 /* ---------- Reduced motion: a crossfade ---------- */
 
+/* ---------- Turning a page: two pages of the same book ---------- */
+
+/**
+ * A window onto a copy of a page, showing only what was in `box` on screen.
+ * The copy is moved inside it so everything stays exactly where it was.
+ */
+function pane(copy: HTMLElement, box: Box): HTMLElement {
+  const frame = div("tb-pane");
+  Object.assign(frame.style, {
+    left: `${box.left}px`,
+    top: `${box.top}px`,
+    width: `${box.right - box.left}px`,
+    height: `${box.bottom - box.top}px`,
+  });
+  copy.style.left = `${-box.left}px`;
+  copy.style.top = `${parseFloat(copy.style.top) - box.top}px`;
+  frame.append(copy, div("tb-pane__shade"));
+  return frame;
+}
+
+/**
+ * The part of the screen a leaf covers: from `left` to `right`, and from the
+ * top of the paper (or of the screen, once that has scrolled away) to the
+ * bottom of the screen. Whatever is below the paper (the book's lower edge,
+ * the footer) turns with it: the turn is of the page as the reader sees it.
+ */
+function column(pages: Box, left: number, right: number): Box {
+  return {
+    left,
+    right,
+    top: Math.max(pages.top, 0),
+    bottom: window.innerHeight,
+  };
+}
+
+/**
+ * Hides what turns from a copy of a page, leaving what was round it (the
+ * wall and the cloth at the sides, the space above the book): a frame with
+ * a hole, in the copy's own coordinates.
+ */
+function withoutLeaves(copy: HTMLElement, paper: Box) {
+  const left = paper.left;
+  const right = paper.right;
+  const top = paper.top - parseFloat(copy.style.top);
+  const bottom = paper.bottom - parseFloat(copy.style.top);
+  copy.style.clipPath = `polygon(evenodd, 0 0, 100% 0, 100% 100%, 0 100%, 0 0, ${left}px ${top}px, ${right}px ${top}px, ${right}px ${bottom}px, ${left}px ${bottom}px, ${left}px ${top}px)`;
+}
+
+/**
+ * A page turn inside the open book, between two pages of the same book: a
+ * quick, flat flip. Going forward, the right-hand page lifts and turns over
+ * onto the left, showing the new page beneath and the back of the leaf (the
+ * new left-hand page) coming down; going back, the left-hand page turns
+ * back over. With one page showing, the page turns away to the left (or the
+ * previous one comes back over it). The leaf is drawn foreshortened (its
+ * width the cosine of its angle) and darkens as it stands on edge, with its
+ * shadow on the page beneath. Round the leaves (the wall and the cloth at
+ * the sides), the old page fades into the new one.
+ */
+export function playTurn(request: TurnRequest): Choreography {
+  const { stage, from, back } = request;
+  const run = runner();
+  const T = transition.turn;
+
+  void request.ready.then(() => {
+    if (run.dead) return;
+    const to = request.to();
+    const next = to ? snapshotPage() : null;
+    const visible = (pages: Box) => pages.top < window.innerHeight;
+    if (
+      !to ||
+      !next ||
+      to.spread !== from.spread ||
+      !visible(from.pages) ||
+      !visible(to.pages)
+    ) {
+      // Nothing to turn (the paper is off screen): a quiet fade instead.
+      request.onReveal();
+      run.add(
+        gsap.to(stage.root, {
+          opacity: 0,
+          duration: transition.fade,
+          ease: ease.softInOut,
+          onComplete: () => request.onDone(),
+        }),
+      );
+      return;
+    }
+
+    const P0 = from.pages;
+    const P1 = to.pages;
+    const old = (left: number, right: number) =>
+      pane(stage.page.cloneNode(true) as HTMLElement, column(P0, left, right));
+    const fresh = (left: number, right: number) =>
+      pane(next, column(P1, left, right));
+
+    // The leaf that turns away (the old page), the page it uncovers on the
+    // far side that waits to be covered, and the leaf that comes down.
+    let leaving: HTMLElement | null = null;
+    let waiting: HTMLElement | null = null;
+    let coming: HTMLElement | null = null;
+    if (from.spread) {
+      if (back) {
+        leaving = old(P0.left, from.left);
+        waiting = old(from.left, P0.right);
+        coming = fresh(to.left, P1.right);
+      } else {
+        leaving = old(from.left, P0.right);
+        waiting = old(P0.left, from.left);
+        coming = fresh(P1.left, to.left);
+      }
+    } else if (back) {
+      waiting = old(P0.left, P0.right);
+      coming = fresh(P1.left, P1.right);
+    } else {
+      leaving = old(P0.left, P0.right);
+    }
+
+    // Leaves hinge on the fold: going forward the leaving page turns about
+    // its left edge and the coming one about its right, going back the
+    // reverse. With one page the hinge is the page's left edge both ways.
+    const hingeOn = (leaf: HTMLElement | null, side: "left" | "right") => {
+      if (leaf) leaf.style.transformOrigin = `${side} center`;
+    };
+    hingeOn(leaving, back ? "right" : "left");
+    hingeOn(coming, from.spread && !back ? "right" : "left");
+
+    // The leaf's shadow falls on the page beside it, just past its free
+    // edge: a soft strip that follows the edge as the leaf turns.
+    const shadow = div("tb-turn-shadow");
+    const shadowWidth = from.width * 0.14;
+    const paper = column(P0, P0.left, P0.right);
+    Object.assign(shadow.style, {
+      top: `${paper.top}px`,
+      height: `${paper.bottom - paper.top}px`,
+      width: `${shadowWidth}px`,
+    });
+
+    stage.paper.remove();
+    withoutLeaves(stage.page, paper);
+    for (const layer of [waiting, shadow, leaving, coming]) {
+      if (layer) stage.root.append(layer);
+    }
+
+    // Set every frame, so set directly.
+    const noop = () => {};
+    const setter = (
+      target: Element | null | undefined,
+      property: string,
+      unit?: string,
+    ) => (target ? gsap.quickSetter(target, property, unit) : noop);
+    const leavingWidth = setter(leaving, "scaleX");
+    const leavingShade = setter(leaving?.lastElementChild, "opacity");
+    const comingWidth = setter(coming, "scaleX");
+    const comingShade = setter(coming?.lastElementChild, "opacity");
+    const shadowX = setter(shadow, "x", "px");
+    const shadowFlip = setter(shadow, "scaleX");
+    const shadowOpacity = setter(shadow, "opacity");
+
+    // The leaf's angle: 0 lying where it was, 180 lying on the other side.
+    // With one page only half the turn shows: the page going (0 to 90), or
+    // the earlier page coming back (90 to 180).
+    const angle = { value: leaving ? 0 : 90 };
+    const end = from.spread || !leaving ? 180 : 90;
+    const draw = () => {
+      const radians = (angle.value * Math.PI) / 180;
+      const cos = Math.cos(radians);
+      leavingWidth(Math.max(cos, 0));
+      leavingShade((1 - Math.max(cos, 0)) * T.shade);
+      if (leaving) leaving.style.visibility = cos > 0 ? "visible" : "hidden";
+      comingWidth(Math.max(-cos, 0));
+      comingShade((1 + Math.min(cos, 0)) * T.shade);
+
+      // The free edge of whichever leaf is up, and the side its shadow
+      // falls on: right of the fold (or of a single page's edge), or left.
+      const edge = from.width * Math.abs(cos);
+      const rightward = !from.spread || cos > 0 !== back;
+      shadowX(rightward ? from.left + edge : from.left - edge - shadowWidth);
+      shadowFlip(rightward ? 1 : -1);
+      shadowOpacity(Math.sin(radians) * T.shadow);
+    };
+    draw();
+
+    const duration = from.spread ? T.total : T.onePage;
+    run.add(
+      gsap.to(angle, {
+        value: end,
+        duration,
+        ease: from.spread ? ease.softInOut : leaving ? ease.softIn : ease.soft,
+        onUpdate: draw,
+        onComplete: () => {
+          request.onReveal();
+          request.onDone();
+        },
+      }),
+    );
+    // Round the leaves, the old page gives way to the new one. The waiting
+    // page goes as the new leaf covers it (so any of it left uncovered,
+    // where the new page's paper starts lower down, fades with it).
+    run.add(
+      gsap.to(stage.page, { opacity: 0, duration, ease: ease.softInOut }),
+    );
+    if (waiting) {
+      run.add(
+        gsap.to(waiting, {
+          opacity: 0,
+          duration: duration / 2,
+          delay: duration / 2,
+          ease: ease.softIn,
+        }),
+      );
+    }
+  });
+
+  return { skip: () => run.skip(), kill: () => run.kill() };
+}
+
+/* ---------- Crossfade ---------- */
+
 export function playFade(request: FadeRequest): Choreography {
   const run = runner();
   void request.ready.then(() => {
@@ -964,7 +1196,7 @@ export function playFade(request: FadeRequest): Choreography {
     run.add(
       gsap.to(request.stage.root, {
         opacity: 0,
-        duration: transition.reducedFade,
+        duration: request.duration,
         ease: ease.softInOut,
         onComplete: () => request.onDone(),
       }),

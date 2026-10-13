@@ -47,14 +47,21 @@ export function isDisplayed(element: Element): boolean {
 /**
  * Resolves when the page at `path` is shown, its fonts have loaded, the
  * images on its first screen are decoded and it has been painted. Images get
- * a second at most: a slow photo never holds the page back.
+ * a second at most: a slow photo never holds the page back. Transitions with
+ * no motion of their own to cover a wait (a page turn, a fade) leave the
+ * images out: photos keep their space, so they can arrive afterwards.
  */
-export async function whenPageReady(path: string, since: number) {
+export async function whenPageReady(
+  path: string,
+  since: number,
+  { images = true }: { images?: boolean } = {},
+) {
   await whenShown(path, since);
   await document.fonts.ready;
 
   const firstScreen = [...document.querySelectorAll("main img")].filter(
     (image): image is HTMLImageElement =>
+      images &&
       image instanceof HTMLImageElement &&
       isDisplayed(image) &&
       image.getBoundingClientRect().top < window.innerHeight,

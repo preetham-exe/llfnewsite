@@ -22,11 +22,20 @@ import { isDisplayed, normalizePath, whenPageReady } from "./page-ready";
  * engine for the whole site and connects it to React (the nav, the router,
  * Lenis); everything here is plain DOM and timers.
  *
- * A transition starts inside the event that starts the navigation (a click
- * on a book, Back to the shelf, Escape, or the browser's back and forward).
- * In that same event it copies the screen into the overlay, so the old page
- * stays on screen while Next renders the new one underneath. The
- * choreography then plays over the copy and hands over to the real page.
+ * Every navigation inside the site gets one:
+ * - open: a book on the shelf opens into its page (only a click on the
+ *   book itself, while it is on screen)
+ * - close: a page closes back into its book on the shelf
+ * - turn: a page turns inside the open book, between two pages of the same
+ *   book (/libraries and /libraries/[slug])
+ * - fade: a quiet crossfade for everything else (the nav, links between
+ *   books), and for every transition with reduced motion
+ *
+ * A transition starts inside the event that starts the navigation (a click,
+ * Escape, or the browser's back and forward). In that same event it copies
+ * the screen into the overlay, so the old page stays on screen while Next
+ * renders the new one underneath. The choreography then plays over the copy
+ * and hands over to the real page.
  */
 
 /** The book a page belongs to: every section page opens from the shelf. */
@@ -62,13 +71,18 @@ export type EngineHost = {
   push(path: string): void;
 };
 
-type Kind = "open" | "close" | "fade";
+type Kind = "open" | "close" | "turn" | "fade";
 
 type Run = {
   kind: Kind;
-  /** Where the transition is going: an opening book, or the shelf. */
+  /** Where the transition is going. */
   to: string;
-  book: BookId;
+  /** The book opening, closing or turning a page (none for some fades). */
+  book: BookId | null;
+  /** A page turn back to an earlier page. */
+  back: boolean;
+  /** prefers-reduced-motion: every transition is the short fade. */
+  reduce: boolean;
   started: number;
   choreography: Choreographies.Choreography | null;
   skipped: boolean;
@@ -78,14 +92,37 @@ type Run = {
 };
 
 type Request = {
-  kind: "open" | "close";
+  kind: Kind;
   to: string;
-  book: BookId;
+  book: BookId | null;
   /** The spine the book comes off (opening). */
   spine?: HTMLElement | null;
+  /** A page turn back to an earlier page. */
+  back?: boolean;
   /** Starts the navigation, when the event that began it does not. */
   push?: () => void;
 };
+
+/**
+ * Which transition a navigation gets. `spine` is the book on the shelf that
+ * was clicked (or that a back or forward step returns to), if any.
+ */
+function plan(from: string, to: string, spine: HTMLElement | null): Request {
+  const opening = from === "/" ? openingBook(to) : null;
+  if (opening && spine && isOnScreen(spine)) {
+    return { kind: "open", to, book: opening, spine };
+  }
+  const closing = to === "/" ? openingBook(from) : null;
+  if (closing) return { kind: "close", to, book: closing };
+
+  const book = openingBook(from);
+  if (book && book === openingBook(to)) {
+    // Up from a page inside the book (a library) to the one it came from
+    // turns back; anything else turns forward.
+    return { kind: "turn", to, book, back: from.startsWith(`${to}/`) };
+  }
+  return { kind: "fade", to, book: openingBook(to) };
+}
 
 /** Every transition announces itself, for analytics later and for tests. */
 export type TransitionEventDetail = {
@@ -117,7 +154,7 @@ export class TransitionEngine {
     return this.run !== null;
   }
 
-  /** A TransitionLink was clicked: decide whether this navigation animates. */
+  /** A TransitionLink was clicked: start its transition. */
   navigate = (href: string, link: HTMLAnchorElement | null) => {
     // A new navigation ends any transition at once.
     if (this.run) this.stop();
@@ -125,18 +162,11 @@ export class TransitionEngine {
     const to = normalizePath(href.split(/[?#]/)[0] ?? href);
     if (to === from) return;
 
+    // Only the book itself opens: other links to its page (the nav's
+    // Donate, the footer) fade.
     const opening = from === "/" ? openingBook(to) : null;
-    const closing = to === "/" ? openingBook(from) : null;
-    if (opening) {
-      // Only the book itself opens: other links to its page (the nav's
-      // Donate, the footer) go straight there.
-      const spine = link?.dataset.book === opening ? link : null;
-      if (spine && isOnScreen(spine)) {
-        this.begin({ kind: "open", to, book: opening, spine });
-      }
-    } else if (closing) {
-      this.begin({ kind: "close", to, book: closing });
-    }
+    const spine = opening && link?.dataset.book === opening ? link : null;
+    this.begin(plan(from, to, spine));
   };
 
   /** The browser's back or forward buttons. */
@@ -149,16 +179,8 @@ export class TransitionEngine {
     const to = normalizePath(window.location.pathname);
     if (to === from) return;
 
-    const closing = to === "/" ? openingBook(from) : null;
     const opening = from === "/" ? openingBook(to) : null;
-    if (closing) {
-      this.begin({ kind: "close", to, book: closing });
-    } else if (opening) {
-      const spine = findSpine(opening);
-      if (spine && isOnScreen(spine)) {
-        this.begin({ kind: "open", to, book: opening, spine });
-      }
-    }
+    this.begin(plan(from, to, opening ? findSpine(opening) : null));
   };
 
   /**
@@ -234,19 +256,27 @@ export class TransitionEngine {
       request.kind === "open" && !reduce && request.spine
         ? captureBook(request.spine)
         : null;
-    // Closing starts from the page's frame, so measure it while it is here.
-    const frame = request.kind === "close" ? measureFrame() : null;
+    // Closing and turning a page start from the page's frame, so measure it
+    // while it is here.
+    const frame =
+      request.kind === "close" || request.kind === "turn"
+        ? measureFrame()
+        : null;
     const stage = createStage(overlay);
     if (!stage) {
       request.push?.();
       return;
     }
 
+    const missing =
+      (request.kind === "open" && !source) ||
+      (request.kind === "turn" && !frame);
     const run: Run = {
-      kind:
-        reduce || (request.kind === "open" && !source) ? "fade" : request.kind,
+      kind: reduce || missing ? "fade" : request.kind,
       to: request.to,
       book: request.book,
+      back: request.back ?? false,
+      reduce,
       started: performance.now(),
       choreography: null,
       skipped: false,
@@ -270,7 +300,9 @@ export class TransitionEngine {
 
     // The new page gets a few seconds to appear, then a normal page load
     // takes over. A hidden tab does not count: it is not painting.
-    const ready = whenPageReady(request.to, run.started);
+    const ready = whenPageReady(request.to, run.started, {
+      images: run.kind === "open" || run.kind === "close",
+    });
     let holding = 0;
     const holdOn = () => {
       holding = window.setTimeout(() => {
@@ -342,7 +374,20 @@ export class TransitionEngine {
         onShelf: () => this.host?.hold(null),
       });
     }
-    return module.playFade({ ...common, onReveal: reveal });
+    if (run.kind === "turn" && frame) {
+      return module.playTurn({
+        ...common,
+        from: frame,
+        to: measureFrame,
+        back: run.back,
+        onReveal: reveal,
+      });
+    }
+    return module.playFade({
+      ...common,
+      duration: run.reduce ? transition.reducedFade : transition.fade,
+      onReveal: reveal,
+    });
   }
 
   /** The new page shows: the nav catches up and the page can scroll. */
@@ -357,6 +402,7 @@ export class TransitionEngine {
 
   /** The book's place on the shelf, hidden until the book lands in it. */
   private landOn(run: Run): BookSource | null {
+    if (!run.book) return null;
     const spine = findSpine(run.book);
     if (!spine || !isOnScreen(spine)) return null;
     const source = captureBook(spine);
@@ -370,7 +416,7 @@ export class TransitionEngine {
     if (this.run !== run) return;
     const landing = run.landing;
     this.tidy(run);
-    if (run.to === "/") {
+    if (run.to === "/" && run.book) {
       (landing ?? findSpine(run.book))?.focus({ preventScroll: true });
     }
     this.emit("end", run);

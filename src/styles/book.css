@@ -269,13 +269,508 @@
     line-height: 1.45rem;
   }
 
-  /* A pencil, lying in the margin. */
-  .pencil-object {
+  /* Things lying in the margin: a pencil, a pen. */
+  .lying-object {
     display: block;
     width: min(100%, 15rem);
     height: auto;
     transform: rotate(var(--tilt, -14deg));
     filter: drop-shadow(1px 3px 2px rgb(40 26 14 / 0.25));
+  }
+  .ruler-object {
+    display: block;
+    width: min(100%, 17rem);
+    height: auto;
+    transform: rotate(var(--tilt, 4deg));
+    filter: drop-shadow(1px 2px 2px rgb(40 26 14 / 0.25));
+  }
+  .leaf-object {
+    display: block;
+    width: 6.5rem;
+    height: auto;
+    transform: rotate(var(--tilt, 18deg));
+    filter: drop-shadow(1px 2px 1.5px rgb(40 26 14 / 0.2));
+  }
+
+  /* A paper clip over the top edge of a card. */
+  .paper-clip {
+    position: absolute;
+    top: -1.1rem;
+    left: 1.2rem;
+    width: 1.05rem;
+    height: auto;
+    transform: rotate(-4deg);
+    filter: drop-shadow(1px 1px 1px rgb(30 18 8 / 0.25));
+  }
+
+  /* The date-due card from a library book's pocket. */
+  .date-due {
+    position: relative;
+    width: min(100%, 9.5rem);
+    transform: rotate(var(--tilt, -3deg));
+  }
+  .date-due__card {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(2px 3px 3px rgb(30 18 8 / 0.28));
+  }
+  .date-due__paper {
+    fill: #f3ead6;
+    stroke: var(--color-paper-edge);
+  }
+  .date-due__heading {
+    font-family: var(--font-sans);
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    fill: var(--color-ink-soft);
+  }
+  .date-due__rule {
+    stroke: #d6c9ae;
+    stroke-width: 0.6;
+  }
+  .date-due__stamp {
+    font-family: var(--font-sans);
+    font-size: 8.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    fill: var(--color-stamp);
+    opacity: 0.85;
+  }
+
+  /* A library catalogue card: a library's facts, typed on a ruled card. */
+  .catalogue-card {
+    position: relative;
+    width: min(100%, 21rem);
+    padding: 1rem 1.15rem 1.1rem;
+    background-color: #fbf8f1;
+    box-shadow:
+      0 1px 1px rgb(40 26 14 / 0.16),
+      0 0.6rem 1.2rem -0.5rem rgb(40 26 14 / 0.3);
+    transform: rotate(var(--tilt, -1deg));
+    font-family: var(--font-sans);
+    font-size: var(--text-caption);
+  }
+  .catalogue-card__heading {
+    padding-bottom: 0.55rem;
+    border-bottom: 1.5px solid rgb(163 59 48 / 0.75);
+    color: var(--color-ink);
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+  }
+  .catalogue-card__row {
+    display: grid;
+    grid-template-columns: 6.25rem 1fr;
+    gap: 0.75rem;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid rgb(106 150 190 / 0.3);
+  }
+  .catalogue-card dt {
+    color: var(--color-ink-soft);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.06em;
+  }
+  .catalogue-card .paper-clip {
+    left: auto;
+    right: 1.4rem;
+  }
+
+  /* An index card with the steps ticked off in pencil. */
+  .checklist {
+    width: min(100%, 15.5rem);
+    padding: 0.9rem 1rem 1rem;
+    background-color: #fbf8f1;
+    box-shadow:
+      0 1px 1px rgb(40 26 14 / 0.16),
+      0 0.5rem 1rem -0.5rem rgb(40 26 14 / 0.3);
+    transform: rotate(var(--tilt, 1.5deg));
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-caption);
+  }
+  .checklist__heading {
+    margin-bottom: 0.35rem;
+    color: var(--color-ink-soft);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.1em;
+  }
+  .checklist li {
+    display: flex;
+    gap: 0.5rem;
+    align-items: baseline;
+    line-height: 1.45rem;
+  }
+  .checklist__tick {
+    flex: none;
+    width: 0.95rem;
+    height: 0.95rem;
+    translate: 0 0.15rem;
+    fill: none;
+    stroke: var(--color-pencil);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* A pencil sketch, drawn in line by line (hidden until then, with JS). */
+  .pencil-sketch {
+    display: block;
+    width: min(100%, 19rem);
+    height: auto;
+    overflow: visible;
+  }
+  html.js .pencil-sketch {
+    visibility: hidden;
+  }
+  .pencil-sketch path {
+    fill: none;
+    stroke: var(--color-pencil);
+    stroke-width: 1.25;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.85;
+  }
+  .pencil-sketch [data-pencil="quick"] {
+    stroke-width: 0.9;
+    opacity: 0.75;
+  }
+  .pencil-sketch__label {
+    fill: var(--color-ink-soft);
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.08em;
+  }
+  .pencil-sketch__note {
+    fill: var(--color-ink-soft);
+    font-family: var(--font-sans);
+    font-size: 9.5px;
+  }
+
+  /* Letters, the top one sealed in wax. */
+  .letters {
+    display: block;
+    width: min(100%, 15rem);
+    height: auto;
+    filter: drop-shadow(1px 3px 3px rgb(40 26 14 / 0.22));
+  }
+  .letters__paper {
+    fill: #f5eddc;
+    stroke: var(--color-paper-edge);
+  }
+  .letters__paper--middle {
+    fill: #efe5cf;
+  }
+  .letters__paper--back {
+    fill: #e9ddc2;
+  }
+  .letters__flap {
+    fill: none;
+    stroke: #d8cab0;
+  }
+  .letters__wax {
+    fill: #8d2b27;
+  }
+  .letters__wax-ring {
+    fill: none;
+    stroke: #6f1f1c;
+    stroke-width: 1.2;
+    opacity: 0.6;
+  }
+  .letters__mark {
+    color: #5e1714;
+    opacity: 0.75;
+  }
+
+  /* Sticky notes. */
+  .sticky-notes {
+    position: relative;
+    width: min(100%, 16rem);
+    height: 11rem;
+  }
+  .sticky-note {
+    position: absolute;
+    width: 7.2rem;
+    height: 7rem;
+    padding: 0.8rem 0.75rem;
+    box-shadow:
+      0 1px 1px rgb(40 26 14 / 0.15),
+      0 0.5rem 0.9rem -0.45rem rgb(40 26 14 / 0.35);
+    color: var(--color-ink);
+    font-family: var(--font-serif-italic);
+    font-style: italic;
+    font-size: 1.05rem;
+    line-height: 1.25;
+  }
+  .sticky-note:nth-child(1) {
+    top: 0.4rem;
+    left: 0;
+    background-color: #f3e3a3;
+    transform: rotate(-4deg);
+  }
+  .sticky-note:nth-child(2) {
+    top: 0;
+    left: 6rem;
+    background-color: #dbe7bd;
+    transform: rotate(3deg);
+  }
+  .sticky-note:nth-child(3) {
+    top: 4.6rem;
+    left: 2.6rem;
+    background-color: #f2d3c6;
+    transform: rotate(-1.5deg);
+  }
+
+  /* A sign-up sheet on a clipboard. */
+  .sign-up {
+    position: relative;
+    width: min(100%, 15rem);
+    padding: 1.6rem 0.8rem 0.9rem;
+    border-radius: 6px;
+    background: linear-gradient(180deg, #a8784c, #926440);
+    box-shadow: 0 0.6rem 1.2rem -0.5rem rgb(40 26 14 / 0.45);
+    transform: rotate(var(--tilt, 2deg));
+  }
+  .sign-up__clip {
+    position: absolute;
+    top: -0.5rem;
+    left: 50%;
+    width: 4.4rem;
+    height: 1.5rem;
+    margin-left: -2.2rem;
+    border-radius: 4px 4px 2px 2px;
+    background: linear-gradient(180deg, #d4d8dc, #9aa1a9);
+    box-shadow: 0 1px 2px rgb(30 18 8 / 0.35);
+  }
+  .sign-up__sheet {
+    padding: 0.8rem 0.75rem 0.6rem;
+    background-color: #fbf8f1;
+    color: var(--color-ink-soft);
+    font-family: var(--font-sans);
+    font-size: var(--text-caption);
+  }
+  .sign-up__heading {
+    color: var(--color-ink);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.12em;
+    text-align: center;
+  }
+  .sign-up__columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-top: 0.4rem;
+    padding-bottom: 0.15rem;
+    border-bottom: 1px solid rgb(106 150 190 / 0.5);
+    font-size: 0.72rem;
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.06em;
+  }
+  .sign-up__row {
+    display: block;
+    height: 1.35rem;
+    border-bottom: 1px solid rgb(106 150 190 / 0.35);
+    background: linear-gradient(
+      90deg,
+      transparent calc(50% - 0.5px),
+      rgb(106 150 190 / 0.25) calc(50% - 0.5px) calc(50% + 0.5px),
+      transparent calc(50% + 0.5px)
+    );
+  }
+
+  /* A page torn from a ruled notebook. */
+  .notebook-page {
+    width: 13.5rem;
+    max-width: 100%;
+    height: 15rem;
+    filter: drop-shadow(1px 3px 3px rgb(40 26 14 / 0.22));
+    transform: rotate(var(--tilt, -3deg));
+  }
+  .notebook-page::before {
+    content: "";
+    display: block;
+    height: 100%;
+    background:
+      linear-gradient(
+          90deg,
+          transparent 2rem,
+          rgb(193 85 85 / 0.45) 2rem calc(2rem + 1px),
+          transparent calc(2rem + 1px)
+        )
+        0 0 / 100% 100%,
+      repeating-linear-gradient(
+          180deg,
+          transparent 0 1.3rem,
+          rgb(106 150 190 / 0.4) 1.3rem calc(1.3rem + 1px)
+        )
+        0 1.6rem / 100% 100%,
+      #fbf8f1;
+    clip-path: polygon(
+      0% 2.4%,
+      5.3% 2.4%,
+      9.5% 1.7%,
+      13.9% 4.9%,
+      17.1% 1.4%,
+      21.7% 1.3%,
+      27.2% 2.9%,
+      29.9% 1.2%,
+      32.3% 1.7%,
+      34.6% 2.4%,
+      39.7% 2.5%,
+      43.6% 2.9%,
+      46.7% 3.8%,
+      51.8% 3%,
+      54.7% 3.6%,
+      59.5% 2.2%,
+      63.1% 3.7%,
+      65.3% 1.7%,
+      69.1% 3.7%,
+      71.5% 2.8%,
+      74.6% 1.4%,
+      80.1% 4.8%,
+      83.1% 3.1%,
+      88% 1.7%,
+      91.8% 1.7%,
+      94.4% 4.5%,
+      98% 1.8%,
+      100% 3.1%,
+      100% 100%,
+      0% 100%
+    );
+  }
+
+  /* Where a child's drawing will go. */
+  .drawing-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: min(100%, 14rem);
+    aspect-ratio: 4 / 3;
+    padding: 1rem;
+    border: 1px dashed var(--color-paper-edge);
+    background-color: var(--color-paper-shade);
+    font-family: var(--font-sans);
+    font-size: var(--text-caption);
+    text-align: center;
+    transform: rotate(-2deg);
+  }
+
+  /* ---------- The contact form (Get Involved) ---------- */
+
+  .contact-form {
+    display: grid;
+    gap: 1.6rem;
+    margin-top: 2rem;
+    font-family: var(--font-sans);
+    font-size: var(--text-ui);
+    line-height: var(--text-ui--line-height);
+  }
+  .contact-form fieldset {
+    min-width: 0;
+  }
+  .contact-form__label {
+    display: block;
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+  .contact-form__field > .contact-form__label {
+    margin-bottom: 0.45rem;
+  }
+  .contact-form__optional {
+    color: var(--color-ink-soft);
+    font-weight: 400;
+  }
+  .contact-form__options {
+    display: grid;
+    gap: 0.15rem;
+    margin-top: 0.45rem;
+  }
+  .contact-form__option {
+    display: flex;
+    gap: 0.7rem;
+    align-items: center;
+    min-height: 2.5rem;
+    cursor: pointer;
+  }
+  .contact-form__option input {
+    flex: none;
+    width: 1.15rem;
+    height: 1.15rem;
+    accent-color: var(--color-navy);
+  }
+  .contact-form__row {
+    display: grid;
+    gap: 1.6rem;
+  }
+  @media (min-width: 40rem) {
+    .contact-form__row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .contact-form
+    :is(input[type="text"], input[type="email"], input[type="tel"], textarea) {
+    display: block;
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid #85786a;
+    border-radius: 2px;
+    background-color: #fbf8f1;
+    color: var(--color-ink);
+  }
+  .contact-form textarea {
+    min-height: 9rem;
+    resize: vertical;
+  }
+  .contact-form [aria-invalid="true"] {
+    border-color: var(--color-stamp);
+  }
+  .contact-form__hint {
+    margin-bottom: 0.5rem;
+    color: var(--color-ink-soft);
+    font-size: var(--text-caption);
+  }
+  .contact-form__error {
+    margin-top: 0.4rem;
+    color: var(--color-stamp);
+    font-size: var(--text-caption);
+  }
+  /* Out of sight and out of reach: only bots fill it in. */
+  .contact-form__trap {
+    position: absolute;
+    left: -100vw;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .contact-form__problem,
+  .contact-form__sent {
+    padding: 0.85rem 1rem;
+    border-left: 3px solid var(--color-stamp);
+    background-color: var(--color-paper-shade);
+  }
+  .contact-form__sent {
+    margin-top: 2rem;
+    border-left-color: var(--color-navy);
+    font-family: var(--font-sans);
+    font-size: var(--text-ui);
+  }
+  .contact-form__send {
+    justify-self: start;
+    min-height: 2.75rem;
+    padding: 0 1.4rem;
+    border-radius: 3px;
+    background-color: var(--color-navy);
+    color: var(--color-cream);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .contact-form__send:hover {
+    background-color: var(--color-ink);
+  }
+  .contact-form__send:disabled {
+    opacity: 0.75;
+    cursor: progress;
   }
 
   /* ---------- Pencil marks in the text ---------- */

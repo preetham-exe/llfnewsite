@@ -2,13 +2,15 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { BookPage } from "@/components/book/BookPage";
+import { Margin } from "@/components/book/Margin";
+import { CatalogueCard } from "@/components/book/Marginalia";
 import { TransitionLink } from "@/components/transition/TransitionLink";
 import { PictureFrame } from "@/components/ui/PictureFrame";
 import { RichText } from "@/components/ui/RichText";
 import { Txt } from "@/components/ui/Txt";
 import { isTodo } from "@/content/helpers";
 import { getLibrary, libraries } from "@/content/libraries";
-import type { Library } from "@/content/types";
+import type { Library, LibrarySize } from "@/content/types";
 import { formatCount, formatDate } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
 
@@ -26,6 +28,12 @@ export function generateStaticParams() {
 function libraryTitle(library: Library): string {
   return isTodo(library.name) ? `Library #${library.number}` : library.name;
 }
+
+const sizeNames: Record<LibrarySize, string> = {
+  small: "Small",
+  medium: "Medium",
+  large: "Large",
+};
 
 export async function generateMetadata({
   params,
@@ -50,16 +58,30 @@ export default async function LibraryPage({
   const library = getLibrary(slug);
   if (!library) notFound();
 
+  const { partner, size } = library;
   const facts = [
-    { term: "Opened", detail: formatDate(library.openedOn) },
-    { term: "City", detail: library.city },
+    { term: "Opened", detail: <Txt>{formatDate(library.openedOn)}</Txt> },
+    { term: "City", detail: <Txt>{library.city}</Txt> },
     {
       term: "Partner",
-      detail: isTodo(library.partner) ? library.partner : library.partner.name,
+      detail: isTodo(partner) ? (
+        <Txt>{partner}</Txt>
+      ) : (
+        <TransitionLink href="/partners">{partner.name}</TransitionLink>
+      ),
     },
-    { term: "Books placed", detail: formatCount(library.booksPlaced) },
-    { term: "Children", detail: formatCount(library.childrenServed) },
-    { term: "Size", detail: library.size },
+    {
+      term: "Books placed",
+      detail: <Txt>{formatCount(library.booksPlaced)}</Txt>,
+    },
+    {
+      term: "Children",
+      detail: <Txt>{formatCount(library.childrenServed)}</Txt>,
+    },
+    {
+      term: "Size",
+      detail: <Txt>{isTodo(size) ? size : sizeNames[size]}</Txt>,
+    },
   ];
 
   return (
@@ -67,31 +89,20 @@ export default async function LibraryPage({
       book="libraries"
       title={libraryTitle(library)}
       lede={library.summary}
+      kicker={`Library #${library.number}`}
     >
-      <p className="text-caption smallcaps text-ink-soft">
-        Chapter {library.number}
-      </p>
-
-      <dl className="mt-4 divide-y divide-paper-edge border-y border-paper-edge figures-lining">
-        {facts.map((fact) => (
-          <div
-            key={fact.term}
-            className="grid gap-1 py-3 sm:grid-cols-[11rem_1fr] sm:gap-4"
-          >
-            <dt className="smallcaps">{fact.term}</dt>
-            <dd>
-              <Txt>{fact.detail}</Txt>
-            </dd>
-          </div>
-        ))}
-      </dl>
+      {/* The library's facts, as its card in the catalogue: on the left
+          page beside the photos, or first on smaller screens. */}
+      <Margin>
+        <CatalogueCard heading={libraryTitle(library)} facts={facts} />
+      </Margin>
 
       {library.photos.map((photo, index) => (
         <PictureFrame
           key={index}
           picture={photo}
           sizes="(min-width: 768px) 42rem, 100vw"
-          className="mt-12"
+          className={index > 0 ? "mt-12" : ""}
         />
       ))}
 

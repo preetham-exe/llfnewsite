@@ -3,6 +3,8 @@ import Image from "next/image";
 import { isTodo } from "@/content/helpers";
 import type { Picture } from "@/content/types";
 
+import { Txt } from "./Txt";
+
 type PictureFrameProps = {
   picture: Picture;
   /** The `sizes` attribute for responsive images. */
@@ -15,6 +17,8 @@ type PictureFrameProps = {
 /**
  * A photo, or a labelled placeholder with the same proportions until the real
  * photo arrives. Both reserve their space, so nothing shifts as they load.
+ * A portrait photo is kept narrower (26rem at most, and its `sizes` say
+ * so), so it never fills more than a screen.
  */
 export function PictureFrame({
   picture,
@@ -23,20 +27,21 @@ export function PictureFrame({
   className = "",
 }: PictureFrameProps) {
   if (picture._type === "photo") {
+    const portrait = picture.height > picture.width;
     return (
-      <figure className={className}>
+      <figure className={`${portrait ? "max-w-[26rem]" : ""} ${className}`}>
         <Image
           src={picture.src}
           width={picture.width}
           height={picture.height}
           alt={picture.alt}
-          sizes={sizes}
+          sizes={portrait ? "(min-width: 28rem) 26rem, 100vw" : sizes}
           preload={preload}
           className="h-auto w-full"
         />
         {picture.caption && (
           <figcaption className="mt-3 font-sans text-caption text-ink-soft">
-            {picture.caption}
+            <Txt>{picture.caption}</Txt>
           </figcaption>
         )}
       </figure>

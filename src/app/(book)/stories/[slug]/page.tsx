@@ -2,6 +2,8 @@ import type { Metadata, Route } from "next";
 import { notFound } from "next/navigation";
 
 import { BookPage } from "@/components/book/BookPage";
+import { Margin } from "@/components/book/Margin";
+import { InkPen } from "@/components/book/Marginalia";
 import { TransitionLink } from "@/components/transition/TransitionLink";
 import { PictureFrame } from "@/components/ui/PictureFrame";
 import { RichText } from "@/components/ui/RichText";
@@ -10,6 +12,7 @@ import { isTodo } from "@/content/helpers";
 import { getStory, stories } from "@/content/stories";
 import { formatDate } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
+import { marginalia } from "@/motion/tokens";
 
 /*
  * Each story page reads its slug from the URL, so it cannot be part of the
@@ -72,6 +75,10 @@ export default async function StoryPage({
           className="mt-10"
         />
       )}
+
+      <Margin drift={marginalia.pencil} variant="narrow">
+        <InkPen />
+      </Margin>
 
       <div className="mt-10">
         <RichText value={story.body} />

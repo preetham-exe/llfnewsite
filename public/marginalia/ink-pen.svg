@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 30" width="260" height="30">
+  <defs>
+    <linearGradient id="barrel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a4b6b"/>
+      <stop offset="0.35" stop-color="#23314b"/>
+      <stop offset="1" stop-color="#151f33"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c9a96e"/>
+      <stop offset="1" stop-color="#8b6f47"/>
+    </linearGradient>
+  </defs>
+  <!-- A fountain pen in LLF navy: cap with a gold band and clip, then the nib. -->
+  <rect x="2" y="7" width="96" height="16" rx="7" fill="url(#barrel)"/>
+  <rect x="88" y="7" width="7" height="16" fill="url(#gold)"/>
+  <path d="M10 6 H70 a2 2 0 0 1 0 4 H14 Z" fill="url(#gold)"/>
+  <rect x="98" y="8" width="104" height="14" rx="5" fill="url(#barrel)"/>
+  <path d="M202 9.5 L222 11 L222 19 L202 20.5 Z" fill="#1a1a1a"/>
+  <path d="M222 10.5 L250 15 L222 19.5 Z" fill="url(#gold)"/>
+  <path d="M226 15 H248" stroke="#5b4628" stroke-width="0.6"/>
+  <circle cx="229" cy="15" r="0.9" fill="#5b4628"/>
+  <path d="M8 10 H92" stroke="#ffffff" stroke-opacity="0.18" stroke-width="1"/>
+</svg>

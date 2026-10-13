@@ -1,6 +1,14 @@
 import { expect, test, type Page } from "@playwright/test";
 
 import { transition } from "../src/motion/tokens";
+import {
+  bookSeen,
+  events,
+  expectSettled,
+  finished,
+  overlay,
+  recordTransitions,
+} from "./transitions";
 
 /* Phase 3 acceptance: the book transition. Every book opens from the shelf
    (1.7 s, 1.33 s on phones, as the founder asked), skips on any click or
@@ -8,64 +16,14 @@ import { transition } from "../src/motion/tokens";
    here cannot draw CSS 3D, but everything this file checks still applies
    there. */
 
-type Event = {
-  phase: "start" | "end" | "stop";
-  kind: "open" | "close" | "fade";
-  to: string;
-  t: number;
-  /** Where the page was scrolled when the event fired. */
-  scrollY: number;
-};
-
 const isPhone = (page: Page) => (page.viewportSize()?.width ?? 0) < 768;
 
-test.beforeEach(async ({ page }) => {
-  await page.addInitScript(() => {
-    const record = window as unknown as {
-      __transitions: unknown[];
-      __bookSeen: boolean;
-    };
-    record.__transitions = [];
-    record.__bookSeen = false;
-    window.addEventListener("llf:transition", (event) => {
-      record.__transitions.push({
-        ...(event as CustomEvent).detail,
-        t: performance.now(),
-        scrollY: window.scrollY,
-      });
-    });
-    new MutationObserver(() => {
-      if (document.querySelector(".tb-book")) record.__bookSeen = true;
-    }).observe(document, { childList: true, subtree: true });
-  });
-});
-
-const events = (page: Page) =>
-  page.evaluate(
-    () => (window as unknown as { __transitions: Event[] }).__transitions,
-  );
-
-/** Waits for the next transition to finish and returns its start and end. */
-async function finished(page: Page, count = 1) {
-  await expect
-    .poll(
-      async () =>
-        (await events(page)).filter((event) => event.phase !== "start").length,
-      { timeout: 6000 },
-    )
-    .toBeGreaterThanOrEqual(count);
-  const all = await events(page);
-  const starts = all.filter((event) => event.phase === "start");
-  const ends = all.filter((event) => event.phase !== "start");
-  return { start: starts[count - 1]!, end: ends[count - 1]! };
-}
+test.beforeEach(({ page }) => recordTransitions(page));
 
 const shelfBook = (page: Page, name: string) =>
   page
     .getByRole("navigation", { name: "Sections of the site" })
     .getByRole("link", { name, exact: true });
-
-const overlay = (page: Page) => page.locator("[data-transition-overlay]");
 
 /** The shelf, with the next page prefetched and the transition loaded. */
 async function openShelf(page: Page) {
@@ -79,13 +37,6 @@ async function openOurStory(page: Page) {
   if (!isPhone(page)) await book.hover();
   await book.click();
   return finished(page);
-}
-
-async function expectSettled(page: Page) {
-  await expect(overlay(page)).toBeEmpty();
-  await expect(overlay(page)).not.toHaveAttribute("data-active");
-  await expect(page.locator("[data-book-out]")).toHaveCount(0);
-  await expect(page.locator("html")).not.toHaveClass(/lenis-stopped/);
 }
 
 test("the timings stay as the founder set them", () => {
@@ -173,17 +124,19 @@ test.describe("opening a book", () => {
     await expectSettled(page);
   });
 
-  test("the nav's Donate goes straight to its page, no book", async ({
-    page,
-  }) => {
+  test("the nav's Donate crossfades to its page, no book", async ({ page }) => {
     await openShelf(page);
     await page
       .getByRole("banner")
       .getByRole("link", { name: "Donate" })
       .click();
+    const { start, end } = await finished(page);
+    expect(start.kind).toBe("fade");
+    expect(end.phase).toBe("end");
     await expect(page).toHaveURL(/\/donate$/);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Donate");
-    expect(await events(page)).toHaveLength(0);
+    expect(await bookSeen(page)).toBe(false);
+    await expectSettled(page);
   });
 
   test("a direct load shows the page with no transition", async ({ page }) => {
@@ -299,10 +252,7 @@ test.describe("reduced motion", () => {
     await expect(page).toHaveURL(/\/$/);
     await expectSettled(page);
 
-    const bookSeen = await page.evaluate(
-      () => (window as unknown as { __bookSeen: boolean }).__bookSeen,
-    );
-    expect(bookSeen).toBe(false);
+    expect(await bookSeen(page)).toBe(false);
   });
 });
 

@@ -7,6 +7,8 @@ import { defineConfig, devices } from "@playwright/test";
  */
 
 const port = Number(process.env.PLAYWRIGHT_PORT ?? 3200);
+/** A stand-in for the email service, so the contact form really sends. */
+const emailPort = 3299;
 
 const desktop = { width: 1440, height: 900 };
 const mobile = { width: 390, height: 844 };
@@ -21,12 +23,26 @@ export default defineConfig({
     baseURL: `http://localhost:${port}`,
     trace: "retain-on-failure",
   },
-  webServer: {
-    command: `pnpm build && pnpm start -p ${port}`,
-    url: `http://localhost:${port}`,
-    reuseExistingServer: !process.env.CI,
-    timeout: 240_000,
-  },
+  // A server already running on the port is reused locally: start it with
+  // the env below, or stop it, so the contact form reaches the stand-in.
+  webServer: [
+    {
+      command: "node e2e/mock-email.mjs",
+      url: `http://127.0.0.1:${emailPort}/`,
+      env: { MOCK_EMAIL_PORT: String(emailPort) },
+      reuseExistingServer: !process.env.CI,
+    },
+    {
+      command: `pnpm build && pnpm start -p ${port}`,
+      url: `http://localhost:${port}`,
+      env: {
+        RESEND_API_KEY: "re_test",
+        RESEND_ENDPOINT: `http://127.0.0.1:${emailPort}/emails`,
+      },
+      reuseExistingServer: !process.env.CI,
+      timeout: 240_000,
+    },
+  ],
   projects: [
     {
       name: "chromium-desktop",

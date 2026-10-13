@@ -145,6 +145,9 @@ export function snapshotPage(): HTMLElement | null {
   return copy;
 }
 
+/** A box on screen, in viewport px. */
+export type Box = { left: number; top: number; right: number; bottom: number };
+
 /**
  * Where a section page's open-book frame is on screen: its right-hand page
  * (or its only page), which the transition's book lands on and starts from.
@@ -158,6 +161,8 @@ export type FrameGeometry = {
   spread: boolean;
   /** Paper to the edges of the screen (phones): no cloth, no surround. */
   bleed: boolean;
+  /** All the paper: both pages on a spread. A page turn turns part of it. */
+  pages: Box;
 };
 
 export function measureFrame(): FrameGeometry | null {
@@ -176,6 +181,12 @@ export function measureFrame(): FrameGeometry | null {
     width: spread ? rect.width / 2 : rect.width,
     spread,
     bleed,
+    pages: {
+      left: rect.left,
+      top: rect.top,
+      right: rect.right,
+      bottom: rect.bottom,
+    },
   };
 }
 

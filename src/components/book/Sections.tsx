@@ -1,13 +1,28 @@
+import { Fragment, type ReactNode } from "react";
+
 import type { Section as SectionCopy } from "@/content/pages";
 
 import { Prose } from "./Prose";
 
-/** Renders the sections of a fixed page from src/content/pages.ts. */
-export function Sections({ sections }: { sections: SectionCopy[] }) {
+/**
+ * Renders the sections of a fixed page from src/content/pages.ts. `besides`
+ * holds what sits in the margin beside each section, in order (a <Margin>,
+ * or null for nothing).
+ */
+export function Sections({
+  sections,
+  besides = [],
+}: {
+  sections: SectionCopy[];
+  besides?: ReactNode[];
+}) {
   return (
     <>
-      {sections.map((section) => (
-        <Section key={section.heading} section={section} />
+      {sections.map((section, index) => (
+        <Fragment key={section.heading}>
+          {besides[index]}
+          <Section section={section} />
+        </Fragment>
       ))}
     </>
   );
