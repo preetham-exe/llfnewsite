@@ -15,6 +15,11 @@ type BookPageProps = {
   title: string;
   /** The opening paragraph; [[a phrase]] gets a pencil mark. */
   lede?: string | Todo;
+  /**
+   * The line above the title, in place of the book's chapter numeral: a
+   * page inside a book says where it is in it ("Library #3").
+   */
+  kicker?: string;
   children?: ReactNode;
 };
 
@@ -47,7 +52,13 @@ function clothMargins(): CSSProperties {
  * and page numbers as in print. Objects in the margins are <Margin> blocks
  * placed among the children, just before the text they belong beside.
  */
-export function BookPage({ book, title, lede, children }: BookPageProps) {
+export function BookPage({
+  book,
+  title,
+  lede,
+  kicker,
+  children,
+}: BookPageProps) {
   const { spineTitle, cloth } = getBook(book);
   const index = books.findIndex((candidate) => candidate.id === book);
   // Left-hand pages are even in a printed book, right-hand pages odd.
@@ -69,9 +80,13 @@ export function BookPage({ book, title, lede, children }: BookPageProps) {
 
             <div className="spread__text">
               <header className="spread__left spread__opening">
-                <p aria-hidden="true" className="spread__numeral">
-                  Chapter {NUMERALS[index]}
-                </p>
+                {kicker ? (
+                  <p className="spread__numeral">{kicker}</p>
+                ) : (
+                  <p aria-hidden="true" className="spread__numeral">
+                    Chapter {NUMERALS[index]}
+                  </p>
+                )}
                 <h1
                   tabIndex={-1}
                   className="mt-3 text-display focus:outline-none"

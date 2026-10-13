@@ -94,9 +94,16 @@ export const librariesIndex: PageCopy = {
   description:
     "Every library Literate Lives Foundation has built: where it is, who we built it with, and when it opened.",
   title: "The Libraries",
-  lede: "Each library is a chapter. Here is where each one is, who we built it with, and when it opened.",
+  lede: "[[Each library is a chapter]]. Here is where each one is, who we built it with, and when it opened.",
   sections: [],
 };
+
+/** The three sizes of library, smallest first. */
+const librarySizes = [
+  { size: "Small", books: "150 to 200 books", shelves: "1 to 2 shelves" },
+  { size: "Medium", books: "300 to 400 books", shelves: "3 to 4 shelves" },
+  { size: "Large", books: "600 or more books", shelves: "5 or more shelves" },
+] as const;
 
 export const howWeBuild: PageCopy = {
   description:
@@ -134,11 +141,10 @@ export const howWeBuild: PageCopy = {
     },
     {
       heading: "Three sizes",
-      terms: [
-        { term: "Small", detail: "150 to 200 books on 1 to 2 shelves" },
-        { term: "Medium", detail: "300 to 400 books on 3 to 4 shelves" },
-        { term: "Large", detail: "600 or more books on 5 or more shelves" },
-      ],
+      terms: librarySizes.map(({ size, books, shelves }) => ({
+        term: size,
+        detail: `${books} on ${shelves}`,
+      })),
     },
     {
       heading: "The books",
@@ -155,17 +161,33 @@ export const howWeBuild: PageCopy = {
     {
       heading: "What a library costs",
       paragraphs: [
-        "A library for 50 to 60 children costs about ₹20,000 to ₹40,000, shelves included.",
+        "A library for 50 to 60 children costs [[about ₹20,000 to ₹40,000]], shelves included.",
       ],
     },
   ],
 };
 
+/**
+ * How We Build's margins: a pencil sketch of a medium library's shelves,
+ * and a card of what every library gets (from the facts above).
+ */
+export const howWeBuildMargins = {
+  sketch: librarySizes[1],
+  checklist: {
+    heading: "Every library",
+    items: [
+      "Shelves, paid for by us",
+      "Storybooks in two languages",
+      "A read-aloud on launch day",
+    ],
+  },
+} as const;
+
 export const partnersIndex: PageCopy = {
   description:
     "The organisations Literate Lives Foundation builds libraries with, and what each partnership has produced.",
   title: "Partners",
-  lede: "We build every library with someone. These are the organisations we work with, and what we have made together.",
+  lede: "We build every library [[with someone]]. These are the organisations we work with, and what we have made together.",
   sections: [],
 };
 
@@ -173,9 +195,16 @@ export const storiesIndex: PageCopy = {
   description:
     "Writing from the Literate Lives Foundation team and from children at our libraries.",
   title: "Stories",
-  lede: "Writing from our team, and from the children who use our libraries.",
+  lede: "Writing from our team, and from [[the children]] who use our libraries.",
   sections: [],
 };
+
+/** Stories' margins: a child's drawing will go here, with permission. */
+export const storiesMargins = {
+  drawing: todo(
+    "A child's drawing from one of our libraries, shared with permission. A photo of it is enough.",
+  ),
+} as const;
 
 export const getInvolved: PageCopy = {
   description:

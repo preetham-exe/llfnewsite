@@ -1,11 +1,14 @@
 import type { Route } from "next";
 
 import { BookPage } from "@/components/book/BookPage";
+import { Margin } from "@/components/book/Margin";
+import { Letters } from "@/components/book/Marginalia";
 import { TransitionLink } from "@/components/transition/TransitionLink";
 import { Txt } from "@/components/ui/Txt";
 import { partnersIndex } from "@/content/pages";
 import { partners } from "@/content/partners";
 import { pageMetadata } from "@/lib/seo";
+import { marginalia } from "@/motion/tokens";
 
 export const metadata = pageMetadata({
   title: partnersIndex.title,
@@ -20,6 +23,12 @@ export default function PartnersPage() {
       title={partnersIndex.title}
       lede={partnersIndex.lede}
     >
+      {/* Letters sealed with our own mark: partners' logos are never used
+          as decoration. */}
+      <Margin drift={marginalia.letters}>
+        <Letters />
+      </Margin>
+
       <ul className="divide-y divide-paper-edge border-y border-paper-edge">
         {partners.map((partner) => (
           <li key={partner._id} className="py-8">
