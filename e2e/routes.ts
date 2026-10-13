@@ -24,3 +24,20 @@ export const routes = [
   { path: "/get-involved", name: "get-involved", heading: "Get Involved" },
   { path: "/donate", name: "donate", heading: "Donate" },
 ] as const;
+
+/**
+ * Pages that are not in the site map (they are kept out of search) but are
+ * still checked: where the contact form leads without JavaScript.
+ */
+export const unlistedRoutes = [
+  {
+    path: "/get-involved/sent",
+    name: "get-involved-sent",
+    heading: "Thank you",
+  },
+  {
+    path: "/get-involved/unsent",
+    name: "get-involved-unsent",
+    heading: "Not sent",
+  },
+] as const;
