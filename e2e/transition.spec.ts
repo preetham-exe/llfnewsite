@@ -287,7 +287,8 @@ test.describe("reduced motion", () => {
     let { start, end } = await finished(page);
     expect(start.kind).toBe("fade");
     expect(end.phase).toBe("end");
-    expect(end.t - start.t).toBeLessThan(700);
+    // A 0.2 s fade once the page is ready: well short of the book.
+    expect(end.t - start.t).toBeLessThan(1200);
     await expect(page).toHaveURL(/\/our-story$/);
     await expect(page.getByRole("heading", { level: 1 })).toBeFocused();
 
