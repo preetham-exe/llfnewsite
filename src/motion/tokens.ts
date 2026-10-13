@@ -71,8 +71,15 @@ export const parallax = {
  * within parallax.min and parallax.max). Lighter, nearer things move more.
  */
 export const marginalia = {
+  clipboard: 14,
+  letters: 16,
   polaroid: 18,
+  notebook: 20,
+  card: 22,
+  sticky: 24,
   note: 26,
+  ruler: 28,
+  leaf: 30,
   pencil: 34,
 } as const;
 
@@ -81,6 +88,18 @@ export const pencil = {
   duration: 0.8,
   /** After the page shows, before a mark on the first screen is drawn. */
   delay: 0.5,
+  /**
+   * A sketch is drawn line by line: each line takes `line`, the next starts
+   * `stagger` later. Its quick strokes (books on a shelf) start `quickFrom`
+   * in and go faster, and its labels fade in over `label` at the end.
+   */
+  sketch: {
+    line: 0.28,
+    stagger: 0.07,
+    quickFrom: 0.5,
+    quick: { line: 0.1, stagger: 0.012 },
+    label: 0.5,
+  },
 } as const;
 
 export const stagger = {

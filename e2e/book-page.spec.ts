@@ -151,7 +151,7 @@ test.describe("the margins", () => {
     await expect(
       page.getByRole("img", { name: /bookshelves, full of children's books/ }),
     ).toBeAttached();
-    await expect(page.locator(".pencil-object")).toHaveAttribute("alt", "");
+    await expect(page.locator(".lying-object")).toHaveAttribute("alt", "");
     await expect(page.locator(".note-card")).toHaveAttribute(
       "aria-hidden",
       "true",
