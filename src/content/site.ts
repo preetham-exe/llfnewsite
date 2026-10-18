@@ -18,7 +18,9 @@ export const site = {
   registrationSummary:
     "Registered as a trust in March 2025. Registered under sections 12A and 80G, and on NGO DARPAN.",
   registrations: {
-    trust: todo("Trust registration number"),
+    trust: todo(
+      "Trust registration number (the old site showed 76/IV/2025: confirm)",
+    ),
     section12A: todo("12A registration number"),
     section80G: todo("80G registration number"),
     darpan: todo("NGO DARPAN ID"),
@@ -28,7 +30,9 @@ export const site = {
 } as const;
 
 /** Donations happen on Milaap. Nothing is paid on this site. */
-export const MILAAP_URL: string = todo("Milaap campaign link");
+export const MILAAP_URL: string = todo(
+  "Milaap campaign link (the old site's fundraiser now shows Not found on Milaap)",
+);
 
 export const stats = {
   childrenReached: "300+",

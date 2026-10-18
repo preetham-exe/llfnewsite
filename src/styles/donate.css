@@ -1,0 +1,318 @@
+/*
+ * The library checkout card on Donate (CheckoutCard): a manila card from a
+ * library book's pocket, its printed head and ruled lines, gifts on the lines
+ * instead of borrowers, a pencil circle round the chosen one, and the rubber
+ * stamp that comes down on Check out. Imported by globals.css.
+ */
+
+@layer components {
+  .checkout {
+    position: relative;
+  }
+
+  .checkout__card {
+    position: relative;
+    max-width: 31rem;
+    padding: 1rem 1.15rem 0;
+    background-color: #f2e7cb;
+    box-shadow:
+      0 1px 1px rgb(40 26 14 / 0.18),
+      0 0.8rem 1.6rem -0.6rem rgb(40 26 14 / 0.35);
+    transform: rotate(-0.5deg);
+    font-family: var(--font-sans);
+  }
+
+  /* The printed head: whose card this is. */
+  .checkout__head {
+    display: grid;
+    gap: 0.2rem;
+    padding-bottom: 0.7rem;
+    border-bottom: 3px double rgb(163 59 48 / 0.6);
+  }
+  .checkout__head > div {
+    display: grid;
+    grid-template-columns: 3.6rem 1fr;
+    align-items: baseline;
+  }
+  .checkout__head dt {
+    color: var(--color-ink-soft);
+    font-size: var(--text-caption);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.1em;
+  }
+  .checkout__head dd {
+    color: var(--color-ink);
+    font-family: var(--font-serif-italic);
+    font-style: italic;
+    font-size: 1.05rem;
+  }
+
+  /* The ruled lines: gifts on the left, amounts in the column on the right. */
+  .checkout__gifts {
+    min-width: 0;
+  }
+  .checkout__heads,
+  .checkout__option {
+    display: grid;
+    grid-template-columns: 1.7rem 1fr;
+    column-gap: 0.4rem;
+    border-bottom: 1px solid rgb(106 150 190 / 0.45);
+  }
+  .checkout__heads {
+    padding: 0.55rem 0 0.3rem;
+    color: var(--color-ink-soft);
+    font-size: var(--text-caption);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.1em;
+  }
+  .checkout__heads > :first-child {
+    grid-column: 2;
+  }
+  .checkout__heads > :last-child {
+    display: none;
+  }
+  .checkout__option {
+    position: relative;
+    align-items: center;
+    padding: 0.6rem 0;
+    cursor: pointer;
+  }
+  .checkout__gift {
+    position: relative;
+    justify-self: start;
+    color: var(--color-ink);
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1.35;
+  }
+  .checkout__amount {
+    grid-column: 2;
+    margin-top: 0.15rem;
+    color: var(--color-ink-soft);
+    font-size: var(--text-ui);
+  }
+
+  @media (min-width: 30rem) {
+    .checkout__heads,
+    .checkout__option {
+      grid-template-columns: 1.7rem 1fr minmax(0, 11.5rem);
+    }
+    .checkout__heads > :last-child {
+      display: block;
+    }
+    .checkout__heads > :last-child,
+    .checkout__amount {
+      grid-column: 3;
+      margin-top: 0;
+      align-self: stretch;
+      padding-left: 0.75rem;
+      border-left: 1px solid rgb(163 59 48 / 0.45);
+    }
+    .checkout__amount {
+      display: flex;
+      align-items: center;
+      margin-block: -0.6rem;
+      padding-block: 0.6rem;
+    }
+  }
+
+  /* A printed circle to tick, and the real radio button over it. */
+  .checkout__radio {
+    grid-row: 1;
+    grid-column: 1;
+    justify-self: center;
+    appearance: none;
+    width: 1.05rem;
+    height: 1.05rem;
+    margin: 0;
+    border: 1.5px solid var(--color-ink-soft);
+    border-radius: 50%;
+    background-color: rgb(255 255 255 / 0.35);
+    cursor: pointer;
+  }
+  .checkout__radio:checked {
+    background: radial-gradient(
+      circle,
+      var(--color-pencil) 0 0.26rem,
+      transparent 0.28rem
+    );
+  }
+  .checkout__option:hover .checkout__radio {
+    border-color: var(--color-ink);
+  }
+
+  /* The pencil loop round the chosen gift. Without JavaScript it simply
+     shows; with it, the loop is drawn as the gift is chosen. */
+  .checkout__circle {
+    position: absolute;
+    inset: -0.5em -0.75em -0.45em -0.6em;
+    width: calc(100% + 1.35em);
+    height: calc(100% + 0.95em);
+    overflow: visible;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  html:not(.js) .checkout__option:has(:checked) .checkout__circle {
+    visibility: visible;
+  }
+  .checkout__circle path {
+    fill: none;
+    stroke: var(--color-pencil);
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+    opacity: 0.85;
+  }
+
+  /* The next empty lines, where the stamp comes down. */
+  .checkout__blank {
+    --line: 2.3rem;
+    position: relative;
+    height: calc(var(--line) * 2);
+    background: repeating-linear-gradient(
+      180deg,
+      transparent 0 calc(var(--line) - 1px),
+      rgb(106 150 190 / 0.45) calc(var(--line) - 1px) var(--line)
+    );
+  }
+
+  /* The impression: THANK YOU and today's date, in uneven red ink, exactly
+     under the stamp's rubber (and at its tilt as it lands). */
+  .checkout__ink {
+    position: absolute;
+    left: 50%;
+    bottom: 0.65rem;
+    display: grid;
+    justify-items: center;
+    width: 7.4rem;
+    margin-left: -3.7rem;
+    padding: 0.3rem 0.4rem 0.35rem;
+    border: 2px solid var(--color-stamp);
+    border-radius: 0.4rem;
+    outline: 1px solid var(--color-stamp);
+    outline-offset: -5px;
+    color: var(--color-stamp);
+    font-weight: 600;
+    text-transform: uppercase;
+    transform: rotate(-2deg);
+    mask: url("/textures/ink.webp") 0 0 / 7rem;
+    opacity: 0;
+    visibility: hidden;
+  }
+  .checkout__ink-word {
+    font-size: 0.95rem;
+    letter-spacing: 0.14em;
+  }
+  .checkout__ink-date {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  /* The rubber stamp, in the air above the lines until Check out. Its
+     rubber face is wider than the impression, so it hides it as it lands. */
+  .checkout__stamp {
+    position: absolute;
+    left: 50%;
+    bottom: 0.65rem;
+    z-index: 2;
+    width: 11rem;
+    height: auto;
+    margin-left: -5.5rem;
+    overflow: visible;
+    filter: drop-shadow(0 0.6rem 0.6rem rgb(40 26 14 / 0.3));
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .stamp__knob {
+    fill: #7a4a2e;
+  }
+  .stamp__shine {
+    fill: rgb(255 240 220 / 0.25);
+  }
+  .stamp__neck {
+    fill: #6b4128;
+  }
+  .stamp__block {
+    fill: var(--color-wood);
+  }
+  .stamp__bevel {
+    fill: rgb(255 240 220 / 0.18);
+  }
+  .stamp__rubber {
+    fill: #3b2a24;
+  }
+  .stamp__inked {
+    fill: var(--color-stamp);
+  }
+
+  /* Check out, and what happens next. */
+  .checkout__action {
+    max-width: 31rem;
+    margin-top: 1.5rem;
+  }
+  .checkout__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 3rem;
+    padding: 0 1.75rem;
+    border-radius: 3px;
+    background-color: var(--color-navy);
+    color: var(--color-cream);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .checkout__button:hover {
+    background-color: var(--color-ink);
+  }
+  @media (min-width: 30rem) {
+    .checkout__button {
+      width: auto;
+    }
+  }
+  .checkout__note {
+    margin-top: 0.7rem;
+    color: var(--color-ink-soft);
+    font-family: var(--font-sans);
+    font-size: var(--text-caption);
+  }
+
+  /* The pocket in the book's cover, the card taken out of it. */
+  .book-pocket {
+    display: block;
+    width: min(100%, 15rem);
+    height: auto;
+    filter: drop-shadow(1px 2px 2px rgb(40 26 14 / 0.2));
+    transform: rotate(var(--tilt, 2deg));
+  }
+  .book-pocket__paper {
+    fill: #e9dcb9;
+    stroke: #d3c29b;
+  }
+  .book-pocket__fold {
+    stroke: #d3c29b;
+  }
+  .book-pocket__rule {
+    stroke: rgb(163 59 48 / 0.45);
+  }
+  .book-pocket__name {
+    fill: var(--color-ink-soft);
+    font-family: var(--font-sans);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .book-pocket__motto {
+    fill: var(--color-ink-soft);
+    font-family: var(--font-serif-italic);
+    font-style: italic;
+    font-size: 11px;
+  }
+}

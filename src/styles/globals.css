@@ -3,6 +3,7 @@
 @import "./shelf.css";
 @import "./book.css";
 @import "./transition.css";
+@import "./donate.css";
 
 /*
  * Design tokens. Everything visual comes from here. Tailwind turns each token

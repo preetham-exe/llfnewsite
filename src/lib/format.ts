@@ -46,3 +46,21 @@ export function formatStamp(value: string): string {
     .map((part) => part.value.toUpperCase())
     .join(" ");
 }
+
+const stampDay = new Intl.DateTimeFormat("en-IN", {
+  day: "2-digit",
+  month: "short",
+  year: "numeric",
+});
+
+/**
+ * A day as a rubber date stamp prints it, in the reader's own time zone:
+ * "18 OCT 2026". For the checkout stamp, so only ever run in the browser.
+ */
+export function stampDate(date: Date): string {
+  return stampDay
+    .formatToParts(date)
+    .filter((part) => part.type !== "literal")
+    .map((part) => part.value.toUpperCase())
+    .join(" ");
+}

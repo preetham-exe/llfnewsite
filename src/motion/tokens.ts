@@ -102,6 +102,34 @@ export const pencil = {
   },
 } as const;
 
+/**
+ * The checkout card on Donate. Choosing a gift circles it in pencil; Check
+ * out brings a rubber stamp down on the card. The stamp lifts, drops, squashes
+ * a little as it lands (the ink shows), settles and lifts away: 0.59 s in all,
+ * under the brief's 0.8 s. It starts `height` px above the card, lifts
+ * `liftBy` more first, and leans `tilt` deg.
+ */
+export const checkout = {
+  circle: 0.45,
+  stamp: {
+    lift: 0.14,
+    drop: 0.12,
+    squash: 0.05,
+    settle: 0.08,
+    away: 0.2,
+    height: 72,
+    liftBy: 16,
+    tilt: -6,
+    /** How flat it squashes on landing (scaleY; scaleX widens to match). */
+    squashTo: 0.92,
+  },
+  /**
+   * The visitor leaves for Milaap as the ink shows, and by this long after
+   * Check out whatever happens: the stamp never holds up the redirect.
+   */
+  leaveBy: 0.8,
+} as const;
+
 export const stagger = {
   settle: 0.06,
 } as const;
