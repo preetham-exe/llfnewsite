@@ -3,7 +3,8 @@
 Cloth and wood are neutral grey (128 means "no change") and are laid over a
 colour with background-blend-mode: overlay, so one texture works for every
 cloth and wood. Paper is a faint brown grain with transparency, laid over the
-paper colour, so text keeps its contrast.
+paper colour, so text keeps its contrast. Ink is a mask for the checkout
+stamp's impression.
 
 Usage (one-off, from the repo root, with Pillow and NumPy installed):
 
@@ -108,6 +109,20 @@ def paper(size: int = 256, seed: int = 5) -> Image.Image:
     return Image.fromarray(np.dstack([colour, alpha]), "RGBA")
 
 
+def ink(size: int = 128, seed: int = 9) -> Image.Image:
+    """A rubber stamp's ink, used as a mask (only its alpha counts): mostly
+    solid, thinner in soft patches, with small gaps where the ink did not
+    take. It wraps, so it tiles over an impression of any size."""
+    rng = np.random.default_rng(seed)
+    patches = _normalise(_periodic_blur(rng.standard_normal((size, size)), 7))
+    specks = _normalise(_periodic_blur(rng.standard_normal((size, size)), 0.7))
+    alpha = 232 + patches * 24
+    alpha = np.where(specks > 1.8, alpha * 0.2, alpha)
+    alpha = np.clip(alpha, 0, 255).round().astype(np.uint8)
+    colour = np.zeros((size, size, 3), np.uint8)
+    return Image.fromarray(np.dstack([colour, alpha]), "RGBA")
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     grain = wood()
@@ -117,6 +132,7 @@ def main() -> None:
         # Upright grain for the bookcase sides and back panel.
         ("wood-v", grain.transpose(Image.Transpose.ROTATE_90)),
         ("paper", paper()),
+        ("ink", ink()),
     )
     for name, image in textures:
         path = OUT / f"{name}.webp"
