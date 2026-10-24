@@ -16,7 +16,8 @@ type PictureFrameProps = {
 
 /**
  * A photo, or a labelled placeholder with the same proportions until the real
- * photo arrives. Both reserve their space, so nothing shifts as they load.
+ * photo arrives. Both reserve their space, so nothing shifts as they load,
+ * and a photo from Sanity shows a blurred copy of itself until it does.
  * A portrait photo is kept narrower (26rem at most, and its `sizes` say
  * so), so it never fills more than a screen.
  */
@@ -37,6 +38,9 @@ export function PictureFrame({
           alt={picture.alt}
           sizes={portrait ? "(min-width: 28rem) 26rem, 100vw" : sizes}
           preload={preload}
+          {...(picture.lqip
+            ? { placeholder: "blur", blurDataURL: picture.lqip }
+            : {})}
           className="h-auto w-full"
         />
         {picture.caption && (

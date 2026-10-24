@@ -1,7 +1,11 @@
 import { todo } from "./helpers";
 import type { Partner } from "./types";
 
-/* Partner organisations. Moves to Sanity in Phase 8. */
+/*
+ * The seed: the partner organisations as Sanity started with them
+ * (scripts/sanity/seed.ts imports these), and what the site shows until a
+ * Sanity project is set up. Pages read them through src/lib/content.ts.
+ */
 export const partners: Partner[] = [
   {
     _id: "robinhood-army",
@@ -10,7 +14,7 @@ export const partners: Partner[] = [
     name: "Robinhood Army",
     about: todo("One line on who Robinhood Army are"),
     produced: "QCity Community Library, opened in April 2026.",
-    website: todo("Robinhood Army website, if you want it linked"),
+    website: null,
     libraries: [
       { slug: "qcity-community-library", name: "QCity Community Library" },
     ],

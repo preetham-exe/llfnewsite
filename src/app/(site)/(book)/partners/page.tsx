@@ -6,7 +6,7 @@ import { Letters } from "@/components/book/Marginalia";
 import { TransitionLink } from "@/components/transition/TransitionLink";
 import { Txt } from "@/components/ui/Txt";
 import { partnersIndex } from "@/content/pages";
-import { partners } from "@/content/partners";
+import { getPartners } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 import { marginalia } from "@/motion/tokens";
 
@@ -16,7 +16,9 @@ export const metadata = pageMetadata({
   path: "/partners",
 });
 
-export default function PartnersPage() {
+export default async function PartnersPage() {
+  const partners = await getPartners();
+
   return (
     <BookPage
       book="partners"

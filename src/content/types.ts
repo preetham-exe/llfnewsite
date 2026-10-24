@@ -3,10 +3,10 @@ import type { Route } from "next";
 /*
  * Content types.
  *
- * Libraries, stories and partners move to Sanity in Phase 8. Each type here is
- * the exact shape the GROQ query for that page will return (references
- * resolved, slugs as plain strings, images with their dimensions), so the pages
- * will not change when the content source does.
+ * Libraries, stories and partners come from Sanity (or the seed in this
+ * folder until it is set up). src/sanity/map.ts turns what the query returns
+ * into these shapes (references resolved, slugs as plain strings, images with
+ * their dimensions), so pages never know where their content came from.
  */
 
 /** Anything the founder still has to supply. Rendered visibly, never shipped. */
@@ -46,6 +46,8 @@ export type Photo = {
   height: number;
   alt: string;
   caption?: string;
+  /** A tiny blurred copy (from Sanity), shown while the photo loads. */
+  lqip?: string;
 };
 
 /** A labelled box with the right proportions, used until the real photo arrives. */

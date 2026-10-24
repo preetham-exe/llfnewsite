@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+import { dataset, projectId } from "./src/sanity/env";
+
 const nextConfig: NextConfig = {
   // Cache Components with Partial Prefetching is the Next.js 16.4 model. The
   // root layout also sets `ensureStatic = "navigation"`, so the build fails if
@@ -10,6 +12,16 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
     formats: ["image/avif", "image/webp"],
+    // Photos uploaded in the Studio, from this project's dataset only.
+    remotePatterns: projectId
+      ? [
+          {
+            protocol: "https",
+            hostname: "cdn.sanity.io",
+            pathname: `/images/${projectId}/${dataset}/**`,
+          },
+        ]
+      : [],
   },
   experimental: {
     // A 404 for unmatched addresses that sits outside the root layout

@@ -10,7 +10,7 @@ import {
 import { TransitionLink } from "@/components/transition/TransitionLink";
 import { Txt } from "@/components/ui/Txt";
 import { storiesIndex, storiesMargins } from "@/content/pages";
-import { stories } from "@/content/stories";
+import { getStories } from "@/lib/content";
 import { formatDate } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
 import { marginalia } from "@/motion/tokens";
@@ -21,7 +21,9 @@ export const metadata = pageMetadata({
   path: "/stories",
 });
 
-export default function StoriesPage() {
+export default async function StoriesPage() {
+  const stories = await getStories();
+
   return (
     <BookPage
       book="stories"

@@ -6,8 +6,8 @@ import { DateDueCard, PressedLeaf } from "@/components/book/Marginalia";
 import { TransitionLink } from "@/components/transition/TransitionLink";
 import { Txt } from "@/components/ui/Txt";
 import { isTodo } from "@/content/helpers";
-import { libraries } from "@/content/libraries";
 import { librariesIndex } from "@/content/pages";
+import { getLibraries } from "@/lib/content";
 import { formatDate, formatStamp } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
 import { marginalia } from "@/motion/tokens";
@@ -18,12 +18,14 @@ export const metadata = pageMetadata({
   path: "/libraries",
 });
 
-/** Each library's opening month, stamped as it opened (confirmed ones only). */
-const stamps = libraries.flatMap(({ openedOn }) =>
-  isTodo(openedOn) ? [] : [formatStamp(openedOn)],
-);
+export default async function LibrariesPage() {
+  const libraries = await getLibraries();
+  /* Each library's opening month, stamped as it opened (confirmed ones
+     only). */
+  const stamps = libraries.flatMap(({ openedOn }) =>
+    isTodo(openedOn) ? [] : [formatStamp(openedOn)],
+  );
 
-export default function LibrariesPage() {
   return (
     <BookPage
       book="libraries"
