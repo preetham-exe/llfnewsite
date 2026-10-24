@@ -438,7 +438,11 @@
     margin-right: 0.6rem;
   }
 
-  @media (min-width: 48rem) {
+  /* Standing books from tablets up, and on a phone turned on its side,
+     where the pile would be too tall to see (the short-landscape variant in
+     globals.css). */
+  @media (min-width: 48rem),
+    (orientation: landscape) and (max-height: 32rem) and (min-width: 46rem) {
     .shelf {
       height: 100%;
     }
@@ -447,6 +451,15 @@
     }
     .pile {
       display: none;
+    }
+  }
+
+  /* A phone on its side: a smaller bookcase beside the headline, so titles
+     may go a little smaller to fit their spines. */
+  @media (orientation: landscape) and (max-height: 32rem) and (min-width: 46rem) {
+    .spine--upright .spine__title {
+      max-width: 88%;
+      font-size: clamp(0.8rem, 14cqi, 2.5rem);
     }
   }
 

@@ -77,6 +77,15 @@
     sans-serif;
 }
 
+/* A phone turned on its side: wide, but too short for the headline above
+   the bookcase. (From 46rem wide: narrower phones keep the stack.) The same
+   media query is in shelf.css; change them together. */
+@custom-variant short-landscape {
+  @media (orientation: landscape) and (max-height: 32rem) and (min-width: 46rem) {
+    @slot;
+  }
+}
+
 @layer base {
   :root {
     color-scheme: only light;
