@@ -25,9 +25,16 @@ import { libraries } from "../../src/content/libraries";
 import { partners } from "../../src/content/partners";
 import { stories } from "../../src/content/stories";
 import type { Picture, Todo } from "../../src/content/types";
-import { apiVersion } from "../../src/sanity/env";
+import { apiVersion, dataset, projectId } from "../../src/sanity/env";
 
 type SeedDocument = { _id: string; _type: string } & Record<string, unknown>;
+
+if (!projectId) {
+  console.error(
+    "No project ID yet: put NEXT_PUBLIC_SANITY_PROJECT_ID=<the project ID> in .env.local. It is on the project's page at sanity.io/manage.",
+  );
+  process.exit(1);
+}
 
 const dryRun = process.argv.includes("--dry-run");
 const client = getCliClient({ apiVersion });
@@ -63,13 +70,6 @@ async function photo(picture: Picture, key?: string) {
 }
 
 async function main() {
-  const { projectId, dataset } = client.config();
-  if (!projectId) {
-    throw new Error(
-      "No project ID: set NEXT_PUBLIC_SANITY_PROJECT_ID in .env.local.",
-    );
-  }
-
   const partnerIds = new Map(partners.map((p) => [p.slug, p._id]));
   const libraryIds = new Map(libraries.map((l) => [l.slug, l._id]));
 
