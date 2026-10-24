@@ -112,6 +112,8 @@
     text-size-adjust: 100%;
     /* Keep the layout still when the scrollbar comes and goes. */
     scrollbar-gutter: stable;
+    /* A tapped link flashes a soft navy on phones, not the browser's grey. */
+    -webkit-tap-highlight-color: rgb(35 49 75 / 0.12);
     scroll-padding-top: calc(var(--nav-height) + 1rem);
   }
 
@@ -191,6 +193,27 @@
 @utility smallcaps {
   font-variant-caps: all-small-caps;
   letter-spacing: var(--tracking-smallcaps);
+}
+
+/* A link or control that stands on its own (not inside a sentence): at
+   least 44 px tall, so a thumb finds it. Links within running text keep
+   the text's own height. */
+@utility tap-target {
+  display: inline-flex;
+  align-items: center;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+}
+
+/* A link inside a tight layout (a card's line) that cannot grow: its hit
+   area reaches past its text, without moving anything. */
+@utility tap-area {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: -0.75rem -0.25rem;
+  }
 }
 
 /* Figures for statistics and tables. */

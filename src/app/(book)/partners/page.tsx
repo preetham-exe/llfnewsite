@@ -47,6 +47,7 @@ export default function PartnersPage() {
                     <TransitionLink
                       href={`/libraries/${library.slug}` as Route}
                       prefetch
+                      className="tap-target"
                     >
                       {library.name}
                     </TransitionLink>

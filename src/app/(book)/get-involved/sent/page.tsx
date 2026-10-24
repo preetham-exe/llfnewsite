@@ -27,7 +27,7 @@ export default function SentPage() {
       kicker={getInvolved.title}
     >
       <p className="font-sans text-ui">
-        <TransitionLink href="/get-involved">
+        <TransitionLink href="/get-involved" className="tap-target">
           {contactForm.sent.back}
         </TransitionLink>
       </p>

@@ -9,7 +9,9 @@ export default function NotFound() {
         <h1 className="text-h1">{notFound.title}</h1>
         <p className="mt-6 text-lede text-ink-soft">{notFound.body}</p>
         <p className="mt-10 font-sans text-ui">
-          <TransitionLink href="/">{notFound.back}</TransitionLink>
+          <TransitionLink href="/" className="tap-target">
+            {notFound.back}
+          </TransitionLink>
         </p>
       </section>
     </div>

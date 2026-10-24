@@ -74,6 +74,7 @@
   .checkout__option {
     position: relative;
     align-items: center;
+    min-height: 2.75rem;
     padding: 0.6rem 0;
     cursor: pointer;
   }
@@ -137,8 +138,15 @@
       transparent 0.28rem
     );
   }
-  .checkout__option:hover .checkout__radio {
-    border-color: var(--color-ink);
+  @media (hover: hover) {
+    .checkout__option:hover .checkout__radio {
+      border-color: var(--color-ink);
+    }
+  }
+  /* The pencil circle answers a tap; no grey flash on top of it. */
+  .checkout__option,
+  .checkout__button {
+    -webkit-tap-highlight-color: transparent;
   }
 
   /* The pencil loop round the chosen gift. Without JavaScript it simply
@@ -268,8 +276,10 @@
     text-decoration: none;
     cursor: pointer;
   }
-  .checkout__button:hover {
-    background-color: var(--color-ink);
+  @media (hover: hover) {
+    .checkout__button:hover {
+      background-color: var(--color-ink);
+    }
   }
   @media (min-width: 30rem) {
     .checkout__button {
