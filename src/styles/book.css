@@ -19,6 +19,9 @@
     --po: 1rem;
     --pi: 1rem;
     --surround: 0px;
+    /* An object turned in the margin can reach past the page's edge: it is
+       cut off rather than letting the page scroll sideways. */
+    overflow-x: clip;
     container: spread / inline-size;
     padding-top: var(--nav-height);
     background-color: var(--color-paper);
@@ -90,6 +93,13 @@
     font-size: var(--text-caption);
     font-variant-caps: all-small-caps;
     letter-spacing: var(--tracking-smallcaps);
+  }
+
+  /* On the narrowest phones the two would wrap: the section's name stays. */
+  @media (max-width: 22.4375rem) {
+    .spread__heads > :last-child {
+      display: none;
+    }
   }
 
   /* The text: one column, which on wide screens is the right-hand page. */
