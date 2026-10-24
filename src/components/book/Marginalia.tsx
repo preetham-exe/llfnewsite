@@ -444,6 +444,34 @@ export function SignUpSheet({
   );
 }
 
+/**
+ * The paper pocket inside a library book's cover, its card taken out (the
+ * checkout card on Donate sits on the facing page). Decorative.
+ */
+export function BookPocket({ name, motto }: { name: string; motto: string }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 220 150"
+      focusable="false"
+      className="book-pocket"
+    >
+      <path
+        d="M4 24 H86 C92 24, 96 34, 110 34 C124 34, 128 24, 134 24 H216 V146 H4 Z"
+        className="book-pocket__paper"
+      />
+      <path d="M4 24 H216" className="book-pocket__fold" />
+      <path d="M22 108 H198 M22 113 H198" className="book-pocket__rule" />
+      <text x="110" y="70" textAnchor="middle" className="book-pocket__name">
+        {name}
+      </text>
+      <text x="110" y="92" textAnchor="middle" className="book-pocket__motto">
+        {motto}
+      </text>
+    </svg>
+  );
+}
+
 /** A page torn from a ruled notebook. Decorative. */
 export function NotebookPage() {
   return <div aria-hidden="true" className="notebook-page" />;

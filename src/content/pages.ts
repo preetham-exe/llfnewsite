@@ -293,33 +293,99 @@ export const contactForm = {
   },
 } as const;
 
-export const donate: PageCopy = {
+export const donate = {
   description:
     "Help Literate Lives Foundation build its next library. Donations are made on Milaap. We are registered under sections 12A and 80G.",
   title: "Donate",
-  lede: "A library for 50 to 60 children costs about ₹20,000 to ₹40,000, shelves included. Your gift helps build the next one.",
+  lede: "A library for 50 to 60 children costs [[about ₹20,000 to ₹40,000]], shelves included. Your gift helps build the next one.",
+  /**
+   * The library checkout card: the card from a library book's pocket, with
+   * gifts on its ruled lines instead of borrowers.
+   */
+  checkout: {
+    labels: { author: "Author", title: "Title" },
+    author: "Literate Lives Foundation",
+    work: "The next library",
+    /** The gifts' column head, and the amounts'. */
+    legend: "Choose a gift",
+    amountHead: "Amount",
+    options: [
+      {
+        id: "book",
+        gift: "One book",
+        amount: todo(
+          "What one book costs (the old site said ₹500 buys 5 storybooks)",
+        ),
+      },
+      {
+        id: "shelf",
+        gift: "A shelf of books",
+        // What a shelf of books costs varies too much to give one amount.
+        amount: null,
+      },
+      {
+        id: "library",
+        gift: "A whole library for 50 to 60 children",
+        amount: "about ₹20,000 to ₹40,000",
+      },
+    ],
+    action: "Check out",
+    note: "You choose the amount and pay on Milaap, our fundraising platform. Nothing is paid on this site.",
+    stamp: "Thank you",
+    /** Said to screen readers as the stamp comes down. */
+    leaving: "Thank you. Taking you to Milaap to finish your gift.",
+  },
   sections: [
     {
       heading: "How giving works",
       paragraphs: [
-        "Donations are made on Milaap, a fundraising platform. You will finish your gift there, and nothing is paid on this site.",
+        "Donations are made on Milaap, a fundraising platform. You choose the amount and finish your gift there, and nothing is paid on this site.",
+      ],
+    },
+    {
+      heading: "Where the money goes",
+      paragraphs: [
+        "A library for 50 to 60 children costs about ₹20,000 to ₹40,000, with its shelves and its books.",
+        todo(
+          "How a library's cost divides between books and shelves, and anything else it pays for",
+        ),
+      ],
+      terms: [
+        {
+          term: "Shelves",
+          detail:
+            "We find the shelving and pay for it, so the institution does not have to.",
+        },
+        {
+          term: "Books",
+          detail:
+            "Mostly fiction and storybooks, in English and in the local language.",
+        },
       ],
     },
     {
       heading: "Tax benefit",
       paragraphs: [
-        "We are registered under sections 12A and 80G of the Income Tax Act.",
+        "We are registered under sections 12A and 80G of the Income Tax Act. If you pay tax in India, your gift may qualify for a deduction under section 80G.",
         todo("Who issues the 80G receipt for Milaap donations, and how"),
       ],
     },
-    {
-      heading: "Larger gifts",
-      paragraphs: [
-        "For a larger gift, or a gift from a company, write to founder@literatelives.org.",
-      ],
+  ] satisfies Section[],
+  registration: {
+    heading: "Registration",
+    terms: {
+      trust: "Trust",
+      section12A: "12A",
+      section80G: "80G",
+      darpan: "NGO DARPAN",
+      pan: "PAN",
     },
-  ],
-};
+  },
+  larger: {
+    heading: "Larger gifts",
+    text: "For a larger gift, or a gift from a company, write to us at",
+  },
+} as const;
 
 export const notFound = {
   title: "This book has been misplaced.",

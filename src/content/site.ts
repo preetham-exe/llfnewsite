@@ -18,7 +18,9 @@ export const site = {
   registrationSummary:
     "Registered as a trust in March 2025. Registered under sections 12A and 80G, and on NGO DARPAN.",
   registrations: {
-    trust: todo("Trust registration number"),
+    trust: todo(
+      "Trust registration number (the old site showed 76/IV/2025: confirm)",
+    ),
     section12A: todo("12A registration number"),
     section80G: todo("80G registration number"),
     darpan: todo("NGO DARPAN ID"),
@@ -27,8 +29,14 @@ export const site = {
   social: todo("Social media links (Instagram, LinkedIn, others)"),
 } as const;
 
-/** Donations happen on Milaap. Nothing is paid on this site. */
-export const MILAAP_URL: string = todo("Milaap campaign link");
+/**
+ * Donations happen on Milaap. Nothing is paid on this site. The live
+ * campaign, "100 Children. 1,000 Books. 1 Library." (from the founder,
+ * 2026-10-24). If no campaign is live, set this back to a todo() and Check
+ * out stamps the card and says so.
+ */
+export const MILAAP_URL: string =
+  "https://milaap.org/fundraisers/support-build-libraries-for-the-underpriviledged";
 
 export const stats = {
   childrenReached: "300+",

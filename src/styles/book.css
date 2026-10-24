@@ -118,9 +118,12 @@
   }
 
   /* An object in the margin. Between blocks of text until the left page
-     exists (xl). */
+     exists (xl). Some only ever appear on the open spread. */
   .spread__margin {
     margin-block: 3rem;
+  }
+  .spread__margin--wide-only {
+    display: none;
   }
 
   /* Page numbers, at the foot of each page: one page, one number, until
@@ -207,6 +210,9 @@
     }
     .spread__margin {
       margin-block: 2.5rem 0;
+    }
+    .spread__margin--wide-only {
+      display: block;
     }
     .spread__margin--narrow {
       width: calc((50cqi - var(--po) - var(--pi)) * 0.62);
