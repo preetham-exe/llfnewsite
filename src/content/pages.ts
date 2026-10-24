@@ -320,9 +320,8 @@ export const donate = {
       {
         id: "shelf",
         gift: "A shelf of books",
-        amount: todo(
-          "What a shelf of books costs (the old site said ₹2,000 stocks a full row)",
-        ),
+        // What a shelf of books costs varies too much to give one amount.
+        amount: null,
       },
       {
         id: "library",

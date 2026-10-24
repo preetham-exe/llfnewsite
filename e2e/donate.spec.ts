@@ -6,16 +6,16 @@ import { checkout, transition } from "../src/motion/tokens";
 
 /* Phase 6 acceptance: Donate. The library checkout card offers gifts on its
    ruled lines and circles the chosen one in pencil. Check out stamps the
-   card (THANK YOU and today's date, in under 0.8 s) and goes to Milaap in
-   the same tab; nothing is paid on this site. Until the content has a
-   Milaap link, Donate stamps the card and says so, and the redirect itself
-   is tested on /dev/checkout, whose card has a stand-in link. No request
-   ever reaches Milaap: they are all answered here. */
+   card (THANK YOU and today's date, in under 0.8 s) and goes to the Milaap
+   campaign in the same tab; nothing is paid on this site. No request ever
+   reaches Milaap: a stand-in answers them all here. */
 
 const isPhone = (page: Page) => (page.viewportSize()?.width ?? 0) < 768;
 
-const BENCH = "/dev/checkout";
-const STAND_IN = /milaap\.org\/fundraisers\/checkout-test-bench$/;
+/** The campaign's address, exactly as the browser asks for it. */
+const MILAAP = new RegExp(
+  `^${MILAAP_URL.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`,
+);
 
 // On the whole context, so new tabs are caught too.
 test.beforeEach(async ({ context }) => {
@@ -28,13 +28,13 @@ test.beforeEach(async ({ context }) => {
 });
 
 /**
- * Opens the bench with the page's clock under the test's control, so the
+ * Opens Donate with the page's clock under the test's control, so the
  * stamp's timing can be checked step by step whatever the machine's load.
  * Returns Check out, ready to press: then move the clock with runFor.
  */
-async function benchOnTestClock(page: Page) {
+async function donateOnTestClock(page: Page) {
   await page.clock.install();
-  await page.goto(BENCH);
+  await page.goto("/donate");
   await page.waitForLoadState("networkidle");
   const link = page.getByRole("link", { name: "Check out" });
   await link.scrollIntoViewIfNeeded();
@@ -45,7 +45,7 @@ async function benchOnTestClock(page: Page) {
 
 const gift = (page: Page, name: RegExp) => page.getByRole("radio", { name });
 
-/** The visible (and fully drawn) pencil circle of a gift's line, if any. */
+/** The pencil circle on a gift's line. */
 const circleOf = (radio: Locator) =>
   radio.locator(
     "xpath=ancestor::label[contains(@class, 'checkout__option')]//*[local-name()='svg']",
@@ -91,9 +91,10 @@ test.describe("the checkout card", () => {
     await expect(
       gift(page, /^A whole library for 50 to 60 children/),
     ).toBeVisible();
-    await expect(page.locator(".checkout__option").last()).toContainText(
-      "about ₹20,000 to ₹40,000",
-    );
+    const amounts = page.locator(".checkout__amount");
+    // What a shelf costs varies, so its line gives no amount.
+    await expect(amounts.nth(1)).toBeEmpty();
+    await expect(amounts.nth(2)).toHaveText("about ₹20,000 to ₹40,000");
     await expect(page.locator(".checkout__note").first()).toContainText(
       "Nothing is paid on this site.",
     );
@@ -103,11 +104,11 @@ test.describe("the checkout card", () => {
     ).toHaveCount(0);
 
     if (isTodo(MILAAP_URL)) {
-      // Until there is a Milaap link, Check out says so.
+      // Without a campaign, Check out says so.
       await expect(
         page.getByRole("button", { name: "Check out" }),
       ).toBeVisible();
-      await expect(page.getByText(/TODO: Milaap campaign link/)).toBeVisible();
+      await expect(page.getByText(/TODO: Milaap/)).toBeVisible();
     } else {
       await expect(
         page.getByRole("link", { name: "Check out" }),
@@ -127,27 +128,12 @@ test.describe("the checkout card", () => {
     await expect(circleOf(library)).toBeVisible();
     await expect(circleOf(shelf)).toBeHidden();
   });
-
-  test("Check out stamps the card with THANK YOU and today's date", async ({
-    page,
-  }) => {
-    await page.goto("/donate");
-    await gift(page, /^A whole library/).check();
-    await page.getByRole("button", { name: "Check out" }).click();
-    const ink = page.locator(".checkout__ink");
-    await expect(ink).toBeVisible();
-    await expect(ink).toContainText("Thank you", { ignoreCase: true });
-    await expect(ink).toContainText(await today(page));
-    // The stamp has lifted away, leaving its impression.
-    await expect(page.locator(".checkout__stamp")).toBeHidden();
-    await expect(page.locator("[data-checkout-live]")).toHaveText(
-      "Thank you. Taking you to Milaap to finish your gift.",
-    );
-  });
 });
 
 test.describe("going to Milaap", () => {
-  test("the stamp comes down, then Milaap opens in the same tab within 0.8 s", async ({
+  test.skip(isTodo(MILAAP_URL), "There is no Milaap campaign in the content");
+
+  test("the stamp prints THANK YOU and today's date, then Milaap opens in the same tab within 0.8 s", async ({
     page,
     context,
   }) => {
@@ -155,21 +141,30 @@ test.describe("going to Milaap", () => {
     context.on("page", () => popups++);
     const asked: string[] = [];
     page.on("request", (request) => {
-      if (STAND_IN.test(request.url())) asked.push(request.url());
+      if (MILAAP.test(request.url())) asked.push(request.url());
     });
-    const link = await benchOnTestClock(page);
+    const link = await donateOnTestClock(page);
+    await gift(page, /^A whole library/).check({ force: true });
     await link.click({ force: true, noWaitAfter: true });
-    // The stamp is on its way down: nobody has left yet.
-    await page.clock.runFor(300);
+
+    // The stamp has landed and the ink has taken: nobody has left yet.
+    await page.clock.runFor(330);
     await expect(page.locator(".checkout__stamp")).toBeVisible();
+    const ink = page.locator(".checkout__ink");
+    await expect(ink).toBeVisible();
+    await expect(ink).toContainText("Thank you", { ignoreCase: true });
+    await expect(ink).toContainText(await today(page));
+    await expect(page.locator("[data-checkout-live]")).toHaveText(
+      "Thank you. Taking you to Milaap to finish your gift.",
+    );
     expect(asked).toHaveLength(0);
-    // The ink has taken by now, and the visitor is on the way to Milaap,
-    // well inside the 0.8 s the brief allows.
-    const leaving = page.waitForRequest(STAND_IN);
-    await page.clock.runFor(checkout.leaveBy * 1000 - 300);
+
+    // And now the visitor is on the way, well inside the 0.8 s allowed.
+    const leaving = page.waitForRequest(MILAAP);
+    await page.clock.runFor(checkout.leaveBy * 1000 - 330);
     await leaving;
     await page.clock.resume();
-    await expect(page).toHaveURL(STAND_IN);
+    await expect(page).toHaveURL(MILAAP);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
       "Milaap stand-in",
     );
@@ -180,23 +175,23 @@ test.describe("going to Milaap", () => {
     page,
   }) => {
     test.skip(isPhone(page), "A keyboard check, on desktop");
-    await page.goto(BENCH);
+    await page.goto("/donate");
     await gift(page, /^One book/).focus();
     await page.keyboard.press("Space");
     await page.keyboard.press("ArrowDown");
     await expect(gift(page, /^A shelf of books/)).toBeChecked();
     await expect(gift(page, /^A shelf of books/)).toBeFocused();
     await page.getByRole("link", { name: "Check out" }).focus();
-    const leaving = page.waitForRequest(STAND_IN);
+    const leaving = page.waitForRequest(MILAAP);
     await page.keyboard.press("Enter");
     await leaving;
-    await expect(page).toHaveURL(STAND_IN);
+    await expect(page).toHaveURL(MILAAP);
   });
 
   test("a click with a modifier is left to the browser (a new tab), with no stamp", async ({
     page,
   }) => {
-    await page.goto(BENCH);
+    await page.goto("/donate");
     await page.waitForLoadState("networkidle");
     // After the card has had its say, note whether it held the click back,
     // then hold it back here so the test never leaves for Milaap.
@@ -222,38 +217,20 @@ test.describe("going to Milaap", () => {
   test.describe("with reduced motion", () => {
     test.use({ reducedMotion: "reduce" });
 
-    test("the impression simply appears, and Milaap opens at once", async ({
+    test("no stamp comes down: the impression appears and Milaap opens at once", async ({
       page,
     }) => {
-      const link = await benchOnTestClock(page);
+      const link = await donateOnTestClock(page);
       await link.click({ force: true, noWaitAfter: true });
-      const leaving = page.waitForRequest(STAND_IN);
+      await page.clock.runFor(100);
+      await expect(page.locator(".checkout__stamp")).toBeHidden();
+      await expect(page.locator(".checkout__ink")).toBeVisible();
       // Just the short fade of the ink, then off.
-      await page.clock.runFor(transition.reducedFade * 1000 + 50);
+      const leaving = page.waitForRequest(MILAAP);
+      await page.clock.runFor(transition.reducedFade * 1000);
       await leaving;
       await page.clock.resume();
-      await expect(page).toHaveURL(STAND_IN);
-    });
-
-    test("the stamp never comes down on Donate", async ({ page }) => {
-      await page.goto("/donate");
-      const seen = page.evaluate(
-        () =>
-          new Promise<boolean>((resolve) => {
-            const stamp = document.querySelector(".checkout__stamp");
-            if (!stamp) return resolve(false);
-            const watch = new MutationObserver(() => {
-              if (getComputedStyle(stamp).visibility === "visible") {
-                resolve(true);
-              }
-            });
-            watch.observe(stamp, { attributes: true });
-            setTimeout(() => resolve(false), 1500);
-          }),
-      );
-      await page.getByRole("button", { name: "Check out" }).click();
-      expect(await seen).toBe(false);
-      await expect(page.locator(".checkout__ink")).toBeVisible();
+      await expect(page).toHaveURL(MILAAP);
     });
   });
 
@@ -261,19 +238,23 @@ test.describe("going to Milaap", () => {
     test.use({ javaScriptEnabled: false });
 
     test("Check out is a real link to Milaap", async ({ page }) => {
-      await page.goto(BENCH);
-      const link = page.getByRole("link", { name: "Check out" });
-      await expect(link).toHaveAttribute("href", STAND_IN);
-      await link.click();
-      await expect(page).toHaveURL(STAND_IN);
-    });
-
-    test("a chosen gift still shows its pencil circle", async ({ page }) => {
       await page.goto("/donate");
-      const library = gift(page, /^A whole library/);
-      await library.check();
-      await expect(circleOf(library)).toBeVisible();
+      const link = page.getByRole("link", { name: "Check out" });
+      await expect(link).toHaveAttribute("href", MILAAP_URL);
+      await link.click();
+      await expect(page).toHaveURL(MILAAP);
     });
+  });
+});
+
+test.describe("without JavaScript", () => {
+  test.use({ javaScriptEnabled: false });
+
+  test("a chosen gift still shows its pencil circle", async ({ page }) => {
+    await page.goto("/donate");
+    const library = gift(page, /^A whole library/);
+    await library.check();
+    await expect(circleOf(library)).toBeVisible();
   });
 });
 

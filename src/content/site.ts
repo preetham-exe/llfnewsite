@@ -29,10 +29,14 @@ export const site = {
   social: todo("Social media links (Instagram, LinkedIn, others)"),
 } as const;
 
-/** Donations happen on Milaap. Nothing is paid on this site. */
-export const MILAAP_URL: string = todo(
-  "Milaap campaign link (the old site's fundraiser now shows Not found on Milaap)",
-);
+/**
+ * Donations happen on Milaap. Nothing is paid on this site. The live
+ * campaign, "100 Children. 1,000 Books. 1 Library." (from the founder,
+ * 2026-10-24). If no campaign is live, set this back to a todo() and Check
+ * out stamps the card and says so.
+ */
+export const MILAAP_URL: string =
+  "https://milaap.org/fundraisers/support-build-libraries-for-the-underpriviledged";
 
 export const stats = {
   childrenReached: "300+",

@@ -246,8 +246,9 @@ export function CheckoutCard({ copy, destination }: CheckoutCardProps) {
                   <path d="M9 6 C30 0.5, 76 0, 93 7.5 C104 13, 97 26, 70 28.4 C44 30.4, 9 29.4, 3.5 20 C-1 12, 11 4.4, 29 2.6" />
                 </svg>
               </span>
+              {/* Left blank where the amount varies (a shelf of books). */}
               <span className="checkout__amount figures-lining">
-                <Txt>{option.amount}</Txt>
+                {option.amount && <Txt>{option.amount}</Txt>}
               </span>
             </label>
           ))}
