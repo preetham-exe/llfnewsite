@@ -360,8 +360,9 @@
   }
 
   /* First visit of a session: books start a little above their places and
-     settle (ShelfMotion). The inline script in the root layout sets the
-     attribute and the distance, and removes it if JavaScript stalls. */
+     settle (ShelfMotion). The inline script in the document (Document.tsx)
+     sets the attribute and the distance, and removes it if JavaScript
+     stalls. */
   html[data-shelf-settle] .bookcase__book,
   html[data-shelf-settle] .pile__book {
     transform: translateY(calc(var(--shelf-settle, 20px) * -1));

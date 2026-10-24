@@ -12,6 +12,9 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
   },
   experimental: {
+    // A 404 for unmatched addresses that sits outside the root layout
+    // (app/global-not-found.tsx), so the site's styles never reach the Studio.
+    globalNotFound: true,
     // Turbopack's build cache (on by default since 16.3) served stale CSS
     // twice: Tailwind's loader does not tell it about every input, so a new
     // @import or a changed @custom-variant was missed. Vercel restores that

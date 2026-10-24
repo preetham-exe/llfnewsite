@@ -1,7 +1,7 @@
 import { MONOGRAM } from "./paths";
 
 /**
- * Defines the LLF monogram once per page, in the root layout. Every spine,
+ * Defines the LLF monogram once per page, in the site's shell. Every spine,
  * cover and the nav reuse it through <Monogram />, so the path is sent once.
  */
 export function MonogramSymbol() {

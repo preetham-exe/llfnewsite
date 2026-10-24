@@ -12,7 +12,7 @@ import { site } from "@/content/site";
 import { DonateButton } from "./DonateButton";
 
 /**
- * The persistent top bar. It lives in the root layout and never unmounts.
+ * The persistent top bar. It lives in the site's shell and never unmounts.
  * On the shelf it shows the name and Donate; on every other page it shows
  * Back to the shelf, the sections, and Donate. It follows the page on
  * screen, so during a transition it changes when the new page shows. The

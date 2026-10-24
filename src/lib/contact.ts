@@ -1,7 +1,7 @@
 /*
  * The contact form on Get Involved: its fields, how long each may be, and
  * what the form shows after it is sent. Shared by the form (ContactForm) and
- * the server action that emails it (app/(book)/get-involved/actions.ts).
+ * the server action that emails it (app/(site)/(book)/get-involved/actions.ts).
  */
 
 export const contactFields = [
