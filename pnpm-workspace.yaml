@@ -1,3 +1,13 @@
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
+
+# Patched versions of packages the Sanity CLI pulls in (pnpm audit flagged
+# the older ones). Same major versions, except uuid 10 to 11, whose API the
+# CLI's use (typeid-js) is unchanged in.
+overrides:
+  "js-yaml@>=3.0.0 <3.15.2": "3.15.2"
+  "smol-toml@<1.9.1": "1.9.1"
+  "undici@>=7.0.0 <7.30.1": "7.30.1"
+  "zod@>=4.0.0 <4.6.6": "4.6.6"
+  "uuid@<11.1.1": "11.1.1"
