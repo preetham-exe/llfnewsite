@@ -14,7 +14,8 @@
     "check:copy": "node scripts/check-copy.mjs",
     "check": "pnpm lint && pnpm typecheck && pnpm check:copy && pnpm format:check",
     "test:e2e": "playwright test",
-    "screenshots": "playwright test e2e/screenshots.spec.ts"
+    "screenshots": "playwright test e2e/screenshots.spec.ts",
+    "sanity:seed": "sanity exec scripts/sanity/seed.ts --with-user-token"
   },
   "engines": {
     "node": "24.x"
