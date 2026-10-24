@@ -67,7 +67,9 @@ export default async function LibraryPage({
       detail: isTodo(partner) ? (
         <Txt>{partner}</Txt>
       ) : (
-        <TransitionLink href="/partners">{partner.name}</TransitionLink>
+        <TransitionLink href="/partners" className="tap-area">
+          {partner.name}
+        </TransitionLink>
       ),
     },
     {
@@ -114,7 +116,9 @@ export default async function LibraryPage({
       </section>
 
       <p className="mt-16 font-sans text-ui">
-        <TransitionLink href="/libraries">All libraries</TransitionLink>
+        <TransitionLink href="/libraries" className="tap-target">
+          All libraries
+        </TransitionLink>
       </p>
     </BookPage>
   );

@@ -31,15 +31,18 @@ export default function HomePage() {
       <JsonLd data={organizationJsonLd()} />
 
       {/* The first screen: what LLF does, then the bookcase filling the rest
-          of the screen (between 26rem and 46rem tall on larger screens). */}
-      <section className="wall grid min-h-[calc(100svh-var(--nav-height))] md:grid-rows-[auto_1fr]">
-        <div className="mx-auto w-full max-w-page px-4 pt-10 pb-8 sm:px-6 sm:pt-14 md:pb-10">
-          <h1 className="max-w-[22ch] text-display">{home.headline}</h1>
+          of the screen (between 26rem and 46rem tall on larger screens). On
+          a phone turned on its side the two sit side by side instead. */}
+      <section className="wall grid min-h-[calc(100svh-var(--nav-height))] md:grid-rows-[auto_1fr] short-landscape:h-[calc(100svh-var(--nav-height))] short-landscape:grid-cols-[minmax(0,3fr)_minmax(0,7fr)] short-landscape:grid-rows-1">
+        <div className="mx-auto w-full max-w-page px-4 pt-10 pb-8 sm:px-6 sm:pt-14 md:pb-10 short-landscape:self-center short-landscape:py-4">
+          <h1 className="max-w-[22ch] text-display short-landscape:text-h2">
+            {home.headline}
+          </h1>
           <p className="mt-4 font-serif-italic text-lede text-ink-soft">
             {site.tagline}
           </p>
         </div>
-        <div className="md:max-h-[46rem] md:min-h-[26rem]">
+        <div className="md:max-h-[46rem] md:min-h-[26rem] short-landscape:min-h-0 short-landscape:py-3 short-landscape:pr-3">
           <ShelfMotion>
             <Shelf />
           </ShelfMotion>

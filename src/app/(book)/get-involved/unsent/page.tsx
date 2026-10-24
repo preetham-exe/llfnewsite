@@ -32,7 +32,7 @@ export default function UnsentPage() {
         <a href={`mailto:${site.email}`}>{site.email}</a>.
       </p>
       <p className="mt-8 font-sans text-ui">
-        <TransitionLink href="/get-involved">
+        <TransitionLink href="/get-involved" className="tap-target">
           {contactForm.unsent.back}
         </TransitionLink>
       </p>

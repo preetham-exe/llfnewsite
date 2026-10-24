@@ -17,7 +17,7 @@ import { DonateButton } from "./DonateButton";
  * Back to the shelf, the sections, and Donate. It follows the page on
  * screen, so during a transition it changes when the new page shows. The
  * mobile menu is a <details> element, so it opens without JavaScript;
- * Escape closes it.
+ * Escape, or a tap anywhere else, closes it.
  */
 export function PersistentNav() {
   const pathname = usePathname();
@@ -32,6 +32,18 @@ export function PersistentNav() {
   useEffect(() => {
     if (menuRef.current) menuRef.current.open = false;
   }, [pathname]);
+
+  // A tap or click anywhere else closes the menu, as menus on phones do.
+  useEffect(() => {
+    const closeOutside = (event: PointerEvent) => {
+      const menu = menuRef.current;
+      if (menu?.open && !menu.contains(event.target as Node)) {
+        menu.open = false;
+      }
+    };
+    document.addEventListener("pointerdown", closeOutside);
+    return () => document.removeEventListener("pointerdown", closeOutside);
+  }, []);
 
   const closeMenu = (event: KeyboardEvent<HTMLDetailsElement>) => {
     const menu = menuRef.current;
@@ -49,7 +61,7 @@ export function PersistentNav() {
           <TransitionLink
             href="/"
             aria-label={site.name}
-            className="inline-flex items-center gap-2.5 font-serif text-[1.0625rem] smallcaps whitespace-nowrap text-navy no-underline"
+            className="inline-flex min-h-11 items-center gap-2.5 font-serif text-[1.0625rem] smallcaps whitespace-nowrap text-navy no-underline"
           >
             <Monogram className="h-6 shrink-0" />
             {/* "Foundation" waits for room beside Donate. */}
@@ -61,7 +73,7 @@ export function PersistentNav() {
         ) : (
           <TransitionLink
             href="/"
-            className="inline-flex min-h-10 items-center gap-2 no-underline hover:underline"
+            className="inline-flex min-h-11 items-center gap-2 no-underline hover:underline"
           >
             <span aria-hidden="true">←</span>
             Back to the shelf
@@ -93,12 +105,15 @@ export function PersistentNav() {
               onKeyDown={closeMenu}
               className="relative lg:hidden"
             >
-              <summary className="flex min-h-10 cursor-pointer list-none items-center px-3 [&::-webkit-details-marker]:hidden">
+              <summary className="flex min-h-11 cursor-pointer list-none items-center px-3 [&::-webkit-details-marker]:hidden">
                 Menu
               </summary>
+              {/* A sheet the width of the screen under the bar on phones (a
+                  panel hung from Menu would run off the left edge there),
+                  a panel beside Menu from sm up. */}
               <nav
                 aria-label="Sections"
-                className="absolute top-full right-0 mt-2 w-60 border border-paper-edge bg-paper py-2 shadow-[0_8px_24px_rgb(31_26_21/0.12)]"
+                className="fixed inset-x-0 top-(--nav-height) border-b border-paper-edge bg-paper py-2 shadow-[0_8px_24px_rgb(31_26_21/0.12)] sm:absolute sm:inset-x-auto sm:top-full sm:right-0 sm:mt-2 sm:w-60 sm:border"
               >
                 <ul>
                   {books.map((book) => (
@@ -106,7 +121,7 @@ export function PersistentNav() {
                       <TransitionLink
                         href={book.href}
                         aria-current={isCurrent(book.href) ? "page" : undefined}
-                        className="block px-4 py-2.5 no-underline hover:bg-paper-shade aria-[current=page]:underline"
+                        className="flex min-h-11 items-center px-4 no-underline hover:bg-paper-shade aria-[current=page]:underline"
                       >
                         {book.spineTitle}
                       </TransitionLink>

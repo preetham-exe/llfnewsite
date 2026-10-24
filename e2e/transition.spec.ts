@@ -82,8 +82,9 @@ test.describe("opening a book", () => {
   async function skipPartway(page: Page, skip: () => Promise<void>) {
     await openShelf(page);
     await shelfBook(page, "Our Story").click();
+    // The real page, not the copy of it the landing fades in.
     await expect(
-      page.locator("main h1").filter({ hasText: "Our Story" }),
+      page.locator("[data-page-root] main h1").filter({ hasText: "Our Story" }),
     ).toBeAttached();
     await page.waitForTimeout(100);
     expect(

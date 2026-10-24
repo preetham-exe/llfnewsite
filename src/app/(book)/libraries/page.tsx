@@ -31,7 +31,7 @@ export default function LibrariesPage() {
       lede={librariesIndex.lede}
     >
       <Margin drift={marginalia.card}>
-        <div className="flex items-start gap-8">
+        <div className="flex items-start gap-5 sm:gap-8">
           <DateDueCard stamps={stamps} />
           <div className="mt-16">
             <PressedLeaf />

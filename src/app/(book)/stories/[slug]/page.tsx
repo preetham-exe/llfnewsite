@@ -85,7 +85,9 @@ export default async function StoryPage({
       </div>
 
       <p className="mt-16 font-sans text-ui">
-        <TransitionLink href="/stories">All stories</TransitionLink>
+        <TransitionLink href="/stories" className="tap-target">
+          All stories
+        </TransitionLink>
       </p>
     </BookPage>
   );

@@ -16,7 +16,7 @@ export function DonateButton({
     <TransitionLink
       href="/donate"
       aria-current={current ? "page" : undefined}
-      className={`inline-flex min-h-10 items-center rounded-[3px] bg-navy px-4 font-sans text-ui font-semibold text-cream no-underline hover:bg-ink ${className}`}
+      className={`inline-flex min-h-11 items-center rounded-[3px] bg-navy px-4 font-sans text-ui font-semibold text-cream no-underline hover:bg-ink ${className}`}
     >
       {children}
     </TransitionLink>

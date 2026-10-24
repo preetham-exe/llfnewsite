@@ -29,7 +29,9 @@ export function Footer() {
         <div>
           <h2 className="font-serif smallcaps text-ink">Contact</h2>
           <p className="mt-3">
-            <a href={`mailto:${site.email}`}>{site.email}</a>
+            <a href={`mailto:${site.email}`} className="tap-target">
+              {site.email}
+            </a>
           </p>
           <p className="mt-3">
             <Txt>{site.social}</Txt>
@@ -45,12 +47,12 @@ export function Footer() {
         </div>
 
         <nav aria-label="Footer" className="md:col-span-3">
-          <ul className="flex flex-wrap gap-x-5 gap-y-2">
+          <ul className="flex flex-wrap gap-x-5">
             {books.map((book) => (
               <li key={book.id}>
                 <TransitionLink
                   href={book.href}
-                  className="no-underline hover:underline"
+                  className="tap-target no-underline hover:underline"
                 >
                   {book.spineTitle}
                 </TransitionLink>
