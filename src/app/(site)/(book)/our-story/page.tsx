@@ -12,6 +12,7 @@ export const metadata = pageMetadata({
   title: ourStory.title,
   description: ourStory.description,
   path: "/our-story",
+  ownShareImage: true,
 });
 
 /** What sits in the margin beside each section, in order. */

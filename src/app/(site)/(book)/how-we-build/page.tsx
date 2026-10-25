@@ -12,6 +12,7 @@ export const metadata = pageMetadata({
   title: howWeBuild.title,
   description: howWeBuild.description,
   path: "/how-we-build",
+  ownShareImage: true,
 });
 
 /**

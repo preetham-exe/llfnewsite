@@ -12,6 +12,7 @@ export const metadata = pageMetadata({
   title: getInvolved.title,
   description: getInvolved.description,
   path: "/get-involved",
+  ownShareImage: true,
 });
 
 export default function GetInvolvedPage() {

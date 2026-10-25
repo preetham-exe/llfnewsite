@@ -14,6 +14,7 @@ export const metadata = pageMetadata({
   title: partnersIndex.title,
   description: partnersIndex.description,
   path: "/partners",
+  ownShareImage: true,
 });
 
 export default async function PartnersPage() {

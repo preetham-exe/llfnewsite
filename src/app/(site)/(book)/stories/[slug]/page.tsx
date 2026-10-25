@@ -5,12 +5,16 @@ import { BookPage } from "@/components/book/BookPage";
 import { Margin } from "@/components/book/Margin";
 import { InkPen } from "@/components/book/Marginalia";
 import { TransitionLink } from "@/components/transition/TransitionLink";
+import { JsonLd } from "@/components/ui/JsonLd";
 import { PictureFrame } from "@/components/ui/PictureFrame";
 import { RichText } from "@/components/ui/RichText";
 import { Txt } from "@/components/ui/Txt";
 import { isTodo } from "@/content/helpers";
+import { storiesIndex } from "@/content/pages";
+import { site } from "@/content/site";
 import { getStories, getStory } from "@/lib/content";
 import { formatDate } from "@/lib/format";
+import { breadcrumbJsonLd, storyJsonLd } from "@/lib/json-ld";
 import { pageMetadata } from "@/lib/seo";
 import { marginalia } from "@/motion/tokens";
 
@@ -47,6 +51,7 @@ export async function generateMetadata({
       : story.dek,
     path: `/stories/${story.slug}`,
     type: "article",
+    ownShareImage: true,
   });
 }
 
@@ -59,6 +64,17 @@ export default async function StoryPage({
 
   return (
     <BookPage book="stories" title={story.title} lede={story.dek}>
+      <JsonLd data={storyJsonLd(story)} />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: site.name, path: "/" },
+          { name: storiesIndex.title, path: "/stories" },
+          {
+            name: isTodo(story.title) ? "A story" : story.title,
+            path: `/stories/${story.slug}`,
+          },
+        ])}
+      />
       <p className="font-sans text-ui text-ink-soft">
         <Txt>{story.author}</Txt>
         {" · "}

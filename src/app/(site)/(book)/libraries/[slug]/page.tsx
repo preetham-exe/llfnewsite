@@ -5,13 +5,17 @@ import { BookPage } from "@/components/book/BookPage";
 import { Margin } from "@/components/book/Margin";
 import { CatalogueCard } from "@/components/book/Marginalia";
 import { TransitionLink } from "@/components/transition/TransitionLink";
+import { JsonLd } from "@/components/ui/JsonLd";
 import { PictureFrame } from "@/components/ui/PictureFrame";
 import { RichText } from "@/components/ui/RichText";
 import { Txt } from "@/components/ui/Txt";
 import { isTodo } from "@/content/helpers";
+import { librariesIndex } from "@/content/pages";
+import { site } from "@/content/site";
 import type { Library, LibrarySize } from "@/content/types";
 import { getLibraries, getLibrary } from "@/lib/content";
 import { formatCount, formatDate } from "@/lib/format";
+import { breadcrumbJsonLd, libraryJsonLd } from "@/lib/json-ld";
 import { pageMetadata } from "@/lib/seo";
 
 /*
@@ -57,6 +61,7 @@ export async function generateMetadata({
       ? `Library #${library.number}, built by Literate Lives Foundation.`
       : library.summary,
     path: `/libraries/${library.slug}`,
+    ownShareImage: true,
   });
 }
 
@@ -102,6 +107,17 @@ export default async function LibraryPage({
       lede={library.summary}
       kicker={`Library #${library.number}`}
     >
+      <JsonLd data={libraryJsonLd(library)} />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: site.name, path: "/" },
+          { name: librariesIndex.title, path: "/libraries" },
+          {
+            name: libraryTitle(library),
+            path: `/libraries/${library.slug}`,
+          },
+        ])}
+      />
       {/* The library's facts, as its card in the catalogue: on the left
           page beside the photos, or first on smaller screens. */}
       <Margin>

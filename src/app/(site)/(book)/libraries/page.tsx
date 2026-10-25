@@ -16,6 +16,7 @@ export const metadata = pageMetadata({
   title: librariesIndex.title,
   description: librariesIndex.description,
   path: "/libraries",
+  ownShareImage: true,
 });
 
 export default async function LibrariesPage() {
