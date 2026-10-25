@@ -1,0 +1,154 @@
+{
+  "libraries": [
+    {
+      "_id": "library-1",
+      "number": 1,
+      "name": "TODO: Name of Library #1",
+      "slug": "library-1",
+      "city": "TODO: City of Library #1",
+      "partner": null,
+      "openedOn": "2025-01",
+      "booksPlaced": null,
+      "childrenServed": null,
+      "size": null,
+      "summary": "TODO: One or two sentences about Library #1",
+      "photos": null,
+      "launchDay": [
+        {
+          "_type": "block",
+          "_key": "library-1-launch-0",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "library-1-launch-0-0",
+              "text": "TODO: A short account of launch day at Library #1",
+              "marks": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "_id": "library-2",
+      "number": 2,
+      "name": "TODO: Name of Library #2",
+      "slug": "library-2",
+      "city": "TODO: City of Library #2",
+      "partner": null,
+      "openedOn": null,
+      "booksPlaced": null,
+      "childrenServed": null,
+      "size": null,
+      "summary": "TODO: One or two sentences about Library #2",
+      "photos": null,
+      "launchDay": null
+    },
+    {
+      "_id": "qcity-community-library",
+      "number": 3,
+      "name": "QCity Community Library",
+      "slug": "qcity-community-library",
+      "city": "TODO: Confirm the city of QCity Community Library",
+      "partner": { "slug": "robinhood-army", "name": "Robinhood Army" },
+      "openedOn": "2026-04",
+      "booksPlaced": null,
+      "childrenServed": null,
+      "size": null,
+      "summary": "Our third library, built with Robinhood Army and opened in April 2026.",
+      "photos": [
+        {
+          "alt": "A boy smiles as he reads a book beside a white bookshelf decorated with green balloons.",
+          "caption": "TODO: Confirm this photo is from QCity Community Library (taken 12 April 2026), and add a caption",
+          "src": "/photos/boy-reading-by-new-shelf.jpg",
+          "width": 1800,
+          "height": 2400,
+          "lqip": null
+        }
+      ],
+      "launchDay": null
+    }
+  ],
+  "stories": [
+    {
+      "_id": "first-story",
+      "title": "TODO: Title of the first story",
+      "slug": "first-story",
+      "dek": "TODO: One sentence that says what the story is about",
+      "author": "TODO: Author's name, or first name only for a child",
+      "publishedOn": null,
+      "library": null,
+      "cover": null,
+      "body": [
+        {
+          "_type": "block",
+          "_key": "first-story-body-0",
+          "style": "normal",
+          "markDefs": [],
+          "children": [
+            {
+              "_type": "span",
+              "_key": "first-story-body-0-0",
+              "text": "TODO: The first story. Writing from the team, or from a child at one of our libraries, shared with permission.",
+              "marks": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "partners": [
+    {
+      "_id": "robinhood-army",
+      "name": "Robinhood Army",
+      "slug": "robinhood-army",
+      "about": "TODO: One line on who Robinhood Army are",
+      "produced": "QCity Community Library, opened in April 2026.",
+      "website": null,
+      "libraries": [
+        {
+          "slug": "qcity-community-library",
+          "name": "QCity Community Library",
+          "number": 3
+        }
+      ]
+    },
+    {
+      "_id": "mana-foundation",
+      "name": "MANA Foundation",
+      "slug": "mana-foundation",
+      "about": "TODO: One line on who MANA Foundation are",
+      "produced": "TODO: What the partnership with MANA Foundation produced",
+      "website": null,
+      "libraries": []
+    },
+    {
+      "_id": "chavadi-child-welfare-society",
+      "name": "Chavadi Child Welfare Society",
+      "slug": "chavadi-child-welfare-society",
+      "about": "TODO: One line on who Chavadi Child Welfare Society are",
+      "produced": "TODO: What the partnership with Chavadi Child Welfare Society produced",
+      "website": null,
+      "libraries": []
+    },
+    {
+      "_id": "aara-initiative",
+      "name": "AARA Initiative",
+      "slug": "aara-initiative",
+      "about": "TODO: One line on who AARA Initiative are",
+      "produced": "TODO: What the partnership with AARA Initiative produced",
+      "website": null,
+      "libraries": []
+    },
+    {
+      "_id": "macmillan-education",
+      "name": "Macmillan Education",
+      "slug": "macmillan-education",
+      "about": "TODO: One line on how Macmillan Education works with us",
+      "produced": "TODO: What the partnership with Macmillan Education produced, and their OK to be named",
+      "website": null,
+      "libraries": []
+    }
+  ]
+}

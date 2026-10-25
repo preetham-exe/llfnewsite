@@ -18,12 +18,14 @@ import {
 import { ScrollTrigger } from "@/lib/gsap";
 
 import { loadChoreographies, TransitionEngine } from "./engine";
+import { setPopstateHandler } from "./first-popstate";
 
 /*
- * Owns navigation between pages. It lives in the root layout and never
- * unmounts. It connects the transition engine (engine.ts) to React and
- * looks after scrolling: following a link opens the new page at the top;
- * back and forward return to where the reader was on that page.
+ * Owns navigation between pages. It lives in the site's shell (SiteChrome,
+ * in the (site) layout) and never unmounts. It connects the transition
+ * engine (engine.ts) to React and looks after scrolling: following a link
+ * opens the new page at the top; back and forward return to where the
+ * reader was on that page.
  */
 
 type TransitionContextValue = {
@@ -93,7 +95,8 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
     };
 
     window.addEventListener("scroll", rememberScroll, { passive: true });
-    window.addEventListener("popstate", onPopState);
+    // Through the boot script's listener, which runs before Next's.
+    setPopstateHandler(onPopState);
     window.addEventListener("keydown", engine.escape);
     window.addEventListener("pageshow", onPageShow);
     const cancelPreload = whenIdle(() => {
@@ -105,7 +108,7 @@ export function TransitionProvider({ children }: { children: ReactNode }) {
       cancelAnimationFrame(frame);
       cancelPreload();
       window.removeEventListener("scroll", rememberScroll);
-      window.removeEventListener("popstate", onPopState);
+      setPopstateHandler(null);
       window.removeEventListener("keydown", engine.escape);
       window.removeEventListener("pageshow", onPageShow);
       engine.stop();

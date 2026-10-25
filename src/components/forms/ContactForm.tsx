@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from "react";
 
-import { sendMessage } from "@/app/(book)/get-involved/actions";
+import { sendMessage } from "@/app/(site)/(book)/get-involved/actions";
 import type { contactForm } from "@/content/pages";
 import {
   contactLimits,

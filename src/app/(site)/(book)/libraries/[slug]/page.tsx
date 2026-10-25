@@ -9,8 +9,8 @@ import { PictureFrame } from "@/components/ui/PictureFrame";
 import { RichText } from "@/components/ui/RichText";
 import { Txt } from "@/components/ui/Txt";
 import { isTodo } from "@/content/helpers";
-import { getLibrary, libraries } from "@/content/libraries";
 import type { Library, LibrarySize } from "@/content/types";
+import { getLibraries, getLibrary } from "@/lib/content";
 import { formatCount, formatDate } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
 
@@ -21,8 +21,17 @@ import { pageMetadata } from "@/lib/seo";
  */
 export const instant = false;
 
-export function generateStaticParams() {
-  return libraries.map((library) => ({ slug: library.slug }));
+/*
+ * Every library is built ahead. One added in the Studio after a deploy is
+ * built on its first visit (and from then on served like the rest).
+ * Cache Components needs at least one entry, so with no libraries at all
+ * this builds one page that is not found.
+ */
+export async function generateStaticParams() {
+  const libraries = await getLibraries();
+  return libraries.length
+    ? libraries.map((library) => ({ slug: library.slug }))
+    : [{ slug: "none" }];
 }
 
 function libraryTitle(library: Library): string {
@@ -39,7 +48,7 @@ export async function generateMetadata({
   params,
 }: PageProps<"/libraries/[slug]">): Promise<Metadata> {
   const { slug } = await params;
-  const library = getLibrary(slug);
+  const library = await getLibrary(slug);
   if (!library) return {};
 
   return pageMetadata({
@@ -55,7 +64,7 @@ export default async function LibraryPage({
   params,
 }: PageProps<"/libraries/[slug]">) {
   const { slug } = await params;
-  const library = getLibrary(slug);
+  const library = await getLibrary(slug);
   if (!library) notFound();
 
   const { partner, size } = library;

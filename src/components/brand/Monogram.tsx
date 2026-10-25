@@ -1,7 +1,7 @@
 /**
  * The LLF monogram, drawn in the current text colour. Decorative wherever it
  * appears (the name is always written out nearby), so it is hidden from
- * assistive technology. Relies on <MonogramSymbol /> in the root layout.
+ * assistive technology. Relies on <MonogramSymbol /> in the site's shell.
  */
 export function Monogram({ className = "" }: { className?: string }) {
   return (

@@ -2,8 +2,10 @@ import { paragraphs, todo } from "./helpers";
 import type { Library } from "./types";
 
 /*
- * Libraries in the order they opened. Moves to Sanity in Phase 8.
- * Slugs for #1 and #2 are placeholders until their names are known.
+ * The seed: the libraries as Sanity started with them (scripts/sanity/seed.ts
+ * imports these), and what the site shows until a Sanity project is set up.
+ * Pages read them through src/lib/content.ts. Slugs for #1 and #2 are
+ * placeholders until their names are known.
  */
 export const libraries: Library[] = [
   {
@@ -91,7 +93,3 @@ export const libraries: Library[] = [
     ],
   },
 ];
-
-export function getLibrary(slug: string): Library | undefined {
-  return libraries.find((library) => library.slug === slug);
-}

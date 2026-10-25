@@ -9,7 +9,7 @@ import { PictureFrame } from "@/components/ui/PictureFrame";
 import { RichText } from "@/components/ui/RichText";
 import { Txt } from "@/components/ui/Txt";
 import { isTodo } from "@/content/helpers";
-import { getStory, stories } from "@/content/stories";
+import { getStories, getStory } from "@/lib/content";
 import { formatDate } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo";
 import { marginalia } from "@/motion/tokens";
@@ -21,15 +21,23 @@ import { marginalia } from "@/motion/tokens";
  */
 export const instant = false;
 
-export function generateStaticParams() {
-  return stories.map((story) => ({ slug: story.slug }));
+/*
+ * Every story is built ahead. One added in the Studio after a deploy is
+ * built on its first visit. Cache Components needs at least one entry, so
+ * with no stories at all this builds one page that is not found.
+ */
+export async function generateStaticParams() {
+  const stories = await getStories();
+  return stories.length
+    ? stories.map((story) => ({ slug: story.slug }))
+    : [{ slug: "none" }];
 }
 
 export async function generateMetadata({
   params,
 }: PageProps<"/stories/[slug]">): Promise<Metadata> {
   const { slug } = await params;
-  const story = getStory(slug);
+  const story = await getStory(slug);
   if (!story) return {};
 
   return pageMetadata({
@@ -46,7 +54,7 @@ export default async function StoryPage({
   params,
 }: PageProps<"/stories/[slug]">) {
   const { slug } = await params;
-  const story = getStory(slug);
+  const story = await getStory(slug);
   if (!story) notFound();
 
   return (

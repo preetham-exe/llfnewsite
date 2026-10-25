@@ -1,8 +1,11 @@
 import { TransitionLink } from "@/components/transition/TransitionLink";
 import { notFound } from "@/content/pages";
 
-/** "The misplaced book". Phase 9 adds the small shelf with a gap in it. */
-export default function NotFound() {
+/**
+ * "The misplaced book": what a missing page says. Shown by both not-found
+ * files. Phase 9 adds the small shelf with a gap in it.
+ */
+export function MisplacedBook() {
   return (
     <div className="pt-(--nav-height)">
       <section className="mx-auto max-w-measure px-4 py-24 sm:py-32">

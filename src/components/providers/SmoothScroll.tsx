@@ -6,7 +6,7 @@ import { useEffect, type ReactNode } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 /**
- * One Lenis instance for the whole site, created once in the root layout.
+ * One Lenis instance for the whole site, created once in its shell.
  * GSAP's ticker drives it so ScrollTrigger and Lenis share a single frame loop.
  * Lenis disables smoothing by itself under prefers-reduced-motion, and leaves
  * touch scrolling native.

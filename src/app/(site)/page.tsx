@@ -6,9 +6,9 @@ import { Shelf } from "@/components/shelf/Shelf";
 import { ShelfMotion } from "@/components/shelf/ShelfMotion";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { FullBleedPhoto } from "@/components/ui/FullBleedPhoto";
-import { libraries } from "@/content/libraries";
 import { home } from "@/content/pages";
 import { site, stats } from "@/content/site";
+import { getLibraries } from "@/lib/content";
 import { organizationJsonLd } from "@/lib/json-ld";
 import { pageMetadata } from "@/lib/seo";
 
@@ -19,13 +19,13 @@ export const metadata = pageMetadata({
   absoluteTitle: true,
 });
 
-const impact = [
-  { value: stats.childrenReached, label: "children reached" },
-  { value: stats.booksPlaced, label: "books placed" },
-  { value: String(libraries.length), label: "libraries so far" },
-];
+export default async function HomePage() {
+  const impact = [
+    { value: stats.childrenReached, label: "children reached" },
+    { value: stats.booksPlaced, label: "books placed" },
+    { value: String((await getLibraries()).length), label: "libraries so far" },
+  ];
 
-export default function HomePage() {
   return (
     <div className="pt-(--nav-height)">
       <JsonLd data={organizationJsonLd()} />
