@@ -1,13 +1,16 @@
 import { BookPage } from "@/components/book/BookPage";
 import { Plates } from "@/components/gallery/Plates";
+import { JsonLd } from "@/components/ui/JsonLd";
 import { gallery } from "@/content/pages";
 import { getPlates } from "@/lib/content";
+import { galleryJsonLd } from "@/lib/json-ld";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata = pageMetadata({
   title: gallery.title,
   description: gallery.description,
   path: "/gallery",
+  ownShareImage: true,
 });
 
 export default async function GalleryPage() {
@@ -15,6 +18,7 @@ export default async function GalleryPage() {
 
   return (
     <BookPage book="gallery" title={gallery.title} lede={gallery.lede}>
+      <JsonLd data={galleryJsonLd(plates)} />
       <Plates plates={plates} copy={gallery} />
     </BookPage>
   );

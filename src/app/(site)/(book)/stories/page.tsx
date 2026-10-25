@@ -19,6 +19,7 @@ export const metadata = pageMetadata({
   title: storiesIndex.title,
   description: storiesIndex.description,
   path: "/stories",
+  ownShareImage: true,
 });
 
 export default async function StoriesPage() {

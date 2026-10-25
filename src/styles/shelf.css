@@ -604,4 +604,74 @@
   .book3d__tail {
     transform: rotateX(-90deg) translateZ(calc(var(--h) / 2 - 4px));
   }
+
+  /* ---------- The 404 page: a small shelf with a gap ---------- */
+
+  .gap-shelf {
+    --book: 5.25rem;
+    --unit: 1.15rem;
+    width: fit-content;
+    margin-bottom: 2.75rem;
+  }
+  .gap-shelf__row {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: var(--book);
+    padding-inline: 0.6rem;
+  }
+  .gap-shelf__book {
+    --shade: linear-gradient(
+      90deg,
+      rgb(0 0 0 / 0.3),
+      rgb(0 0 0 / 0.04) 14%,
+      rgb(255 255 255 / 0.06) 50%,
+      rgb(0 0 0 / 0.04) 86%,
+      rgb(0 0 0 / 0.32)
+    );
+    position: relative;
+    flex: none;
+    width: calc(var(--unit) * var(--w));
+    height: calc(var(--book) * var(--h));
+    border-radius: 2px 2px 1px 1px;
+    box-shadow: 1px 0 2px rgb(40 26 14 / 0.25);
+    /* Leaning into the gap, hinged at its foot. */
+    transform: rotate(var(--lean));
+    transform-origin: 0% 100%;
+  }
+  /* The bands near the head and foot of each spine. */
+  .gap-shelf__book::before {
+    content: "";
+    position: absolute;
+    inset: 9% 14%;
+    border-block: 1px solid currentColor;
+    opacity: 0.45;
+  }
+  .gap-shelf__gap {
+    position: relative;
+    flex: none;
+    width: calc(var(--unit) * 1.04);
+    height: 100%;
+  }
+  /* Where the book stood, the board is a little cleaner than round it. */
+  .gap-shelf__gap::after {
+    content: "";
+    position: absolute;
+    inset: auto 1px -0.3rem;
+    height: 0.3rem;
+    background-color: rgb(255 240 220 / 0.18);
+  }
+  .gap-shelf__board {
+    height: 0.85rem;
+    border-radius: 1px;
+    background-color: var(--color-wood);
+    background-image:
+      url("/textures/wood.webp"),
+      linear-gradient(180deg, rgb(255 236 210 / 0.18), rgb(0 0 0 / 0.16));
+    background-size:
+      256px 32px,
+      100% 100%;
+    background-blend-mode: overlay, normal;
+    box-shadow: 0 0.7rem 1rem -0.6rem rgb(40 26 14 / 0.55);
+  }
 }

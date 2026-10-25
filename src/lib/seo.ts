@@ -5,8 +5,10 @@ import { site } from "@/content/site";
 
 /*
  * A page that sets its own openGraph replaces the inherited one, including the
- * image from app/opengraph-image.tsx, so the default image is named here.
- * Per-page opengraph-image files (Phase 9) take precedence over this.
+ * image from app/opengraph-image.tsx, so the default image is named here for
+ * pages without their own. A page with its own opengraph-image file (a
+ * section's book cover) must not name one: a named image wins over the file.
+ * Twitter takes whichever Open Graph image a page has.
  */
 const defaultShareImage = {
   url: "/opengraph-image",
@@ -23,6 +25,8 @@ type PageMetadataInput = {
   /** Use an absolute title (no " | Literate Lives Foundation" suffix). */
   absoluteTitle?: boolean;
   type?: "website" | "article";
+  /** The page has its own opengraph-image file beside it. */
+  ownShareImage?: boolean;
 };
 
 /**
@@ -36,6 +40,7 @@ export function pageMetadata({
   path,
   absoluteTitle = false,
   type = "website",
+  ownShareImage = false,
 }: PageMetadataInput): Metadata {
   return {
     title: absoluteTitle ? { absolute: title } : title,
@@ -48,13 +53,12 @@ export function pageMetadata({
       type,
       siteName: site.name,
       locale: "en_IN",
-      images: [defaultShareImage],
+      ...(ownShareImage ? {} : { images: [defaultShareImage] }),
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [defaultShareImage],
     },
   };
 }

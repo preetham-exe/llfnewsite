@@ -1,37 +1,24 @@
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
-
 import { ImageResponse } from "next/og";
 
 import { WORDMARK } from "@/components/brand/paths";
 import { home } from "@/content/pages";
 import { site } from "@/content/site";
+import {
+  shareFonts,
+  shareSize,
+  shareType,
+  shelfSpines,
+} from "@/lib/share-image";
 
 /*
- * The default share image for every page. Phase 9 replaces it with per-page
- * images and a photograph of the real shelf.
+ * The homepage's share image, and any page's without its own: the headline
+ * over the shelf's eight books. Each section shares its own book's cover
+ * (src/lib/share-image.tsx).
  */
 
 export const alt = `${site.name}. ${home.headline}`;
-export const size = { width: 1200, height: 630 };
-export const contentType = "image/png";
-
-const fontDir = join(process.cwd(), "src/assets/og");
-const [literata, literataItalic] = await Promise.all([
-  readFile(join(fontDir, "literata-display-regular.ttf")),
-  readFile(join(fontDir, "literata-display-italic.ttf")),
-]);
-
-/* Cloth colours and heights for the row of spines, in shelf order. */
-const spines = [
-  { color: "#5e2129", height: 150 },
-  { color: "#2f4a3a", height: 168 },
-  { color: "#b8893a", height: 142 },
-  { color: "#4a5560", height: 160 },
-  { color: "#d9cdb4", height: 146 },
-  { color: "#2f5b5a", height: 164 },
-  { color: "#23314b", height: 172 },
-];
+export const size = shareSize;
+export const contentType = shareType;
 
 export default function OpengraphImage() {
   return new ImageResponse(
@@ -77,11 +64,11 @@ export default function OpengraphImage() {
 
       <div style={{ display: "flex", flexDirection: "column" }}>
         <div style={{ display: "flex", alignItems: "flex-end", gap: 10 }}>
-          {spines.map((spine) => (
+          {shelfSpines.map((spine) => (
             <div
-              key={spine.color}
+              key={spine.id}
               style={{
-                width: 46,
+                width: spine.width,
                 height: spine.height,
                 backgroundColor: spine.color,
               }}
@@ -91,17 +78,6 @@ export default function OpengraphImage() {
         <div style={{ height: 22, backgroundColor: "#8a5a3b" }} />
       </div>
     </div>,
-    {
-      ...size,
-      fonts: [
-        { name: "Literata", data: literata, style: "normal", weight: 400 },
-        {
-          name: "Literata",
-          data: literataItalic,
-          style: "italic",
-          weight: 400,
-        },
-      ],
-    },
+    { ...size, fonts: shareFonts },
   );
 }

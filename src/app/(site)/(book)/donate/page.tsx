@@ -13,6 +13,7 @@ export const metadata = pageMetadata({
   title: donate.title,
   description: donate.description,
   path: "/donate",
+  ownShareImage: true,
 });
 
 const { terms } = donate.registration;

@@ -94,13 +94,15 @@ test.describe("opening a book", () => {
     await skip();
     const { start, end } = await finished(page);
     expect(end.phase).toBe("end");
-    // Done almost at once, and well before the full animation would have
-    // been (frames come late when several browsers share the machine).
+    // Done almost at once (frames come late when several browsers share
+    // the machine), and before the animation would have ended by itself.
+    // When the skip lands depends on how soon the test sees the page (0.4
+    // to 1.2 s in), so it is measured from the skip, not from the start.
     expect(end.t - skippedAt).toBeLessThan(700);
     const total = isPhone(page)
       ? transition.openMobile.total
       : transition.open.total;
-    expect(end.t - start.t).toBeLessThan(total * 1000 - 300);
+    expect(end.t - start.t).toBeLessThan(total * 1000);
     await expect(page).toHaveURL(/\/our-story$/);
     await expectSettled(page);
   }
