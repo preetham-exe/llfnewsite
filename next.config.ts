@@ -10,6 +10,13 @@ const nextConfig: NextConfig = {
   partialPrefetching: true,
   typedRoutes: true,
   poweredByHeader: false,
+  // Every bot gets the prerendered page, as people do. By default Next
+  // re-renders each page on the server for "HTML-limited" bots (Lighthouse,
+  // Bingbot, link previews), bypassing the cache, to put streamed metadata
+  // in the head; here every page is static and its metadata is already
+  // there. That re-render also names the homepage "/index", so it rendered
+  // the wrong nav and failed to hydrate (Next 16.4.2).
+  htmlLimitedBots: /(?!)/,
   images: {
     formats: ["image/avif", "image/webp"],
     // Photos uploaded in the Studio, from this project's dataset only.
