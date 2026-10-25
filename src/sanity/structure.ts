@@ -1,6 +1,6 @@
 import type { StructureResolver } from "sanity/structure";
 
-/** The Studio's sidebar: the three kinds of content, libraries in order. */
+/** The Studio's sidebar: each kind of content, libraries in order. */
 export const structure: StructureResolver = (S) =>
   S.list()
     .title("Content")
@@ -20,6 +20,14 @@ export const structure: StructureResolver = (S) =>
           S.documentTypeList("story")
             .title("Stories")
             .defaultOrdering([{ field: "publishedOn", direction: "desc" }]),
+        ),
+      S.listItem()
+        .title("Gallery moments")
+        .schemaType("moment")
+        .child(
+          S.documentTypeList("moment")
+            .title("Gallery moments")
+            .defaultOrdering([{ field: "date", direction: "desc" }]),
         ),
       S.listItem()
         .title("Partners")

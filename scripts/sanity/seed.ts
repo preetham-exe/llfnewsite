@@ -1,6 +1,7 @@
 /*
  * Copies the seed content in src/content into Sanity: the five partners,
- * three libraries (with the QCity photo) and the first story. Run it once,
+ * three libraries (with the QCity photo), the first story and the Gallery's
+ * first moment (the two photos already on the site). Run it once,
  * from the repo root, after signing in to Sanity:
  *
  *     pnpm sanity login
@@ -22,6 +23,7 @@ import { getCliClient } from "sanity/cli";
 
 import { isTodo } from "../../src/content/helpers";
 import { libraries } from "../../src/content/libraries";
+import { moments } from "../../src/content/moments";
 import { partners } from "../../src/content/partners";
 import { stories } from "../../src/content/stories";
 import type { Picture, Todo } from "../../src/content/types";
@@ -127,6 +129,22 @@ async function main() {
           : undefined,
         cover: story.cover ? await photo(story.cover) : undefined,
         body: story.body,
+      })),
+    )),
+    ...(await Promise.all(
+      moments.map(async (moment) => ({
+        _id: moment._id,
+        _type: "moment",
+        title: moment.title,
+        date: known(moment.date),
+        place: moment.place ?? undefined,
+        photos: (
+          await Promise.all(
+            moment.photos.map((picture, index) =>
+              photo(picture, `photo-${index}`),
+            ),
+          )
+        ).filter((item) => item !== undefined),
       })),
     )),
   ];

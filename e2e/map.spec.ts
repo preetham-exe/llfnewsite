@@ -2,13 +2,16 @@ import { expect, test } from "@playwright/test";
 
 import { isTodo } from "../src/content/helpers";
 import { libraries } from "../src/content/libraries";
+import { moments } from "../src/content/moments";
 import { partners } from "../src/content/partners";
 import { stories } from "../src/content/stories";
+import { galleryPlates, roman } from "../src/lib/gallery";
 import {
   mapContent,
   type RawContent,
   sortContent,
   toLibrary,
+  toMoment,
   toPartner,
   toPhoto,
   toRichText,
@@ -43,7 +46,7 @@ test("the stand-in for Sanity holds exactly the seed, as imported", () => {
   // So every other test, run against the stand-in, checks the same pages
   // the seed gives without Sanity.
   expect(withoutKeys(mapContent(standIn as RawContent))).toEqual(
-    withoutKeys(sortContent({ libraries, stories, partners })),
+    withoutKeys(sortContent({ libraries, stories, partners, moments })),
   );
 });
 
@@ -223,5 +226,90 @@ test("the order: libraries as they opened, newest stories, partners with librari
     "Yarrow Trust",
     "Aster Trust",
     "Cedar Trust",
+  ]);
+});
+
+test("a gallery moment fills its gaps and keeps only uploaded photos", () => {
+  const moment = toMoment({
+    _id: "m",
+    photos: [
+      { alt: "Not uploaded yet" },
+      { alt: "A book drive", src: "/a.jpg", width: 4, height: 3 },
+    ],
+  });
+  expect(moment.title).toBe("TODO: What this moment was");
+  expect(moment.date).toBe("TODO: When this was");
+  expect(moment.photos.map((photo) => photo.alt)).toEqual(["A book drive"]);
+});
+
+test("the Gallery numbers every real photo as a plate, newest first", () => {
+  const photo = (alt: string) => ({
+    _id: alt,
+    alt,
+    src: `/${alt}.jpg`,
+    width: 4,
+    height: 3,
+  });
+  const content = mapContent({
+    libraries: [
+      {
+        _id: "a",
+        number: 1,
+        slug: "a",
+        name: "Hill Library",
+        openedOn: "2025-01",
+        photos: [photo("hill")],
+      },
+      { _id: "b", number: 2, slug: "b", openedOn: "2025-06" },
+      {
+        _id: "c",
+        number: 3,
+        slug: "c",
+        name: "River Library",
+        openedOn: "2026-04",
+        photos: [photo("river-1"), photo("river-2")],
+      },
+    ],
+    stories: [],
+    partners: [],
+    moments: [
+      {
+        _id: "m1",
+        title: "Book drive",
+        date: "2026-06-14",
+        photos: [photo("drive")],
+      },
+      { _id: "m2", title: "Undated", photos: [photo("undated")] },
+    ],
+  });
+  const plates = galleryPlates(content);
+  expect(plates.map((plate) => [plate.numeral, plate.photo.alt])).toEqual([
+    ["I", "drive"],
+    ["II", "river-1"],
+    ["III", "river-2"],
+    ["IV", "hill"],
+    ["V", "undated"],
+  ]);
+  // Library #2 has only a placeholder: no plate.
+  expect(plates.some((plate) => plate.from === "Library #2")).toBe(false);
+  expect(plates[1]).toMatchObject({
+    anchor: "plate-2",
+    from: "River Library",
+    href: "/libraries/c",
+    when: "2026-04",
+  });
+  expect(plates[0]?.href).toBeNull();
+});
+
+test("plate numbers are Roman numerals", () => {
+  expect([1, 4, 9, 14, 40, 49, 90, 2026].map(roman)).toEqual([
+    "I",
+    "IV",
+    "IX",
+    "XIV",
+    "XL",
+    "XLIX",
+    "XC",
+    "MMXXVI",
   ]);
 });

@@ -51,7 +51,10 @@
       "name": "QCity Community Library",
       "slug": "qcity-community-library",
       "city": "TODO: Confirm the city of QCity Community Library",
-      "partner": { "slug": "robinhood-army", "name": "Robinhood Army" },
+      "partner": {
+        "slug": "robinhood-army",
+        "name": "Robinhood Army"
+      },
       "openedOn": "2026-04",
       "booksPlaced": null,
       "childrenServed": null,
@@ -94,6 +97,32 @@
               "marks": []
             }
           ]
+        }
+      ]
+    }
+  ],
+  "moments": [
+    {
+      "_id": "photos-from-our-libraries",
+      "title": "TODO: What these photos show, or move them to the library they were taken at",
+      "date": null,
+      "place": null,
+      "photos": [
+        {
+          "alt": "Children crowd around new bookshelves to choose books, while a girl beside them smiles.",
+          "caption": null,
+          "src": "/photos/children-at-new-shelves.jpg",
+          "width": 2400,
+          "height": 1800,
+          "lqip": null
+        },
+        {
+          "alt": "Three wooden bookshelves, full of children's books.",
+          "caption": null,
+          "src": "/photos/shelves-of-storybooks.jpg",
+          "width": 2400,
+          "height": 2400,
+          "lqip": null
         }
       ]
     }
