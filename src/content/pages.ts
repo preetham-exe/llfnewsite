@@ -2,8 +2,8 @@ import { todo } from "./helpers";
 import type { Photo, Todo } from "./types";
 
 /*
- * Copy for the fixed pages. Libraries, stories and partners have their own
- * files. Everything here is either a confirmed fact or a TODO.
+ * Copy for the fixed pages. Libraries, stories, partners and gallery moments
+ * have their own files. Everything here is either a confirmed fact or a TODO.
  */
 
 export type Section = {
@@ -204,6 +204,23 @@ export const storiesMargins = {
   drawing: todo(
     "A child's drawing from one of our libraries, shared with permission. A photo of it is enough.",
   ),
+} as const;
+
+/** The Gallery: the libraries' photos and gallery moments, as plates. */
+export const gallery = {
+  description:
+    "Photographs from the libraries Literate Lives Foundation has built, and the days we spent there.",
+  title: "Gallery",
+  lede: "Photographs from [[our libraries]], and the days we spent there.",
+  listHeading: "List of plates",
+  plate: "Plate",
+  /** Before the photo's description, for the link that shows it large. */
+  view: "View larger:",
+  of: "of",
+  previous: "Previous plate",
+  next: "Next plate",
+  close: "Close",
+  empty: "Photographs will appear here as we add them.",
 } as const;
 
 export const getInvolved: PageCopy = {

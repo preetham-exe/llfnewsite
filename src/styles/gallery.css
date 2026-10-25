@@ -1,0 +1,328 @@
+/*
+ * The Gallery, a book of plates (components/gallery). A list of plates faces
+ * the chapter title. Each photograph is on its own sheet of heavier, whiter
+ * paper with a faint plate mark round it, under a tissue leaf that turns back
+ * as it comes into view. On the open spread the plate is on the right-hand
+ * page and its number and caption face it on the left, as in an art book;
+ * below that the caption sits beneath the plate. A plate opens large in the
+ * viewer, on the book's navy cloth. Imported by globals.css.
+ */
+
+@layer components {
+  /* ---------- The list of plates (the open spread only) ---------- */
+
+  .plate-list {
+    display: none;
+    margin-bottom: 4.5rem;
+  }
+  .plate-list__heading {
+    color: var(--color-ink-soft);
+    font-size: var(--text-caption);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.2em;
+  }
+  .plate-list ol {
+    margin-top: 1.25rem;
+  }
+  .plate-list__entry {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding-block: 0.3rem;
+    text-decoration: none;
+  }
+  .plate-list__numeral {
+    flex: 0 0 2.5rem;
+    padding-right: 0.5rem;
+    color: var(--color-ink-soft);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.1em;
+    text-align: right;
+  }
+  .plate-list__title {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .plate-list__leader {
+    flex: 1 1 1.5rem;
+    min-width: 1.5rem;
+    border-bottom: 1px dotted rgb(74 66 57 / 0.55);
+  }
+  .plate-list__when {
+    flex: none;
+    color: var(--color-ink-soft);
+    font-family: var(--font-serif-italic);
+    font-style: italic;
+  }
+  @media (hover: hover) {
+    .plate-list__entry:hover .plate-list__title {
+      text-decoration-line: underline;
+      text-decoration-thickness: 0.06em;
+      text-underline-offset: 0.18em;
+    }
+  }
+
+  .plates-empty {
+    color: var(--color-ink-soft);
+    font-family: var(--font-serif-italic);
+    font-style: italic;
+  }
+
+  /* ---------- A plate, and its caption ---------- */
+
+  .plate-entry {
+    /* Below the chapter opening, which stands on the left page. */
+    clear: left;
+    margin: 0 0 5rem;
+  }
+
+  .plate {
+    /* The photograph is never taller than this, so a portrait plate fits
+       on the screen and is narrower than a landscape one. */
+    --plate-height: min(72svh, 42rem);
+    --plate-pad: clamp(1.1rem, 6cqi, 2.4rem);
+    position: relative;
+    width: min(
+      100%,
+      calc(var(--plate-height) * var(--ratio) + 2 * var(--plate-pad))
+    );
+    margin-inline: auto;
+    padding: var(--plate-pad);
+    background-color: #fcfaf5;
+    box-shadow:
+      0 1px 1px rgb(40 26 14 / 0.12),
+      0 1.1rem 2.2rem -1.3rem rgb(40 26 14 / 0.45);
+  }
+  /* The plate mark: a fine line pressed into the paper round the print. */
+  .plate::before {
+    content: "";
+    position: absolute;
+    inset: calc(var(--plate-pad) * 0.55);
+    border: 1px solid rgb(35 49 75 / 0.13);
+    box-shadow:
+      inset 1px 1px 0 rgb(255 255 255 / 0.7),
+      1px 1px 0 rgb(255 255 255 / 0.7);
+    pointer-events: none;
+  }
+  .plate__open {
+    position: relative;
+    display: block;
+    cursor: zoom-in;
+  }
+  .plate__image {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* The tissue leaf over the plate, printed with its number. Only when it
+     can turn back: never without JavaScript or with reduced motion. */
+  .plate__tissue {
+    display: none;
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    align-items: center;
+    justify-content: center;
+    background:
+      linear-gradient(
+        100deg,
+        rgb(255 255 255 / 0.18),
+        rgb(255 255 255 / 0) 40%
+      ),
+      rgb(249 246 238 / 0.9);
+    box-shadow: 0 1px 2px rgb(40 26 14 / 0.12);
+    pointer-events: none;
+  }
+  .plate__tissue span {
+    color: rgb(74 66 57 / 0.6);
+    font-size: var(--text-caption);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.32em;
+  }
+  html.js .plate__tissue {
+    display: flex;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html.js .plate__tissue {
+      display: none;
+    }
+  }
+
+  .plate-entry__caption {
+    max-width: 26rem;
+    margin: 1.75rem auto 0;
+    text-align: center;
+  }
+  .plate-entry__numeral {
+    color: var(--color-ink-soft);
+    font-size: var(--text-caption);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.24em;
+  }
+  .plate-entry__text {
+    margin-top: 0.6rem;
+    line-height: 1.45;
+  }
+  .plate-entry__from {
+    margin-top: 0.5rem;
+    font-variant-caps: all-small-caps;
+    letter-spacing: var(--tracking-smallcaps);
+  }
+  .plate-entry__when {
+    margin-top: 0.15rem;
+    color: var(--color-ink-soft);
+    font-family: var(--font-serif-italic);
+    font-style: italic;
+  }
+
+  /* The open spread: the plate on the right-hand page, its caption facing
+     it in the middle of the left. The entry reaches back across the fold,
+     as the objects in the margins do (book.css). */
+  @media (min-width: 80rem) {
+    .plate-list {
+      display: block;
+    }
+    .plate-entry {
+      display: grid;
+      grid-template-columns:
+        calc(50cqi - var(--po) - var(--pi))
+        calc(2 * var(--pi))
+        minmax(0, 1fr);
+      align-items: center;
+      margin: 0 0 6rem calc(-50cqi - var(--pi) + var(--po));
+    }
+    .plate {
+      grid-row: 1;
+      grid-column: 3;
+    }
+    .plate-entry__caption {
+      grid-row: 1;
+      grid-column: 1;
+      margin-top: 0;
+    }
+  }
+
+  /* ---------- The viewer: one plate, large, on the cloth ---------- */
+
+  .viewer {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 4.5rem 1rem 1.5rem;
+    border: 0;
+    /* A long caption can scroll rather than run off the screen. */
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .viewer[open] {
+    display: grid;
+    place-items: center;
+  }
+  /* The cloth fades in over the page, and out again. */
+  .viewer::backdrop {
+    background: transparent;
+  }
+  .viewer :focus-visible {
+    outline-color: var(--color-cream);
+  }
+
+  .viewer__plate {
+    display: grid;
+    justify-items: center;
+    gap: 1.1rem;
+    max-width: 100%;
+    margin: 0;
+  }
+  .viewer__sheet {
+    padding: clamp(0.6rem, 2vmin, 1.25rem);
+    background-color: #fcfaf5;
+    box-shadow: 0 1.4rem 3rem -1rem rgb(0 0 0 / 0.65);
+  }
+  .viewer__image {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: min(calc(100vw - 4rem), 72rem);
+    max-height: calc(100svh - 17rem);
+  }
+  .viewer__caption {
+    display: grid;
+    gap: 0.3rem;
+    max-width: 38rem;
+    text-align: center;
+  }
+  .viewer__numeral {
+    color: var(--color-foil);
+    font-size: var(--text-caption);
+    font-variant-caps: all-small-caps;
+    letter-spacing: 0.24em;
+  }
+  .viewer__from {
+    color: rgb(239 230 210 / 0.85);
+    font-family: var(--font-serif-italic);
+    font-style: italic;
+  }
+
+  .viewer__button {
+    position: fixed;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding-inline: 0.9rem;
+    border: 1px solid rgb(239 230 210 / 0.5);
+    border-radius: 999px;
+    background-color: rgb(0 0 0 / 0.12);
+    color: var(--color-cream);
+    font-family: var(--font-sans);
+    font-size: var(--text-ui);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .viewer__button:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+  @media (hover: hover) {
+    .viewer__button:not(:disabled):hover {
+      border-color: var(--color-cream);
+    }
+  }
+  /* Previous and next: at the top on phones (swiping works too), at the
+     sides from tablets. */
+  .viewer__button--previous {
+    top: 1rem;
+    left: 1rem;
+  }
+  .viewer__button--next {
+    top: 1rem;
+    left: 4.25rem;
+  }
+  .viewer__button--close {
+    top: 1rem;
+    right: 1rem;
+  }
+  @media (min-width: 48rem) {
+    .viewer {
+      padding: 4.5rem 6rem;
+    }
+    .viewer__button--previous,
+    .viewer__button--next {
+      top: 50%;
+      translate: 0 -50%;
+    }
+    .viewer__button--previous {
+      left: 1.5rem;
+    }
+    .viewer__button--next {
+      right: 1.5rem;
+      left: auto;
+    }
+  }
+}

@@ -4,6 +4,7 @@
 @import "./book.css";
 @import "./transition.css";
 @import "./donate.css";
+@import "./gallery.css";
 
 /*
  * Design tokens. Everything visual comes from here. Tailwind turns each token
@@ -39,6 +40,7 @@
   --color-cloth-slate: #4a5560;
   --color-cloth-ochre: #b8893a;
   --color-cloth-linen: #d9cdb4;
+  --color-cloth-plum: #4b2d42;
   --color-cloth-teal: #2f5b5a;
 
   /* Type scale. Fluid between 390 px and 1440 px wide. */

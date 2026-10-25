@@ -19,6 +19,7 @@ const labels: Record<string, string> = {
   "How We Build": "From a first conversation to launch day.",
   Partners: "The organisations we build with.",
   Stories: "Writing from our team and our readers.",
+  Gallery: "Photographs from our libraries.",
   "Get Involved": "Volunteer, start a chapter, or ask for a library.",
   Donate: "Help pay for the next library.",
 };
@@ -65,11 +66,11 @@ test.describe("pulling a book out", () => {
     await page.keyboard.press("ArrowLeft");
     await expect(links.nth(0)).toBeFocused();
     await page.keyboard.press("ArrowLeft");
-    await expect(links.nth(6)).toBeFocused();
+    await expect(links.last()).toBeFocused();
     await page.keyboard.press("Home");
     await expect(links.nth(0)).toBeFocused();
     await page.keyboard.press("End");
-    await expect(links.nth(6)).toBeFocused();
+    await expect(links.last()).toBeFocused();
   });
 
   test("every book describes its section to assistive technology", async ({

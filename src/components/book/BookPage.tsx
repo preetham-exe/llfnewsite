@@ -23,7 +23,7 @@ type BookPageProps = {
   children?: ReactNode;
 };
 
-const NUMERALS = ["I", "II", "III", "IV", "V", "VI", "VII"];
+const NUMERALS = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII"];
 
 /**
  * The cloth that shows round the pages, as a share of the open book's width

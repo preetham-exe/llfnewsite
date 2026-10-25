@@ -9,7 +9,7 @@ import { pile, standing } from "./proportions";
 import { SpineFace } from "./Spine";
 
 /**
- * The shelf: one nav landmark holding the seven books as real links with real
+ * The shelf: one nav landmark holding the eight books as real links with real
  * text, inside a wooden bookcase. Tablets and desktops see the books standing
  * side by side across the full width; phones see them stacked flat with
  * Donate on top. The two are separate lists (only one is ever displayed) so

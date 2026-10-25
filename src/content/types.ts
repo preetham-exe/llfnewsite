@@ -139,11 +139,12 @@ export type BookId =
   | "how-we-build"
   | "partners"
   | "stories"
+  | "gallery"
   | "get-involved"
   | "donate";
 
 export type Cloth =
-  "navy" | "oxblood" | "forest" | "slate" | "ochre" | "linen" | "teal";
+  "navy" | "oxblood" | "forest" | "slate" | "ochre" | "linen" | "plum" | "teal";
 
 /** Spine lettering: gold foil, cream, or dark ink on the light cloths. */
 export type Lettering = "foil" | "cream" | "ink";

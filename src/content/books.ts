@@ -1,6 +1,6 @@
 import type { Book, BookId } from "./types";
 
-/** The seven books on the shelf, left to right. Donate is the only navy one. */
+/** The eight books on the shelf, left to right. Donate is the only navy one. */
 export const books: Book[] = [
   {
     id: "our-story",
@@ -41,6 +41,14 @@ export const books: Book[] = [
     label: "Writing from our team and our readers.",
     cloth: "linen",
     lettering: "ink",
+  },
+  {
+    id: "gallery",
+    spineTitle: "Gallery",
+    href: "/gallery",
+    label: "Photographs from our libraries.",
+    cloth: "plum",
+    lettering: "cream",
   },
   {
     id: "get-involved",

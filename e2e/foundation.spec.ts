@@ -188,12 +188,12 @@ test.describe("keyboard", () => {
       name: "Sections of the site",
     });
     const books = shelf.getByRole("link");
-    await expect(books).toHaveCount(7);
+    await expect(books).toHaveCount(8);
 
-    // Skip link, site name, Donate, then the seven books.
+    // Skip link, site name, Donate, then the eight books.
     const tab = tabKey(browserName);
     for (let press = 0; press < 3; press++) await page.keyboard.press(tab);
-    for (let index = 0; index < 7; index++) {
+    for (let index = 0; index < 8; index++) {
       await page.keyboard.press(tab);
       const book = books.nth(index);
       await expect(book).toBeFocused();

@@ -21,6 +21,7 @@ export const routes = [
     name: "story-first",
     heading: "TODO: Title of the first story",
   },
+  { path: "/gallery", name: "gallery", heading: "Gallery" },
   { path: "/get-involved", name: "get-involved", heading: "Get Involved" },
   { path: "/donate", name: "donate", heading: "Donate" },
 ] as const;
