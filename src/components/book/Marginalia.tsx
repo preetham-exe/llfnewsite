@@ -101,9 +101,12 @@ function PaperClip() {
 export function Polaroid({
   photo,
   caption,
+  preload = false,
 }: {
   photo: Photo;
   caption: string | Todo;
+  /** On the page's first screen: load it first, as the page's main image. */
+  preload?: boolean;
 }) {
   return (
     <figure className="polaroid">
@@ -114,6 +117,7 @@ export function Polaroid({
         height={photo.height}
         alt={photo.alt}
         sizes="17rem"
+        preload={preload}
         className="block aspect-square h-auto w-full object-cover"
       />
       <figcaption className="polaroid__caption">

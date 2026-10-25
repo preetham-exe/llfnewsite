@@ -19,7 +19,13 @@ export const metadata = pageMetadata({
 const besides: ReactNode[] = [
   null,
   <Margin key="polaroid" drift={marginalia.polaroid}>
-    <Polaroid photo={ourStoryMargins.photo} caption={ourStoryMargins.caption} />
+    {/* On the first screen of a phone, where it is the largest thing on
+        it: loaded first rather than lazily. */}
+    <Polaroid
+      photo={ourStoryMargins.photo}
+      caption={ourStoryMargins.caption}
+      preload
+    />
   </Margin>,
   <Margin key="note" drift={marginalia.note} variant="inset">
     <NoteCard>{ourStoryMargins.note}</NoteCard>
