@@ -31,6 +31,7 @@ const sectionPages = [
   "/partners",
   "/stories",
   "/stories/first-story",
+  "/gallery",
   "/get-involved",
 ] as const;
 
@@ -119,7 +120,9 @@ test.describe("the margins", () => {
     page,
   }) => {
     test.skip(!showsSpread(page), "Between the text blocks on smaller screens");
-    for (const path of sectionPages) {
+    // The Gallery's left-hand pages hold the captions facing its plates
+    // instead (gallery.spec.ts).
+    for (const path of sectionPages.filter((path) => path !== "/gallery")) {
       await page.goto(path);
       await page.evaluate(() => document.fonts.ready);
       const fold = await page

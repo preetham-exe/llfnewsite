@@ -130,6 +130,35 @@ export const checkout = {
   leaveBy: 0.8,
 } as const;
 
+/**
+ * The Gallery. As a plate comes into view, the tissue leaf over it turns back
+ * on its inner edge, toward the book's binding, and is gone; on the first
+ * screen it waits until the page shows. A plate opened large rises a little
+ * toward the reader as the cloth comes up behind it.
+ */
+export const gallery = {
+  tissue: {
+    turn: 1.1,
+    /** How far the leaf turns (deg about its inner edge). */
+    angle: -165,
+    perspective: 1600,
+    /** It fades over the end of the turn, from this share of it. */
+    fadeFrom: 0.5,
+    /** On the first screen, after the page shows. */
+    delay: 0.3,
+  },
+  viewer: {
+    open: 0.4,
+    close: 0.25,
+    /** The plate rises from this scale as it opens. */
+    rise: 0.96,
+    /** Crossfade from one plate to the next. */
+    change: 0.28,
+    /** A swipe of this many px moves to the next plate. */
+    swipe: 48,
+  },
+} as const;
+
 export const stagger = {
   settle: 0.06,
 } as const;

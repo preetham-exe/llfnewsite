@@ -26,6 +26,9 @@
   .cloth-linen {
     --cloth: var(--color-cloth-linen);
   }
+  .cloth-plum {
+    --cloth: var(--color-cloth-plum);
+  }
   .cloth-teal {
     --cloth: var(--color-cloth-teal);
   }
@@ -221,7 +224,7 @@
     padding-inline: 1px;
   }
 
-  /* The seven books share the row in proportion to their thickness. */
+  /* The eight books share the row in proportion to their thickness. */
   .bookcase__book {
     position: relative;
     flex: var(--t) 1 0;

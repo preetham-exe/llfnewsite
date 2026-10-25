@@ -109,7 +109,7 @@ export const library = defineType({
       of: [{ type: "photo" }],
       options: { layout: "grid" },
       description:
-        "The first shows first on its page. Children's faces only with the partner's consent: prefer photos where they cannot be recognised.",
+        "The first shows first on its page. They also appear in the Gallery. Children's faces only with the partner's consent: prefer photos where they cannot be recognised.",
     }),
     defineField({
       name: "launchDay",

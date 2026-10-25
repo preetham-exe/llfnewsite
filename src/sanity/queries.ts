@@ -1,7 +1,7 @@
 /*
  * What the site reads from Sanity: one query for everything. There are few
- * enough libraries, stories and partners that every page rebuild reads them
- * all, and one cached result serves every page. Only documents with a web
+ * enough libraries, stories, partners and gallery moments that every page
+ * rebuild reads them all, and one cached result serves every page. Only documents with a web
  * address (and libraries with a number) are shown. The shapes it returns
  * are the Raw types in map.ts, which turns them into the site's types.
  */
@@ -45,6 +45,13 @@ export const contentQuery = /* groq */ `{
     "library": library->{ ${libraryReference} },
     "cover": cover{ ${photo} },
     body
+  },
+  "moments": *[_type == "moment"] {
+    _id,
+    title,
+    date,
+    place,
+    "photos": photos[]{ ${photo} }
   },
   "partners": *[_type == "partner" && defined(slug.current)] {
     _id,

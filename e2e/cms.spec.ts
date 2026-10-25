@@ -17,6 +17,7 @@ type Content = {
   libraries: Document[];
   stories: Document[];
   partners: Document[];
+  moments: Document[];
 };
 
 const block = (key: string, text: string) => ({
@@ -244,6 +245,43 @@ test("a story published in the Studio gets its own page", async ({ page }) => {
   ).toBeVisible();
 });
 
+test("a gallery moment published in the Studio becomes the Gallery's first plates", async ({
+  page,
+}) => {
+  await changeContent(page, (content) => {
+    content.moments.push({
+      _id: "test-moment",
+      title: "Book drive",
+      date: "2026-10-12",
+      place: "Hyderabad",
+      photos: [
+        {
+          alt: "Shelves of storybooks, standing in for a book drive.",
+          caption: "Books sorted and ready for the next library.",
+          src: "/photos/shelves-of-storybooks.jpg",
+          width: 2400,
+          height: 2400,
+          lqip: null,
+        },
+      ],
+    });
+  });
+  await publishAndWait(page, { _type: "moment" });
+
+  await page.goto("/gallery");
+  // The newest, so plate I.
+  const first = page.locator("figure.plate-entry").first();
+  await expect(first.locator(".plate-entry__numeral")).toHaveText("Plate I");
+  await expect(first.locator(".plate-entry__text")).toHaveText(
+    "Books sorted and ready for the next library.",
+  );
+  await expect(first.locator(".plate-entry__from")).toHaveText("Book drive");
+  await expect(first.locator(".plate-entry__when")).toHaveText(
+    "12 October 2026, Hyderabad",
+  );
+  await expect(page.locator("figure.plate-entry")).toHaveCount(4);
+});
+
 test("a project with nothing in it yet shows the seed, not an empty site", async ({
   page,
 }) => {
@@ -252,6 +290,7 @@ test("a project with nothing in it yet shows the seed, not an empty site", async
     content.libraries = [];
     content.stories = [];
     content.partners = [];
+    content.moments = [];
   });
   await publishAndWait(page, { _type: "library" });
 

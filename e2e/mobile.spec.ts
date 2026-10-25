@@ -53,7 +53,7 @@ for (const width of [320, 360, 390]) {
       const pile = page.locator(".pile");
       const room = (await pile.boundingBox())?.width ?? 0;
       const books = pile.locator("[data-book]");
-      await expect(books).toHaveCount(7);
+      await expect(books).toHaveCount(8);
       for (const book of await books.all()) {
         const box = await book.boundingBox();
         expect(box?.height).toBeGreaterThanOrEqual(56);
@@ -168,7 +168,7 @@ test.describe("the menu on a small phone", () => {
 /** Each standing book on screen, with its title inside its spine. */
 async function expectWholeBookcase(page: Page) {
   const spines = page.locator(".bookcase__row [data-book]");
-  await expect(spines).toHaveCount(7);
+  await expect(spines).toHaveCount(8);
   const viewport = page.viewportSize();
   for (const spine of await spines.all()) {
     const box = await spine.boundingBox();

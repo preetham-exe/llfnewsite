@@ -39,12 +39,12 @@ function withShade([r, g, b]: RGB): RGB {
 
 const shelfName = "Sections of the site";
 
-test("the shelf is seven real links, in reading order", async ({ page }) => {
+test("the shelf is eight real links, in reading order", async ({ page }) => {
   await page.goto("/");
   const links = page
     .getByRole("navigation", { name: shelfName })
     .getByRole("link");
-  await expect(links).toHaveCount(7);
+  await expect(links).toHaveCount(8);
 
   // Phones show the pile, with Donate on top; larger screens show the shelf.
   // Accessible names are the titles alone: the LLF monogram is hidden.
@@ -54,6 +54,7 @@ test("the shelf is seven real links, in reading order", async ({ page }) => {
     "How We Build",
     "Partners",
     "Stories",
+    "Gallery",
     "Get Involved",
     "Donate",
   ];

@@ -103,6 +103,21 @@ export type Story = {
   body: RichText;
 };
 
+/**
+ * A moment for the Gallery that belongs to no library: a book drive, a day
+ * with volunteers, an event.
+ */
+export type Moment = {
+  _id: string;
+  _type: "moment";
+  title: string | Todo;
+  /** Year and month ("2026-03") or a full ISO date. */
+  date: string | Todo;
+  place: string | null;
+  /** Real photos only: a moment with none is left out of the Gallery. */
+  photos: Photo[];
+};
+
 export type Partner = {
   _id: string;
   _type: "partner";
@@ -124,11 +139,12 @@ export type BookId =
   | "how-we-build"
   | "partners"
   | "stories"
+  | "gallery"
   | "get-involved"
   | "donate";
 
 export type Cloth =
-  "navy" | "oxblood" | "forest" | "slate" | "ochre" | "linen" | "teal";
+  "navy" | "oxblood" | "forest" | "slate" | "ochre" | "linen" | "plum" | "teal";
 
 /** Spine lettering: gold foil, cream, or dark ink on the light cloths. */
 export type Lettering = "foil" | "cream" | "ink";

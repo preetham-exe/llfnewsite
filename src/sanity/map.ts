@@ -4,6 +4,7 @@ import type {
   Library,
   LibrarySize,
   LinkMark,
+  Moment,
   Partner,
   Photo,
   RichText,
@@ -23,6 +24,7 @@ export type Content = {
   libraries: Library[];
   stories: Story[];
   partners: Partner[];
+  moments: Moment[];
 };
 
 /* What the query returns. Anything not filled in comes back as null. */
@@ -95,10 +97,20 @@ export type RawPartner = {
   libraries?: RawLibraryReference[] | null;
 };
 
+export type RawMoment = {
+  _id: string;
+  title?: string | null;
+  date?: string | null;
+  place?: string | null;
+  photos?: RawPhoto[] | null;
+};
+
 export type RawContent = {
   libraries: RawLibrary[];
   stories: RawStory[];
   partners: RawPartner[];
+  /** Missing from content saved before the Gallery existed. */
+  moments?: RawMoment[];
 };
 
 /** Filled in: not null, and not just spaces. */
@@ -282,15 +294,27 @@ export function toPartner(raw: RawPartner): Partner {
   };
 }
 
+export function toMoment(raw: RawMoment): Moment {
+  return {
+    _id: raw._id,
+    _type: "moment",
+    title: given(raw.title) ? raw.title : todo("What this moment was"),
+    date: given(raw.date) ? raw.date : todo("When this was"),
+    place: given(raw.place) ? raw.place : null,
+    photos: (raw.photos ?? []).flatMap((item) => toPhoto(item) ?? []),
+  };
+}
+
 /**
  * The order the site shows things in: libraries as they opened, the newest
- * stories first (undated ones last), and partners we have built libraries
- * with first, in the order those opened, then the rest by name.
+ * stories and moments first (undated ones last), and partners we have built
+ * libraries with first, in the order those opened, then the rest by name.
  */
 export function sortContent({
   libraries,
   stories,
   partners,
+  moments,
 }: Content): Content {
   const numbers = new Map(
     libraries.map((library) => [library.slug, library.number]),
@@ -301,12 +325,13 @@ export function sortContent({
         (library) => numbers.get(library.slug) ?? Infinity,
       ),
     );
-  const date = (story: Story) =>
-    isTodo(story.publishedOn) ? "" : story.publishedOn;
+  const newest = (a: string, b: string) =>
+    (isTodo(b) ? "" : b).localeCompare(isTodo(a) ? "" : a);
 
   return {
     libraries: [...libraries].sort((a, b) => a.number - b.number),
-    stories: [...stories].sort((a, b) => date(b).localeCompare(date(a))),
+    stories: [...stories].sort((a, b) => newest(a.publishedOn, b.publishedOn)),
+    moments: [...moments].sort((a, b) => newest(a.date, b.date)),
     partners: [...partners].sort(
       (a, b) =>
         firstLibrary(a) - firstLibrary(b) || a.name.localeCompare(b.name, "en"),
@@ -319,5 +344,6 @@ export function mapContent(raw: RawContent): Content {
     libraries: raw.libraries.map(toLibrary),
     stories: raw.stories.map(toStory),
     partners: raw.partners.map(toPartner),
+    moments: (raw.moments ?? []).map(toMoment),
   });
 }
