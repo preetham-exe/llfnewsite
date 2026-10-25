@@ -7,6 +7,8 @@ import { gsap } from "@/lib/gsap-draw";
 import { SplitText } from "@/lib/gsap-split";
 import { ease, pencil, reveal } from "@/motion/tokens";
 
+import { afterArrival } from "./arrival";
+
 /**
  * The motion of a section page, all of it small and once only:
  * - chapter headings rise into place line by line as they come into view
@@ -163,25 +165,4 @@ export function SpreadMotion({ children }: { children: ReactNode }) {
       {children}
     </div>
   );
-}
-
-/**
- * Runs once the page is on screen: at once, or when the book that is opening
- * onto it has finished.
- */
-function afterArrival(callback: () => void) {
-  const opening = document.querySelector(
-    "[data-transition-overlay][data-active]",
-  );
-  if (!opening) {
-    callback();
-    return;
-  }
-  const done = (event: Event) => {
-    const { phase } = (event as CustomEvent<{ phase: string }>).detail;
-    if (phase === "start") return;
-    window.removeEventListener("llf:transition", done);
-    callback();
-  };
-  window.addEventListener("llf:transition", done);
 }
