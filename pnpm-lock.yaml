@@ -18,6 +18,12 @@ importers:
       '@gsap/react':
         specifier: 2.1.2
         version: 2.1.2(gsap@3.15.0)(react@19.3.1)
+      '@vercel/analytics':
+        specifier: 2.0.1
+        version: 2.0.1(next@16.4.2(@babel/core@7.29.7)(@playwright/test@1.64.0)(@types/node@24.19.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)
+      '@vercel/speed-insights':
+        specifier: 2.0.0
+        version: 2.0.0(next@16.4.2(@babel/core@7.29.7)(@playwright/test@1.64.0)(@types/node@24.19.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)
       gsap:
         specifier: 3.15.0
         version: 3.15.0
@@ -2553,11 +2559,66 @@ packages:
   '@vanilla-extract/private@1.0.9':
     resolution: {integrity: sha512-gT2jbfZuaaCLrAxwXbRgIhGhcXbRZCG3v4TTUnjw0EJ7ArdBRxkq4msNJkbuRkCgfIK5ATmprB5t9ljvLeFDEA==}
 
+  '@vercel/analytics@2.0.1':
+    resolution: {integrity: sha512-MTQG6V9qQrt1tsDeF+2Uoo5aPjqbVPys1xvnIftXSJYG2SrwXRHnqEvVoYID7BTruDz4lCd2Z7rM1BdkUehk2g==}
+    peerDependencies:
+      '@remix-run/react': ^2
+      '@sveltejs/kit': ^1 || ^2
+      next: '>= 13'
+      nuxt: '>= 3'
+      react: ^18 || ^19 || ^19.0.0-rc
+      svelte: '>= 4'
+      vue: ^3
+      vue-router: ^4
+    peerDependenciesMeta:
+      '@remix-run/react':
+        optional: true
+      '@sveltejs/kit':
+        optional: true
+      next:
+        optional: true
+      nuxt:
+        optional: true
+      react:
+        optional: true
+      svelte:
+        optional: true
+      vue:
+        optional: true
+      vue-router:
+        optional: true
+
   '@vercel/error-utils@2.2.0':
     resolution: {integrity: sha512-WFWiRxfPzoYWYifaj4thSKvAaZZwUOqD4k5GINRIgZgCiS2E3iAJbWbIsIZmkQdTecWFHcWGA6q48CjisgpOBA==}
 
   '@vercel/frameworks@3.29.0':
     resolution: {integrity: sha512-qqkIhTkSkWdaGOs6+oOTliY/1bLd8cLLNQYCBVYSRFU5RiPjm5pM2fhZGFJaosQpFBBBOLEKeCZqYhTcphs6OQ==}
+
+  '@vercel/speed-insights@2.0.0':
+    resolution: {integrity: sha512-jwkNcrTeafWxjmWq4AHBaptSqZiJkYU5adLC9QBSqeim0GcqDMgN5Ievh8OG1rJ6W3A4l1oiP7qr9CWxGuzu3w==}
+    peerDependencies:
+      '@sveltejs/kit': ^1 || ^2
+      next: '>= 13'
+      nuxt: '>= 3'
+      react: ^18 || ^19 || ^19.0.0-rc
+      svelte: '>= 4'
+      vue: ^3
+      vue-router: ^4
+    peerDependenciesMeta:
+      '@sveltejs/kit':
+        optional: true
+      next:
+        optional: true
+      nuxt:
+        optional: true
+      react:
+        optional: true
+      svelte:
+        optional: true
+      vue:
+        optional: true
+      vue-router:
+        optional: true
 
   '@vercel/stega@1.1.0':
     resolution: {integrity: sha512-DFOm3Gk78nKDkppQEG5aj8Wj8R8hPKu/xrz4Rtp0AfiaNbZNCoJbxn7VI6iMxqhGeLdUDy/8mTuTWMz/izAtPA==}
@@ -8736,6 +8797,11 @@ snapshots:
 
   '@vanilla-extract/private@1.0.9': {}
 
+  '@vercel/analytics@2.0.1(next@16.4.2(@babel/core@7.29.7)(@playwright/test@1.64.0)(@types/node@24.19.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)':
+    optionalDependencies:
+      next: 16.4.2(@babel/core@7.29.7)(@playwright/test@1.64.0)(@types/node@24.19.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      react: 19.3.1
+
   '@vercel/error-utils@2.2.0': {}
 
   '@vercel/frameworks@3.29.0':
@@ -8743,6 +8809,11 @@ snapshots:
       '@vercel/error-utils': 2.2.0
       js-yaml: 3.15.2
       smol-toml: 1.9.1
+
+  '@vercel/speed-insights@2.0.0(next@16.4.2(@babel/core@7.29.7)(@playwright/test@1.64.0)(@types/node@24.19.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)':
+    optionalDependencies:
+      next: 16.4.2(@babel/core@7.29.7)(@playwright/test@1.64.0)(@types/node@24.19.2)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      react: 19.3.1
 
   '@vercel/stega@1.1.0': {}
 
